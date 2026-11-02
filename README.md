@@ -4,7 +4,7 @@
 
 터미널, Docker, Git/GitHub를 사용해 재현 가능한 개발 작업 환경을 구성하는 실습 프로젝트입니다. 명령의 의미를 이해하고 실제 출력으로 결과를 검증합니다.
 
-> 진행 중: Dockerfile로 웹 서버 이미지를 빌드하고, 컨테이너를 실행해 `http://localhost:8080`의 HTTP 200 응답과 healthy 상태를 확인했습니다. 사용자의 hello-world·Ubuntu 실습 기록도 포함합니다. 터미널 전체 조작, 권한, 마운트·볼륨 및 VS Code 연동 검증은 남아 있습니다.
+> 진행 중: E1-1의 여섯 가지 원리를 설명하는 대화형 학습 페이지를 이미지 `codyssey-workstation:2.0`으로 빌드해 `http://localhost:8080`에서 제공합니다. 실제 서버 실행·응답과 설명 모형을 구분합니다. 터미널 전체 조작, 권한, attach/exec, 마운트·볼륨 및 VS Code 연동 검증은 남아 있습니다.
 
 ## 실행 환경
 
@@ -23,6 +23,8 @@
 
 최근 실습 결과: [Docker 엔진 및 hello-world 성공](docs/evidence/05-hello-world.md), [Ubuntu 컨테이너 진입 및 경로 확인](docs/evidence/06-ubuntu-terminal.md), [웹 서버 빌드·포트·로그·리소스 검증](docs/evidence/07-web-server.md).
 
+최신 페이지와 실제 빌드 검증: [E1-1 원리 학습 페이지 V2](docs/evidence/08-learning-page.md).
+
 문제 해결 과정: [트러블슈팅](docs/troubleshooting.md).
 
 ## 수행 체크리스트
@@ -30,7 +32,7 @@
 - [ ] 터미널 기본 조작: 현재 위치, 숨김 파일, 이동, 생성, 복사, 이름 변경, 삭제, 내용 확인, 빈 파일
 - [ ] 파일과 디렉토리 각각의 리눅스 권한 변경 전후 비교
 - [x] Docker 버전 및 데몬 점검
-- [ ] 이미지 다운로드와 목록, 컨테이너 실행·중지·목록·로그·리소스 확인
+- [x] 이미지 다운로드와 목록, 컨테이너 실행·중지·목록·로그·리소스 확인
 - [x] hello-world 실행
 - [ ] Ubuntu 컨테이너에서 명령 실행 및 attach/exec/종료 차이 관찰
 - [x] Dockerfile 커스텀 이미지 빌드 및 실행
@@ -46,7 +48,9 @@
 ## 소스 구성과 커스텀 목적
 
 ```text
-app/index.html          개인 실습용 정적 웹 페이지
+app/index.html          E1-1 원리 설명 및 실습 증거 안내
+app/styles.css          화면 구성과 반응형 스타일
+app/app.js              브라우저 내 설명 모형 및 실제 HTTP 응답 확인
 Dockerfile              NGINX 기반 이미지 빌드 정의
 nginx.conf              웹 루트와 /healthz 상태 점검 경로
 docs/evidence/          실제 명령·출력 및 캡처
@@ -61,6 +65,21 @@ docs/evidence/          실제 명령·출력 및 캡처
 | `LABEL` | 이미지의 프로젝트 이름과 용도를 기록 |
 | `HEALTHCHECK` | 컨테이너 프로세스 실행 여부와 별개로 HTTP 응답 점검 |
 
+## 페이지와 과제의 관계
+
+페이지는 과제의 커스텀 웹 서버가 제공하는 콘텐츠이며 학습 보조 자료입니다. 설명 모형을 조작하는 것만으로 실제 실습이나 제출 증거 수집이 완료되지는 않습니다.
+
+| 학습 영역 | 페이지에서 살펴볼 원리 | 별도로 필요한 실제 증거 |
+|---|---|---|
+| 전체 흐름 | Dockerfile → 이미지 → 컨테이너 → 브라우저 | 빌드·실행·HTTP 응답 |
+| 경로·권한 | 절대/상대 경로, r/w/x와 644·755 계산 | 터미널 조작과 파일·디렉토리 권한 전후 |
+| 이미지·컨테이너 | 빌드, 실행, 중지, 시작, 삭제와 이미지 유지 | 운영 명령 및 attach/exec 관찰 |
+| 포트 연결 | 호스트 포트와 컨테이너의 80번 연결 | 실행 명령·응답·주소창 포함 캡처 |
+| 마운트·볼륨 | COPY/바인드의 변경 반영, 볼륨의 별도 수명 | 실제 파일 변경 및 삭제 전후 데이터 |
+| Git·제출물 | 작업 → add → commit → push | Git 설정·업로드·VS Code 연동·README |
+
+페이지의 ‘현재 서버 응답 확인’ 버튼은 실제 `/healthz`에 HTTP GET 요청을 보냅니다. 그 외 버튼은 브라우저 안에서 설명용 상태만 바꾸며 Docker·파일·Git을 실제로 조작하지 않습니다. 모형의 결과는 실습 완료 체크에 반영하지 않습니다.
+
 ## 웹 서버 실행 방법
 
 Docker 엔진을 실행한 상태에서 아래처럼 저장소를 가져옵니다. 이미 파일이 있다면 해당 저장소 루트로 이동합니다.
@@ -73,8 +92,8 @@ cd codyssey-E1-1-dev-workstation
 아래는 PowerShell 재현 명령이며, 실제 성공 출력은 [웹 서버 검증 기록](docs/evidence/07-web-server.md)에 있습니다. 동일 이름의 컨테이너가 이미 있으면 기존 서버에 접속하거나 별도 이름과 포트를 선택합니다.
 
 ```powershell
-docker build -t codyssey-workstation:1.0 .
-docker run -d --name codyssey-web -p 127.0.0.1:8080:80 codyssey-workstation:1.0
+docker build -t codyssey-workstation:2.0 .
+docker run -d --name codyssey-web -p 127.0.0.1:8080:80 codyssey-workstation:2.0
 curl.exe -i http://localhost:8080/
 curl.exe -i http://localhost:8080/healthz
 docker logs codyssey-web
@@ -90,7 +109,7 @@ docker rm codyssey-web
 
 브라우저 주소는 `http://localhost:8080`입니다. `127.0.0.1:8080:80`은 PC의 로컬 접속용 8080번 포트를 컨테이너 안 NGINX의 80번 포트에 연결합니다. `EXPOSE 80`만으로는 호스트 포트가 열리지 않습니다. 이름이나 포트가 이미 사용 중이면 기존 리소스를 임의로 지우지 말고 다른 이름/호스트 포트를 선택합니다.
 
-바인드 마운트 검증과 권한 실습은 Ubuntu의 리눅스 파일시스템에 둔 저장소에서 진행할 예정입니다. `/mnt/c` 아래 Windows 파일의 권한 동작을 일반 리눅스 권한과 혼동하지 않습니다.
+권한 실습은 Ubuntu 컨테이너 내부의 리눅스 파일시스템에서 진행할 예정입니다. 바인드 마운트는 호스트의 `app` 폴더를 별도 실습 컨테이너에 연결해 검증합니다. Windows 파일의 권한 동작을 일반 리눅스 권한과 혼동하지 않습니다.
 
 ## 핵심 개념
 

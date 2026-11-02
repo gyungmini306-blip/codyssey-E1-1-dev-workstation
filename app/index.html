@@ -3,37 +3,125 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Codyssey E1-1 · Dev Workstation Lab</title>
-  <style>
-    :root { color-scheme: dark; font-family: system-ui, sans-serif; background: #101820; color: #eaf0f5; }
-    body { max-width: 900px; margin: auto; padding: 56px 24px; line-height: 1.7; }
-    .eyebrow { color: #82dcc1; letter-spacing: .15em; font-size: 13px; }
-    h1 { font-size: clamp(32px, 6vw, 56px); line-height: 1.15; margin: 20px 0; }
-    .intro { max-width: 620px; color: #b8c8d6; font-size: 18px; }
-    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin: 36px 0; }
-    article { padding: 24px; border: 1px solid #354653; border-radius: 12px; background: #17232e; }
-    article h2 { margin-top: 0; font-size: 20px; }
-    article p, footer { color: #b8c8d6; }
-    code { color: #82dcc1; }
-    .marker { padding: 18px 24px; border-left: 3px solid #82dcc1; background: #17232e; }
-    footer { margin-top: 36px; font-size: 14px; }
-  </style>
+  <meta name="description" content="Codyssey E1-1: 경로와 권한, Docker 이미지와 컨테이너, 포트, 마운트와 볼륨, Git의 동작 원리를 살펴보는 학습 페이지.">
+  <title>E1-1 · 개발 작업실의 동작 원리</title>
+  <link rel="stylesheet" href="/styles.css">
+  <script src="/app.js" defer></script>
 </head>
 <body>
-  <header>
-    <p class="eyebrow">CODYSSEY E1-1 / LEARNING BY DOING</p>
-    <h1>나의 개발 작업실</h1>
-    <p class="intro">터미널로 시작해 컨테이너로 실행하고, Git으로 기록하는 개발 환경 실습 프로젝트입니다.</p>
+  <a class="skip" href="#lesson-content">학습 내용으로 이동</a>
+  <header class="masthead wrap">
+    <a class="brand" href="/" aria-label="E1-1 학습 페이지 처음으로"><span class="brand-mark" aria-hidden="true">&gt;_</span> DEV WORKSTATION <span class="muted">/ E1-1</span></a>
+    <a class="text-link" href="https://github.com/gyungmini306-blip/codyssey-E1-1-dev-workstation#readme" target="_blank" rel="noopener">제출 README ↗</a>
   </header>
-  <main>
-    <section class="grid" aria-label="실습 주제">
-      <article><h2>01 · Terminal</h2><p>경로, 파일 조작, 리눅스 권한을 직접 확인합니다.</p><code>pwd · ls · chmod</code></article>
-      <article><h2>02 · Docker</h2><p>이미지와 컨테이너, 포트와 저장 공간의 연결을 실험합니다.</p><code>build · run · volume</code></article>
-      <article><h2>03 · Git</h2><p>실습의 변경 과정과 검증 결과를 저장소에 남깁니다.</p><code>add · commit · push</code></article>
+  <main class="wrap">
+    <section class="hero" aria-labelledby="page-title">
+      <p class="eyebrow">CODYSSEY · 원리를 이해하고, 터미널에서 검증하기</p>
+      <h1 id="page-title">명령 한 줄이<br><span>무엇을 바꾸는 걸까?</span></h1>
+      <p class="lead">파일을 준비하고, 이미지로 묶고, 컨테이너로 실행한다.<br>브라우저에 이 페이지가 나타나기까지의 과정을 따라가 보세요.</p>
+      <div class="goal"><span class="small-label">과제의 도착점</span><p><strong>내 PC에서 웹 서버 실행 → 변경과 데이터 보존 검증 → GitHub에 과정과 증거 제출</strong></p></div>
     </section>
-    <p class="marker" id="mount-marker">콘텐츠 버전: WORKSTATION_V1</p>
-    <p>NGINX 컨테이너가 이 페이지를 제공합니다. 상태 점검 경로: <a href="/healthz">/healthz</a></p>
+    <div class="model-notice"><span class="notice-dot" aria-hidden="true"></span><p><strong>버튼은 원리를 보여주는 설명 모형입니다.</strong> Docker·파일·Git을 실제로 조작하지 않습니다. 실제 서버 요청은 ‘포트 연결’의 HTTP 확인 버튼에서만 보냅니다.</p></div>
+    <nav class="lesson-nav" aria-label="배울 원리">
+      <button type="button" data-topic="flow" aria-pressed="true">01 <span>전체 흐름</span></button>
+      <button type="button" data-topic="terminal" aria-pressed="false">02 <span>경로·권한</span></button>
+      <button type="button" data-topic="container" aria-pressed="false">03 <span>이미지·컨테이너</span></button>
+      <button type="button" data-topic="ports" aria-pressed="false">04 <span>포트 연결</span></button>
+      <button type="button" data-topic="storage" aria-pressed="false">05 <span>마운트·볼륨</span></button>
+      <button type="button" data-topic="git" aria-pressed="false">06 <span>Git·제출물</span></button>
+    </nav>
+    <div id="lesson-content">
+      <section class="lesson" id="panel-flow" aria-labelledby="flow-title">
+        <div class="section-heading"><div><p class="eyebrow">01 / BUILD → RUN → REQUEST</p><h2 id="flow-title">이 페이지가 뜨기까지</h2></div><span class="tag">설명 모형</span></div>
+        <p class="section-intro">‘이미지’는 실행 파일과 설정의 묶음입니다. Dockerfile은 그 묶음을 만드는 설명서이고, 컨테이너는 그 이미지로 만든 실행 환경입니다.</p>
+        <ol class="flow" aria-label="웹 서버 실행 순서">
+          <li data-flow="0"><span class="node-number">1</span><strong>소스 + Dockerfile</strong><small>HTML · NGINX 설정 · 제작 방법</small></li>
+          <li data-flow="1"><span class="node-number">2</span><strong>이미지</strong><small>실행 준비물을 묶은 결과</small></li>
+          <li data-flow="2"><span class="node-number">3</span><strong>컨테이너</strong><small>NGINX가 실행되는 환경</small></li>
+          <li data-flow="3"><span class="node-number">4</span><strong>브라우저</strong><small>8080번으로 요청 → HTML 응답</small></li>
+        </ol>
+        <div class="explanation" aria-live="polite"><span id="flow-count" class="small-label">STEP 1 / 4</span><h3 id="flow-step-title">먼저 실행할 파일과 제작 방법을 준비합니다.</h3><p id="flow-description">app/index.html은 보여줄 페이지, nginx.conf는 서버 설정, Dockerfile은 이미지 제작 방법입니다.</p><pre><code id="flow-command">FROM nginx:stable-alpine
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+COPY app/ /usr/share/nginx/html/</code></pre></div>
+        <div class="controls"><button type="button" id="flow-prev" disabled>이전 단계</button><button type="button" class="primary" id="flow-next">다음 단계 →</button></div>
+        <div class="takeaway"><strong>왜 필요한가?</strong><p>평가자가 같은 소스와 Dockerfile로 이미지를 만들어 정해진 명령으로 실행할 수 있게 합니다. GitHub에는 소스와 제작 방법을 저장합니다.</p></div>
+      </section>
+      <section class="lesson" id="panel-terminal" aria-labelledby="terminal-title" hidden>
+        <div class="section-heading"><div><p class="eyebrow">02 / FILESYSTEM</p><h2 id="terminal-title">어디에 있고, 누가 사용할 수 있을까?</h2></div><span class="tag">설명 모형</span></div>
+        <h3>현재 위치를 바꾸면 상대 경로도 달라집니다.</h3>
+        <div class="controls"><button type="button" id="path-root" aria-pressed="true">현재 위치: /</button><button type="button" id="path-lab" aria-pressed="false">현재 위치: /root/e1-1</button></div>
+        <div class="path-grid" aria-live="polite"><article><span class="small-label">절대 경로 · 항상 같은 위치</span><code>/etc/os-release</code><p>찾는 위치: <strong>/etc/os-release</strong></p></article><article><span class="small-label">상대 경로 · 현재 위치 기준</span><code>etc/os-release</code><p>찾는 위치: <strong id="relative-result">/etc/os-release</strong></p></article></div>
+        <p class="hint">아까 pwd가 /인 상태에서 cat etc/os-release가 성공한 이유입니다. 다른 위치에서 해당 상대 경로의 파일이 존재하는지는 따로 확인해야 합니다.</p>
+        <div class="divider"></div><div class="subheading"><h3>권한을 더하면 644와 755가 됩니다.</h3><div class="controls compact"><button type="button" id="preset-file">파일 644</button><button type="button" id="preset-dir">디렉토리 755</button></div></div>
+        <p>각 묶음에서 <code>읽기 r = 4</code>, <code>쓰기 w = 2</code>, <code>실행 x = 1</code>을 더합니다. 체크를 바꿔 보세요.</p>
+        <div class="permission-grid">
+          <fieldset><legend>소유자</legend><label><input type="checkbox" data-owner="0" value="4" checked> 읽기 r · 4</label><label><input type="checkbox" data-owner="0" value="2" checked> 쓰기 w · 2</label><label><input type="checkbox" data-owner="0" value="1"> 실행 x · 1</label></fieldset>
+          <fieldset><legend>그룹</legend><label><input type="checkbox" data-owner="1" value="4" checked> 읽기 r · 4</label><label><input type="checkbox" data-owner="1" value="2"> 쓰기 w · 2</label><label><input type="checkbox" data-owner="1" value="1"> 실행 x · 1</label></fieldset>
+          <fieldset><legend>기타 사용자</legend><label><input type="checkbox" data-owner="2" value="4" checked> 읽기 r · 4</label><label><input type="checkbox" data-owner="2" value="2"> 쓰기 w · 2</label><label><input type="checkbox" data-owner="2" value="1"> 실행 x · 1</label></fieldset>
+        </div>
+        <div class="permission-result" aria-live="polite"><strong id="permission-octal">644</strong><code id="permission-symbolic">rw-r--r--</code><code id="permission-command">chmod 644 memo.txt</code></div>
+        <p class="hint">파일의 x는 프로그램 실행, 디렉토리의 x는 진입·경로 탐색 권한입니다. root는 많은 접근 검사를 우회할 수 있으므로 ‘권한이 바뀜’과 ‘접근이 거절됨’은 구분해서 관찰합니다.</p>
+        <details><summary>직접 할 실습과 제출 증거</summary><p>Ubuntu 컨테이너에서 파일과 디렉토리를 각각 만들고 권한 변경 전후 출력을 남깁니다. 아래는 실행 예시이며 완료 로그가 아닙니다.</p><pre><code>mkdir -p /root/e1-1/practice
+cd /root/e1-1/practice
+touch memo.txt
+chmod 600 memo.txt
+chmod 700 .
+ls -ld . memo.txt
+chmod 644 memo.txt
+chmod 755 .
+ls -ld . memo.txt</code></pre><p>추가로 생성·복사·이동·삭제·내용 확인·숨김 파일 조회를 실제로 수행하고 명령과 출력을 기록합니다.</p></details>
+      </section>
+      <section class="lesson" id="panel-container" aria-labelledby="container-title" hidden>
+        <div class="section-heading"><div><p class="eyebrow">03 / LIFECYCLE</p><h2 id="container-title">종료와 삭제는 다릅니다.</h2></div><span class="tag">설명 모형</span></div>
+        <p class="section-intro">빌드 → 실행 → 중지 → 삭제를 눌러 보세요. 컨테이너를 삭제해도 이미지가 남는지 관찰합니다.</p>
+        <div class="lifecycle-grid"><article class="state-box"><span class="small-label">실행 준비물</span><h3>이미지</h3><p id="image-state">아직 만들지 않음</p><code>codyssey-workstation:2.0</code></article><div class="connector" aria-hidden="true">→</div><article class="state-box"><span class="small-label">실행 인스턴스</span><h3>컨테이너</h3><p id="container-state">아직 생성하지 않음</p><code>모형 속 web</code></article></div>
+        <div class="controls"><button type="button" id="life-build" class="primary">이미지 빌드</button><button type="button" id="life-run">새 컨테이너 실행</button><button type="button" id="life-stop">중지</button><button type="button" id="life-start">다시 시작</button><button type="button" id="life-remove">컨테이너 삭제</button></div>
+        <div class="explanation" aria-live="polite"><p id="life-message">이미지 빌드부터 시작하세요. 실제 Docker 리소스는 변경되지 않습니다.</p><pre><code id="life-command">docker build -t codyssey-workstation:2.0 .</code></pre></div>
+        <div class="takeaway"><strong>hello-world가 바로 종료된 이유</strong><p>컨테이너의 주 프로세스가 끝나면 컨테이너도 종료됩니다. hello-world는 출력 후 종료해 docker ps -a에 Exited (0)로 남았습니다. NGINX는 요청을 기다리며 계속 실행됩니다.</p></div>
+        <details><summary>attach / exec / exit는 어떻게 다를까?</summary><ul><li><code>docker attach</code>: 기존 주 프로세스 입출력에 연결합니다. 그 주 프로세스인 Bash에서 exit하면 해당 컨테이너도 종료됩니다.</li><li><code>docker exec -it 이름 bash</code>: 실행 중인 컨테이너 안에 새 Bash 프로세스를 만듭니다. 이 추가 Bash에서 exit해도 주 프로세스가 계속 실행 중이면 컨테이너는 유지됩니다.</li><li>대화형 컨테이너에서 Ctrl+P, Ctrl+Q로 연결을 분리하면 컨테이너를 실행 상태로 둘 수 있습니다. Ctrl+C는 분리 명령이 아니며 연결된 프로세스에 영향을 줄 수 있습니다.</li></ul><p>이 차이를 실제 컨테이너 상태와 함께 관찰한 로그가 필요합니다.</p></details>
+      </section>
+      <section class="lesson" id="panel-ports" aria-labelledby="ports-title" hidden>
+        <div class="section-heading"><div><p class="eyebrow">04 / REQUEST & RESPONSE</p><h2 id="ports-title">내 PC의 8080과 서버의 80을 연결합니다.</h2></div><span class="tag">연결 설명 모형</span></div>
+        <p class="section-intro">브라우저와 컨테이너는 서로 다른 네트워크 공간을 사용합니다. 이 웹 서버의 NGINX는 컨테이너 안 <strong>80번</strong>에서 요청을 받습니다.</p>
+        <div class="port-options"><label>PC에서 접속할 포트<select id="host-port"><option>8080</option><option>8081</option></select></label><label>연결할 컨테이너 포트<select id="target-port"><option>80</option><option>8080</option></select></label><label class="check-inline"><input type="checkbox" id="publish-port" checked> 포트 연결 사용</label></div>
+        <div class="network-diagram"><article><span class="small-label">내 PC · 브라우저</span><strong id="browser-address">localhost:8080</strong><small>이 주소로 요청</small></article><span class="connector" aria-hidden="true">→</span><article id="port-bridge"><span class="small-label">Docker 포트 매핑</span><strong id="port-mapping">8080 → 80</strong><small>요청을 컨테이너로 전달</small></article><span class="connector" aria-hidden="true">→</span><article><span class="small-label">컨테이너 · NGINX</span><strong>80번에서 대기</strong><small>HTML로 응답</small></article></div>
+        <div class="explanation" aria-live="polite"><p id="port-result">모형의 예상: 서버의 80번에 연결되므로 요청이 도달할 수 있습니다.</p><pre><code id="port-command">docker run -d -p 127.0.0.1:8080:80 codyssey-workstation:2.0</code></pre></div>
+        <p class="hint">위 선택은 설명용이며 실제 포트를 변경하지 않습니다. EXPOSE 80은 포트 정보를 문서화하며, 실제 호스트 연결은 -p로 설정합니다. 실제 접속에는 서버 실행과 호스트 포트 사용 가능 여부도 영향을 줍니다.</p>
+        <div class="live-check"><div><span class="tag real">실제 HTTP 요청</span><h3>지금 이 페이지의 서버가 응답하나요?</h3><p><code id="live-address">/healthz</code>에 GET 요청을 보냅니다. 위 모형의 선택과 별개입니다.</p></div><button type="button" class="primary" id="check-server">현재 서버 응답 확인</button><output id="server-result" aria-live="polite">아직 확인하지 않았습니다.</output></div>
+        <details><summary>직접 할 실습과 제출 증거</summary><p>포트 지정 실행 명령, curl 응답, 주소창의 포트와 페이지가 함께 보이는 브라우저 캡처를 남깁니다.</p><pre><code>docker ps --filter name=codyssey-web
+curl.exe -i http://localhost:8080/
+docker logs codyssey-web
+docker stats --no-stream codyssey-web</code></pre></details>
+      </section>
+      <section class="lesson" id="panel-storage" aria-labelledby="storage-title" hidden>
+        <div class="section-heading"><div><p class="eyebrow">05 / STORAGE</p><h2 id="storage-title">파일 변경과 데이터 보존은 어떻게 다를까?</h2></div><span class="tag">설명 모형</span></div>
+        <h3>① 호스트 파일을 수정하면 페이지도 바뀔까?</h3><p>COPY는 <strong>빌드할 때</strong> 파일을 이미지에 담습니다. 바인드 마운트는 지정한 호스트 폴더를 컨테이너에 연결합니다.</p>
+        <div class="controls"><button type="button" id="mode-copy" aria-pressed="true">COPY 방식</button><button type="button" id="mode-bind" aria-pressed="false">바인드 마운트 방식</button></div>
+        <div class="mount-grid"><label class="edit-box"><span class="small-label">호스트의 페이지 문구 · 수정해 보세요</span><input id="host-text" value="안녕, E1-1!" maxlength="64" autocomplete="off"><small>모형 속 호스트 파일</small></label><span class="connector" aria-hidden="true">→</span><article class="state-box"><span class="small-label">모형 속 브라우저 · 새 요청 시 내용</span><strong id="rendered-text">안녕, E1-1!</strong><small id="mount-explanation">이미지에 복사해 둔 내용</small></article></div>
+        <div class="controls"><button type="button" id="copy-rebuild">수정본으로 재빌드·재생성 (모형)</button></div>
+        <pre><code id="mount-command">COPY app/ /usr/share/nginx/html/</code></pre>
+        <p class="hint">이 편집 칸은 실제 HTML 파일을 바꾸지 않습니다. 실제 바인드 마운트에서는 호스트 파일을 수정하고 브라우저를 새로고침해 확인합니다. 마운트한 경로의 기존 파일은 연결한 호스트 파일에 가려집니다.</p>
+        <div class="divider"></div><h3>② 컨테이너를 삭제해도 데이터가 남을까?</h3><p>같은 내용을 컨테이너 내부와 이름 있는 볼륨에 각각 쓴 뒤 컨테이너 삭제·재생성을 비교해 보세요.</p>
+        <div class="volume-grid"><article class="state-box"><span class="small-label">컨테이너의 쓰기 가능한 층</span><h4>컨테이너 내부 파일</h4><strong id="ephemeral-data">비어 있음</strong><small id="volume-container-state">컨테이너 존재</small></article><article class="state-box"><span class="small-label">Docker가 별도로 관리</span><h4>이름 있는 볼륨 /data</h4><strong id="persistent-data">비어 있음</strong><small>컨테이너와 별도 수명</small></article></div>
+        <div class="controls"><button type="button" id="volume-write" class="primary">양쪽에 데이터 쓰기</button><button type="button" id="volume-delete">컨테이너 삭제 (모형)</button><button type="button" id="volume-recreate">같은 볼륨으로 새 컨테이너 생성</button></div>
+        <p class="status-line" id="volume-result" aria-live="polite">먼저 양쪽에 데이터를 써 보세요. 실제 컨테이너나 볼륨은 삭제하지 않습니다.</p>
+        <details><summary>직접 할 실습과 제출 증거</summary><p>바인드 마운트는 실행 명령과 호스트 변경 전후 응답을, 볼륨은 생성·연결·데이터 작성·컨테이너 삭제·재연결 후 동일 데이터를 기록합니다. 이 모형은 실제 검증 로그를 대신하지 않습니다.</p><pre><code># 개념 예시: 먼저 볼륨 생성, 컨테이너에 연결
+docker volume create e1-1-data
+docker run -d --name e1-1-volume --mount type=volume,src=e1-1-data,dst=/data ubuntu:24.04 sleep infinity</code></pre></details>
+      </section>
+      <section class="lesson" id="panel-git" aria-labelledby="git-title" hidden>
+        <div class="section-heading"><div><p class="eyebrow">06 / RECORD & SHARE</p><h2 id="git-title">내 PC의 기록을 GitHub로 보냅니다.</h2></div><span class="tag">설명 모형</span></div>
+        <p class="section-intro">Git은 로컬 변경 이력을 관리하고, GitHub는 원격 저장소를 제공합니다. commit까지는 내 PC의 기록이며 push해야 원격으로 전달됩니다.</p>
+        <ol class="flow" aria-label="Git 기록 순서"><li id="git-work"><span class="node-number">1</span><strong>작업 파일</strong><small>HTML · Dockerfile · README</small></li><li id="git-stage"><span class="node-number">2</span><strong>스테이징</strong><small>이번에 기록할 변경 선택</small></li><li id="git-commit"><span class="node-number">3</span><strong>로컬 커밋</strong><small>내 PC에 변경 이력 저장</small></li><li id="git-remote"><span class="node-number">4</span><strong>GitHub</strong><small>원격 저장소에 전달</small></li></ol>
+        <div class="controls"><button type="button" id="git-edit">파일 수정 (모형)</button><button type="button" id="git-add">git add</button><button type="button" id="git-save">git commit</button><button type="button" id="git-push">git push</button></div>
+        <p class="status-line" id="git-result" aria-live="polite">파일 수정부터 시작하세요. 실제 Git 저장소는 변경되지 않습니다.</p>
+        <div class="takeaway"><strong>제출은 저장소 링크 하나</strong><p>HTML·Dockerfile·설정은 실행할 재료이고, README는 프로젝트 개요·환경·명령과 출력·검증 증거·트러블슈팅 2건 이상을 안내합니다. 로그인·VS Code 연동 증거와 개인정보 마스킹도 필요합니다.</p></div>
+        <div class="submission-grid"><article><h3>현재 실제 기록이 있는 항목</h3><ul class="evidence-list"><li><a href="https://github.com/gyungmini306-blip/codyssey-E1-1-dev-workstation/blob/main/docs/evidence/05-hello-world.md" target="_blank" rel="noopener">hello-world 실행과 정상 종료 ↗</a></li><li><a href="https://github.com/gyungmini306-blip/codyssey-E1-1-dev-workstation/blob/main/docs/evidence/06-ubuntu-terminal.md" target="_blank" rel="noopener">Ubuntu 진입·경로·운영체제 확인 ↗</a></li><li><a href="https://github.com/gyungmini306-blip/codyssey-E1-1-dev-workstation/blob/main/docs/evidence/07-web-server.md" target="_blank" rel="noopener">웹 빌드·실행·포트·로그·자원 확인 ↗</a></li><li><a href="https://github.com/gyungmini306-blip/codyssey-E1-1-dev-workstation/blob/main/docs/evidence/04-repository.md" target="_blank" rel="noopener">GitHub 업로드와 커밋 비교 ↗</a></li></ul></article><article><h3>이어서 실제 검증할 항목</h3><ul><li>파일 조작 전체와 파일·디렉토리 권한 변경</li><li>컨테이너 중지와 attach/exec 차이</li><li>주소창을 포함한 브라우저 캡처</li><li>바인드 마운트 변경 반영</li><li>컨테이너 삭제 전후 볼륨 데이터 유지</li><li>VS Code의 GitHub 연동 증거</li></ul></article></div>
+        <p class="hint">2026-11-02 실습 기록 기준이며 자동 수집된 진행률이 아닙니다. 실제 완료 상태와 증거는 최신 <a href="https://github.com/gyungmini306-blip/codyssey-E1-1-dev-workstation#readme" target="_blank" rel="noopener">README</a>에서 확인합니다.</p>
+      </section>
+    </div>
+    <section class="assignment-note" aria-labelledby="assignment-title"><h2 id="assignment-title">이 페이지가 과제에서 하는 역할</h2><p><strong>커스텀 웹 서버가 제공하는 콘텐츠이자, 동작 원리를 설명하는 학습 자료입니다.</strong> 페이지를 보고 모형 버튼을 누르는 것만으로 실습이 완료되지는 않습니다. 터미널 명령과 실제 결과를 README에 남겨야 합니다.</p><a class="text-link" href="https://github.com/gyungmini306-blip/codyssey-E1-1-dev-workstation#readme" target="_blank" rel="noopener">소스·실행 방법·증거 보기 ↗</a></section>
+    <footer><div><strong>gyungmini306-blip / codyssey-E1-1-dev-workstation</strong><p id="mount-marker">콘텐츠 버전: WORKSTATION_V2</p></div><details class="sources"><summary>공식 개념 자료</summary><ul><li><a href="https://docs.docker.com/get-started/docker-concepts/the-basics/what-is-an-image/" target="_blank" rel="noopener">Docker 이미지</a></li><li><a href="https://docs.docker.com/get-started/docker-concepts/running-containers/publishing-ports/" target="_blank" rel="noopener">포트 게시</a></li><li><a href="https://docs.docker.com/engine/storage/bind-mounts/" target="_blank" rel="noopener">바인드 마운트</a> · <a href="https://docs.docker.com/engine/storage/volumes/" target="_blank" rel="noopener">볼륨</a></li><li><a href="https://git-scm.com/book/en/v2/Git-Basics-Recording-Changes-to-the-Repository" target="_blank" rel="noopener">Git 변경 기록</a></li></ul></details></footer>
   </main>
-  <footer>gyungmini306-blip · codyssey-E1-1-dev-workstation</footer>
 </body>
 </html>
