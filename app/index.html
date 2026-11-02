@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Codyssey 11 · Dev Workstation Lab</title>
+  <style>
+    :root { color-scheme: dark; font-family: system-ui, sans-serif; background: #101820; color: #eaf0f5; }
+    body { max-width: 900px; margin: auto; padding: 56px 24px; line-height: 1.7; }
+    .eyebrow { color: #82dcc1; letter-spacing: .15em; font-size: 13px; }
+    h1 { font-size: clamp(32px, 6vw, 56px); line-height: 1.15; margin: 20px 0; }
+    .intro { max-width: 620px; color: #b8c8d6; font-size: 18px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin: 36px 0; }
+    article { padding: 24px; border: 1px solid #354653; border-radius: 12px; background: #17232e; }
+    article h2 { margin-top: 0; font-size: 20px; }
+    article p, footer { color: #b8c8d6; }
+    code { color: #82dcc1; }
+    .marker { padding: 18px 24px; border-left: 3px solid #82dcc1; background: #17232e; }
+    footer { margin-top: 36px; font-size: 14px; }
+  </style>
+</head>
+<body>
+  <header>
+    <p class="eyebrow">CODYSSEY 11 / LEARNING BY DOING</p>
+    <h1>나의 개발 작업실</h1>
+    <p class="intro">터미널로 시작해 컨테이너로 실행하고, Git으로 기록하는 개발 환경 실습 프로젝트입니다.</p>
+  </header>
+  <main>
+    <section class="grid" aria-label="실습 주제">
+      <article><h2>01 · Terminal</h2><p>경로, 파일 조작, 리눅스 권한을 직접 확인합니다.</p><code>pwd · ls · chmod</code></article>
+      <article><h2>02 · Docker</h2><p>이미지와 컨테이너, 포트와 저장 공간의 연결을 실험합니다.</p><code>build · run · volume</code></article>
+      <article><h2>03 · Git</h2><p>실습의 변경 과정과 검증 결과를 저장소에 남깁니다.</p><code>add · commit · push</code></article>
+    </section>
+    <p class="marker" id="mount-marker">콘텐츠 버전: WORKSTATION_V1</p>
+    <p>NGINX 컨테이너가 이 페이지를 제공합니다. 상태 점검 경로: <a href="/healthz">/healthz</a></p>
+  </main>
+  <footer>gyungmin306-dev · dev-workstation-lab_Codyssey11</footer>
+</body>
+</html>
