@@ -4,7 +4,7 @@
 
 터미널, Docker, Git/GitHub를 사용해 재현 가능한 개발 작업 환경을 구성하는 실습 프로젝트입니다. 명령의 의미를 이해하고 실제 출력으로 결과를 검증합니다.
 
-> 진행 중: WSL과 Docker Desktop 설치 및 웹 서버 소스 준비를 마쳤습니다. Windows가 재시작을 요구하는 상태이며, Ubuntu 배포판은 아직 설치되지 않았습니다. 컨테이너 실행과 리눅스 권한 실습은 재시작 후 진행합니다. 아래 미완료 항목은 실제 검증 후 갱신합니다.
+> 진행 중: Windows 재시작 후 Docker 엔진 연결과 hello-world 실행에 성공했습니다. 사용자가 직접 실행한 명령과 결과를 증거에 기록했습니다. 다음은 Ubuntu 컨테이너의 리눅스 터미널 실습입니다. 웹 서버 빌드, 권한, 마운트·볼륨 검증은 앞으로 진행합니다.
 
 ## 실행 환경
 
@@ -12,14 +12,16 @@
 |---|---|
 | 확인일 | 2026-11-02 (Asia/Seoul) |
 | 호스트 | Windows, NT 10.0.26200.0 |
-| 현재 셸 | PowerShell 7.6.5 |
-| 리눅스 셸 | WSL 2.7.14.0 설치됨. Ubuntu 배포판 설치 및 검증 대기 |
+| 현재 셸 | 자동 점검: PowerShell 7.6.5 / 사용자 직접 실습: Windows PowerShell (버전 미기록) |
+| 리눅스 환경 | WSL 2.7.14.0, docker-desktop 배포판 Running / VERSION 2 확인. Ubuntu 컨테이너 실습 예정 |
 | Git | 2.52.0.windows.1 |
 | Docker Desktop | 4.97.0 설치 성공 |
-| Docker CLI | 29.9.2, build a82e528. 엔진 연결은 아직 실패 |
+| Docker CLI / 엔진 | CLI 29.9.2, build a82e528 / Server 29.9.2, OSType=linux |
 | VS Code | 설치 확인, GitHub 로그인 검증 대기 |
 
 실제 명령과 출력: [최초 환경 확인](docs/evidence/01-environment.md), [설치 및 재시작 대기 상태](docs/evidence/02-installation.md), [최초 Git 인증 확인](docs/evidence/03-git.md), [최종 E1-1 저장소 업로드 성공](docs/evidence/04-repository.md).
+
+최근 실습 결과: [Docker 엔진 및 hello-world 성공](docs/evidence/05-hello-world.md).
 
 문제 해결 과정: [트러블슈팅](docs/troubleshooting.md).
 
@@ -27,9 +29,9 @@
 
 - [ ] 터미널 기본 조작: 현재 위치, 숨김 파일, 이동, 생성, 복사, 이름 변경, 삭제, 내용 확인, 빈 파일
 - [ ] 파일과 디렉토리 각각의 리눅스 권한 변경 전후 비교
-- [ ] Docker 버전 및 데몬 점검
+- [x] Docker 버전 및 데몬 점검
 - [ ] 이미지 다운로드와 목록, 컨테이너 실행·중지·목록·로그·리소스 확인
-- [ ] hello-world 실행
+- [x] hello-world 실행
 - [ ] Ubuntu 컨테이너에서 명령 실행 및 attach/exec/종료 차이 관찰
 - [ ] Dockerfile 커스텀 이미지 빌드 및 실행
 - [ ] 포트 매핑 접속과 주소창을 포함한 브라우저 증거

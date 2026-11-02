@@ -18,10 +18,10 @@
 - **결과:** `Docker version 29.9.2, build a82e528`로 CLI 실행을 확인했다. 이것만으로 엔진이 정상이라는 의미는 아니다.
 - **증거:** [최초 환경](evidence/01-environment.md), [설치 로그](evidence/02-installation.md).
 
-## 3. Docker CLI는 실행되지만 엔진 연결 실패 (진행 중)
+## 3. Docker CLI는 실행되지만 엔진 연결 실패 (해결)
 
 - **문제:** `docker info`의 Server 부분이 `docker_engine` 파이프를 찾지 못했다.
 - **원인 가설:** Docker Desktop 엔진이 실행되지 않았고, WSL의 필수 가상화 기능도 재시작 전이다.
 - **확인:** CLI 버전은 출력되지만 Server 연결은 실패했다. Windows의 `RebootPending`도 `True`다.
 - **해결 계획:** Windows 재시작 후 Docker Desktop을 시작하고, WSL 2 및 Ubuntu 통합 상태를 확인한다.
-- **결과:** 아직 미해결이다. `docker info`의 Server 응답과 hello-world 성공으로 검증할 예정이다.
+- **결과:** 사용자의 Windows 재시작 이후 `docker info`에서 ServerVersion `29.9.2`, OSType `linux`를 확인했다. 사용자가 직접 실행한 hello-world도 `Exited (0)`로 정상 종료했다. [검증 결과](evidence/05-hello-world.md).
