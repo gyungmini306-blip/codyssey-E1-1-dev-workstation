@@ -11,8 +11,8 @@ document.querySelectorAll('[data-topic]').forEach(button => {
 // All models below are browser-local. No shell or Docker control is performed.
 const flowSteps = [
   ['먼저 실행할 파일과 제작 방법을 준비합니다.', 'app/index.html은 보여줄 페이지, nginx.conf는 서버 설정, Dockerfile은 이미지 제작 방법입니다.', 'FROM nginx:stable-alpine\nCOPY nginx.conf /etc/nginx/conf.d/default.conf\nCOPY app/ /usr/share/nginx/html/'],
-  ['Dockerfile을 읽어 이미지를 만듭니다.', 'build가 NGINX 베이스에 우리 파일과 설정을 더해 실행 준비물을 묶습니다. 이 단계에서는 웹 서버가 아직 실행되지 않습니다.', 'docker build -t codyssey-workstation:2.0 .'],
-  ['이미지로 컨테이너를 만들어 실행합니다.', 'run이 새 컨테이너를 생성하고 NGINX를 실행합니다. -d는 백그라운드 실행, -p는 PC와 컨테이너의 포트 연결입니다.', 'docker run -d --name codyssey-web -p 127.0.0.1:8080:80 codyssey-workstation:2.0'],
+  ['Dockerfile을 읽어 이미지를 만듭니다.', 'build가 NGINX 베이스에 우리 파일과 설정을 더해 실행 준비물을 묶습니다. 이 단계에서는 웹 서버가 아직 실행되지 않습니다.', 'docker build -t codyssey-workstation:3.0 .'],
+  ['이미지로 컨테이너를 만들어 실행합니다.', 'run이 새 컨테이너를 생성하고 NGINX를 실행합니다. -d는 백그라운드 실행, -p는 PC와 컨테이너의 포트 연결입니다.', 'docker run -d --name codyssey-web -p 127.0.0.1:8080:80 codyssey-workstation:3.0'],
   ['브라우저가 요청하고, NGINX가 HTML을 응답합니다.', 'localhost:8080의 요청이 컨테이너 80번으로 전달됩니다. NGINX가 index.html을 보내면 브라우저가 CSS와 JavaScript도 요청해 화면을 구성합니다.', '브라우저 → http://localhost:8080 → 컨테이너 :80 → NGINX → HTML / CSS / JS 응답']
 ];
 let flowIndex = 0;
@@ -57,8 +57,8 @@ function renderLifecycle(message, command) {
   byId('life-start').disabled = containerState !== 'stopped'; byId('life-remove').disabled = containerState !== 'stopped';
   if (message) setText('life-message',message); if (command) setText('life-command',command);
 }
-on('life-build','click', () => { imageExists = true; renderLifecycle('이미지가 준비됐습니다. 실행할 컨테이너는 별도로 생성합니다.', 'docker build -t codyssey-workstation:2.0 .'); });
-on('life-run','click', () => { containerState = 'running'; renderLifecycle('이미지로 새 컨테이너를 생성해 NGINX를 실행했습니다. 이미지도 그대로 남습니다.', 'docker run -d --name web codyssey-workstation:2.0'); });
+on('life-build','click', () => { imageExists = true; renderLifecycle('이미지가 준비됐습니다. 실행할 컨테이너는 별도로 생성합니다.', 'docker build -t codyssey-workstation:3.0 .'); });
+on('life-run','click', () => { containerState = 'running'; renderLifecycle('이미지로 새 컨테이너를 생성해 NGINX를 실행했습니다. 이미지도 그대로 남습니다.', 'docker run -d --name web codyssey-workstation:3.0'); });
 on('life-stop','click', () => { containerState = 'stopped'; renderLifecycle('주 프로세스를 종료했습니다. 중지된 컨테이너는 docker ps -a에서 볼 수 있습니다.', 'docker stop web\ndocker ps -a'); });
 on('life-start','click', () => { containerState = 'running'; renderLifecycle('중지해 둔 기존 컨테이너를 다시 시작했습니다. 새로 만드는 run과 다릅니다.', 'docker start web'); });
 on('life-remove','click', () => { containerState = 'none'; renderLifecycle('컨테이너를 제거했습니다. 이미지가 남아 있으므로 새 컨테이너를 만들 수 있습니다.', 'docker rm web\ndocker images'); });
@@ -68,7 +68,7 @@ function renderPorts() {
   setText('browser-address',`localhost:${host}`); setText('port-mapping',enabled ? `${host} → ${target}` : '연결 없음');
   const connected = enabled && target === '80'; byId('port-bridge').classList.toggle('blocked',!connected);
   setText('port-result', !enabled ? '모형의 예상: 호스트에 포트를 연결하지 않아 localhost의 이 포트로 요청이 전달되지 않습니다.' : connected ? '모형의 예상: 서버의 80번에 연결되므로 요청이 도달할 수 있습니다.' : '모형의 예상: 컨테이너 8080번에는 이 NGINX가 대기하지 않아 연결에 실패합니다. 컨테이너 쪽을 80으로 바꿔 보세요.');
-  setText('port-command',`docker run -d ${enabled ? `-p 127.0.0.1:${host}:${target} ` : ''}codyssey-workstation:2.0`);
+  setText('port-command',`docker run -d ${enabled ? `-p 127.0.0.1:${host}:${target} ` : ''}codyssey-workstation:3.0`);
 }
 ['host-port','target-port','publish-port'].forEach(id => on(id,'change',renderPorts));
 setText('live-address',`${location.origin}/healthz`);
@@ -88,7 +88,7 @@ function renderMount() {
   setText('rendered-text',mountMode === 'copy' ? imageText : byId('host-text').value || '(빈 문구)');
   setText('mount-explanation',mountMode === 'copy' ? '빌드 시 복사한 내용 · 호스트 문구만 바꿔도 여기는 그대로' : '호스트 파일을 연결한 내용 · 새 요청에서는 수정 내용 확인');
   byId('copy-rebuild').disabled = mountMode !== 'copy';
-  setText('mount-command',mountMode === 'copy' ? 'COPY app/ /usr/share/nginx/html/' : 'docker run -d -p 127.0.0.1:8081:80 --mount "type=bind,src=<호스트 app의 절대 경로>,dst=/usr/share/nginx/html,readonly" codyssey-workstation:2.0');
+  setText('mount-command',mountMode === 'copy' ? 'COPY app/ /usr/share/nginx/html/' : 'docker run -d -p 127.0.0.1:8081:80 --mount "type=bind,src=<호스트 app의 절대 경로>,dst=/usr/share/nginx/html,readonly" codyssey-workstation:3.0');
 }
 on('mode-copy','click', () => { mountMode='copy'; renderMount(); }); on('mode-bind','click', () => { mountMode='bind'; renderMount(); }); on('host-text','input', renderMount);
 on('copy-rebuild','click', () => { imageText=byId('host-text').value || '(빈 문구)'; renderMount(); setText('mount-explanation','수정본으로 새 이미지를 빌드하고 컨테이너를 재생성한 상태 (모형)'); });

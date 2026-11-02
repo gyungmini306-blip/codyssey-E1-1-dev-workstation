@@ -4,7 +4,7 @@
 
 터미널, Docker, Git/GitHub를 사용해 재현 가능한 개발 작업 환경을 구성하는 실습 프로젝트입니다. 명령의 의미를 이해하고 실제 출력으로 결과를 검증합니다.
 
-> 진행 중: E1-1의 여섯 가지 원리를 설명하는 대화형 학습 페이지를 이미지 `codyssey-workstation:2.0`으로 빌드해 `http://localhost:8080`에서 제공합니다. 실제 서버 실행·응답과 설명 모형을 구분합니다. 터미널 전체 조작, 권한, attach/exec, 마운트·볼륨 및 VS Code 연동 검증은 남아 있습니다.
+> 진행 중: 제목·소개·페이지 버전이 있는 간단한 첫 화면을 이미지 `codyssey-workstation:3.0`으로 빌드해 `http://localhost:8080`에서 제공합니다. 원리 설명 화면은 `/principles.html`의 선택 자료로 보존했습니다. 터미널 전체 조작, 권한, attach/exec, 마운트·볼륨 및 VS Code 연동 검증은 남아 있습니다.
 
 ## 실행 환경
 
@@ -24,6 +24,8 @@
 최근 실습 결과: [Docker 엔진 및 hello-world 성공](docs/evidence/05-hello-world.md), [Ubuntu 컨테이너 진입 및 경로 확인](docs/evidence/06-ubuntu-terminal.md), [웹 서버 빌드·포트·로그·리소스 검증](docs/evidence/07-web-server.md).
 
 최신 페이지와 실제 빌드 검증: [E1-1 원리 학습 페이지 V2](docs/evidence/08-learning-page.md).
+
+현재 첫 화면: [간단한 실습 페이지 V3](docs/evidence/09-simple-page.md).
 
 문제 해결 과정: [트러블슈팅](docs/troubleshooting.md).
 
@@ -48,9 +50,10 @@
 ## 소스 구성과 커스텀 목적
 
 ```text
-app/index.html          E1-1 원리 설명 및 실습 증거 안내
-app/styles.css          화면 구성과 반응형 스타일
-app/app.js              브라우저 내 설명 모형 및 실제 HTTP 응답 확인
+app/index.html          제목·소개·버전이 있는 간단한 실습 페이지
+app/principles.html     선택 자료: E1-1 원리 설명 및 실습 증거 안내
+app/styles.css          원리 설명 화면 스타일
+app/app.js              원리 설명용 모형 및 실제 HTTP 응답 확인
 Dockerfile              NGINX 기반 이미지 빌드 정의
 nginx.conf              웹 루트와 /healthz 상태 점검 경로
 docs/evidence/          실제 명령·출력 및 캡처
@@ -67,7 +70,7 @@ docs/evidence/          실제 명령·출력 및 캡처
 
 ## 페이지와 과제의 관계
 
-페이지는 과제의 커스텀 웹 서버가 제공하는 콘텐츠이며 학습 보조 자료입니다. 설명 모형을 조작하는 것만으로 실제 실습이나 제출 증거 수집이 완료되지는 않습니다.
+첫 화면은 과제의 커스텀 웹 서버가 제공하는 간단한 콘텐츠입니다. 이 화면의 문구와 버전을 수정하며 변경 반영을 실습합니다. 선택 링크의 원리 설명 자료는 아래 내용을 다룹니다. 설명 모형을 조작하는 것만으로 실제 실습이나 제출 증거 수집이 완료되지는 않습니다.
 
 | 학습 영역 | 페이지에서 살펴볼 원리 | 별도로 필요한 실제 증거 |
 |---|---|---|
@@ -92,8 +95,8 @@ cd codyssey-E1-1-dev-workstation
 아래는 PowerShell 재현 명령이며, 실제 성공 출력은 [웹 서버 검증 기록](docs/evidence/07-web-server.md)에 있습니다. 동일 이름의 컨테이너가 이미 있으면 기존 서버에 접속하거나 별도 이름과 포트를 선택합니다.
 
 ```powershell
-docker build -t codyssey-workstation:2.0 .
-docker run -d --name codyssey-web -p 127.0.0.1:8080:80 codyssey-workstation:2.0
+docker build -t codyssey-workstation:3.0 .
+docker run -d --name codyssey-web -p 127.0.0.1:8080:80 codyssey-workstation:3.0
 curl.exe -i http://localhost:8080/
 curl.exe -i http://localhost:8080/healthz
 docker logs codyssey-web
