@@ -17,7 +17,7 @@
 | Docker CLI | 29.9.2, build a82e528. 엔진 연결은 아직 실패 |
 | VS Code | 설치 확인, GitHub 로그인 검증 대기 |
 
-실제 명령과 출력: [최초 환경 확인](docs/evidence/01-environment.md), [설치 및 재시작 대기 상태](docs/evidence/02-installation.md).
+실제 명령과 출력: [최초 환경 확인](docs/evidence/01-environment.md), [설치 및 재시작 대기 상태](docs/evidence/02-installation.md), [Git 커밋과 인증 확인](docs/evidence/03-git.md).
 
 문제 해결 과정: [트러블슈팅](docs/troubleshooting.md).
 
