@@ -4,7 +4,7 @@
 
 터미널, Docker, Git/GitHub를 사용해 재현 가능한 개발 작업 환경을 구성하는 실습 프로젝트입니다. 명령의 의미를 이해하고 실제 출력으로 결과를 검증합니다.
 
-> 진행 중: Docker 엔진과 hello-world 실행을 확인하고, 사용자가 Ubuntu 컨테이너에 진입해 경로·파일 목록·운영체제 정보를 확인했습니다. 실제 결과를 증거에 기록했습니다. 다음은 파일·폴더 조작과 권한 실습입니다. 웹 서버 빌드, 마운트·볼륨 검증도 앞으로 진행합니다.
+> 진행 중: Dockerfile로 웹 서버 이미지를 빌드하고, 컨테이너를 실행해 `http://localhost:8080`의 HTTP 200 응답과 healthy 상태를 확인했습니다. 사용자의 hello-world·Ubuntu 실습 기록도 포함합니다. 터미널 전체 조작, 권한, 마운트·볼륨 및 VS Code 연동 검증은 남아 있습니다.
 
 ## 실행 환경
 
@@ -21,7 +21,7 @@
 
 실제 명령과 출력: [최초 환경 확인](docs/evidence/01-environment.md), [설치 및 재시작 대기 상태](docs/evidence/02-installation.md), [최초 Git 인증 확인](docs/evidence/03-git.md), [최종 E1-1 저장소 업로드 성공](docs/evidence/04-repository.md).
 
-최근 실습 결과: [Docker 엔진 및 hello-world 성공](docs/evidence/05-hello-world.md), [Ubuntu 컨테이너 진입 및 경로 확인](docs/evidence/06-ubuntu-terminal.md).
+최근 실습 결과: [Docker 엔진 및 hello-world 성공](docs/evidence/05-hello-world.md), [Ubuntu 컨테이너 진입 및 경로 확인](docs/evidence/06-ubuntu-terminal.md), [웹 서버 빌드·포트·로그·리소스 검증](docs/evidence/07-web-server.md).
 
 문제 해결 과정: [트러블슈팅](docs/troubleshooting.md).
 
@@ -33,8 +33,9 @@
 - [ ] 이미지 다운로드와 목록, 컨테이너 실행·중지·목록·로그·리소스 확인
 - [x] hello-world 실행
 - [ ] Ubuntu 컨테이너에서 명령 실행 및 attach/exec/종료 차이 관찰
-- [ ] Dockerfile 커스텀 이미지 빌드 및 실행
-- [ ] 포트 매핑 접속과 주소창을 포함한 브라우저 증거
+- [x] Dockerfile 커스텀 이미지 빌드 및 실행
+- [x] 포트 매핑 HTTP 접속 검증
+- [ ] 주소창을 포함한 브라우저 증거
 - [ ] 바인드 마운트의 호스트 파일 변경 전후 비교
 - [ ] 컨테이너 삭제 전후 Docker 볼륨 데이터 보존 확인
 - [x] Git 사용자 정보·기본 브랜치 및 로컬 커밋 확인
@@ -51,7 +52,7 @@ nginx.conf              웹 루트와 /healthz 상태 점검 경로
 docs/evidence/          실제 명령·출력 및 캡처
 ```
 
-베이스는 Docker Official Image인 `nginx:stable-alpine`입니다. 이 태그는 시간이 지나면 갱신될 수 있으므로 빌드 검증 시 실제 이미지 식별 정보를 기록할 예정입니다.
+베이스는 Docker Official Image인 `nginx:stable-alpine`입니다. 이 태그는 시간이 지나면 갱신될 수 있으므로 [빌드 검증 기록](docs/evidence/07-web-server.md)에 당시 베이스 digest와 커스텀 이미지 ID를 남겼습니다.
 
 | 커스텀 항목 | 목적 |
 |---|---|
@@ -62,15 +63,27 @@ docs/evidence/          실제 명령·출력 및 캡처
 
 ## 웹 서버 실행 방법
 
-다음은 Docker 엔진이 준비된 뒤 실행할 재현 명령입니다. **현재 성공 로그가 아니며, 검증 결과는 실행 후 별도로 추가합니다.** 저장소 루트에서 실행합니다.
+Docker 엔진을 실행한 상태에서 아래처럼 저장소를 가져옵니다. 이미 파일이 있다면 해당 저장소 루트로 이동합니다.
 
-```bash
+```powershell
+git clone https://github.com/gyungmini306-blip/codyssey-E1-1-dev-workstation.git
+cd codyssey-E1-1-dev-workstation
+```
+
+아래는 PowerShell 재현 명령이며, 실제 성공 출력은 [웹 서버 검증 기록](docs/evidence/07-web-server.md)에 있습니다. 동일 이름의 컨테이너가 이미 있으면 기존 서버에 접속하거나 별도 이름과 포트를 선택합니다.
+
+```powershell
 docker build -t codyssey-workstation:1.0 .
 docker run -d --name codyssey-web -p 127.0.0.1:8080:80 codyssey-workstation:1.0
-curl -i http://localhost:8080/
-curl -i http://localhost:8080/healthz
+curl.exe -i http://localhost:8080/
+curl.exe -i http://localhost:8080/healthz
 docker logs codyssey-web
 docker stats --no-stream codyssey-web
+```
+
+관찰을 마친 뒤 아래 명령으로 이 프로젝트의 웹 컨테이너를 중지하고 제거할 수 있습니다. 현재는 브라우저 확인을 위해 실행 중입니다.
+
+```powershell
 docker stop codyssey-web
 docker rm codyssey-web
 ```
