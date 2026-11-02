@@ -4,7 +4,7 @@
 
 터미널, Docker, Git/GitHub를 사용해 재현 가능한 개발 작업 환경을 구성하는 실습 프로젝트입니다. 명령의 의미를 이해하고 실제 출력으로 결과를 검증합니다.
 
-> 진행 중: Windows 재시작 후 Docker 엔진 연결과 hello-world 실행에 성공했습니다. 사용자가 직접 실행한 명령과 결과를 증거에 기록했습니다. 다음은 Ubuntu 컨테이너의 리눅스 터미널 실습입니다. 웹 서버 빌드, 권한, 마운트·볼륨 검증은 앞으로 진행합니다.
+> 진행 중: Docker 엔진과 hello-world 실행을 확인하고, 사용자가 Ubuntu 컨테이너에 진입해 경로·파일 목록·운영체제 정보를 확인했습니다. 실제 결과를 증거에 기록했습니다. 다음은 파일·폴더 조작과 권한 실습입니다. 웹 서버 빌드, 마운트·볼륨 검증도 앞으로 진행합니다.
 
 ## 실행 환경
 
@@ -13,7 +13,7 @@
 | 확인일 | 2026-11-02 (Asia/Seoul) |
 | 호스트 | Windows, NT 10.0.26200.0 |
 | 현재 셸 | 자동 점검: PowerShell 7.6.5 / 사용자 직접 실습: Windows PowerShell (버전 미기록) |
-| 리눅스 환경 | WSL 2.7.14.0, docker-desktop 배포판 Running / VERSION 2 확인. Ubuntu 컨테이너 실습 예정 |
+| 리눅스 환경 | WSL 2.7.14.0, docker-desktop VERSION 2 / ubuntu:24.04 컨테이너의 Ubuntu 24.04.5 LTS 및 Bash 실행 확인 |
 | Git | 2.52.0.windows.1 |
 | Docker Desktop | 4.97.0 설치 성공 |
 | Docker CLI / 엔진 | CLI 29.9.2, build a82e528 / Server 29.9.2, OSType=linux |
@@ -21,7 +21,7 @@
 
 실제 명령과 출력: [최초 환경 확인](docs/evidence/01-environment.md), [설치 및 재시작 대기 상태](docs/evidence/02-installation.md), [최초 Git 인증 확인](docs/evidence/03-git.md), [최종 E1-1 저장소 업로드 성공](docs/evidence/04-repository.md).
 
-최근 실습 결과: [Docker 엔진 및 hello-world 성공](docs/evidence/05-hello-world.md).
+최근 실습 결과: [Docker 엔진 및 hello-world 성공](docs/evidence/05-hello-world.md), [Ubuntu 컨테이너 진입 및 경로 확인](docs/evidence/06-ubuntu-terminal.md).
 
 문제 해결 과정: [트러블슈팅](docs/troubleshooting.md).
 
