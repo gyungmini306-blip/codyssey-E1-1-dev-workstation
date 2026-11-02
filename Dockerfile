@@ -1,6 +1,6 @@
 FROM nginx:stable-alpine
 
-LABEL org.opencontainers.image.title="Codyssey 11 Workstation Lab"
+LABEL org.opencontainers.image.title="Codyssey E1-1 Workstation Lab"
 LABEL org.opencontainers.image.description="A personal development workstation practice server"
 
 COPY nginx.conf /etc/nginx/conf.d/default.conf

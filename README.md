@@ -1,4 +1,6 @@
-# Dev Workstation Lab · Codyssey 11
+# E1-1 · Dev Workstation Lab
+
+제출 저장소: [gyungmini306-blip/codyssey-E1-1-dev-workstation](https://github.com/gyungmini306-blip/codyssey-E1-1-dev-workstation)
 
 터미널, Docker, Git/GitHub를 사용해 재현 가능한 개발 작업 환경을 구성하는 실습 프로젝트입니다. 명령의 의미를 이해하고 실제 출력으로 결과를 검증합니다.
 
