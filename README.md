@@ -19,7 +19,7 @@
 | Docker CLI | 29.9.2, build a82e528. 엔진 연결은 아직 실패 |
 | VS Code | 설치 확인, GitHub 로그인 검증 대기 |
 
-실제 명령과 출력: [최초 환경 확인](docs/evidence/01-environment.md), [설치 및 재시작 대기 상태](docs/evidence/02-installation.md), [Git 커밋과 인증 확인](docs/evidence/03-git.md).
+실제 명령과 출력: [최초 환경 확인](docs/evidence/01-environment.md), [설치 및 재시작 대기 상태](docs/evidence/02-installation.md), [최초 Git 인증 확인](docs/evidence/03-git.md), [최종 E1-1 저장소 업로드 성공](docs/evidence/04-repository.md).
 
 문제 해결 과정: [트러블슈팅](docs/troubleshooting.md).
 
@@ -36,7 +36,8 @@
 - [ ] 바인드 마운트의 호스트 파일 변경 전후 비교
 - [ ] 컨테이너 삭제 전후 Docker 볼륨 데이터 보존 확인
 - [x] Git 사용자 정보·기본 브랜치 및 로컬 커밋 확인
-- [ ] GitHub 업로드 및 VS Code GitHub 연동 증거
+- [x] GitHub 업로드 및 원격 커밋 일치 검증
+- [ ] VS Code GitHub 연동 증거
 - [x] 실제 문제의 원인 가설·확인·해결을 기록한 트러블슈팅 2건
 
 ## 소스 구성과 커스텀 목적
