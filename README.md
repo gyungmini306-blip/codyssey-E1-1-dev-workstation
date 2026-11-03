@@ -35,6 +35,8 @@
 
 현재 첫 화면: [간단한 실습 페이지 V3](docs/evidence/09-simple-page.md).
 
+사용자 직접 추가 실습: [터미널·권한 실습 기록](docs/evidence/10-user-terminal.md). 2026-11-03 폴더·파일 생성과 내용 확인을 완료했으며, 복사·이동·삭제 및 권한 전후 비교는 이어서 수행합니다.
+
 문제 해결 과정: [트러블슈팅](docs/troubleshooting.md).
 
 ## 수행 체크리스트
