@@ -2,7 +2,7 @@
 
 ## 1. 프로젝트 개요
 
-Ubuntu의 Bash로 파일과 권한을 관리하고, Dockerfile로 NGINX 웹 서버를 구성했습니다. PC에서 컨테이너에 접속하고, HTML 변경이 언제 반영되는지와 컨테이너를 교체해도 데이터가 남는지를 각각 확인했습니다. Git으로 변경 이력을 남기고 GitHub로 공유했습니다. 다른 사람도 저장소를 받아 [빌드·실행 절차](#6-커스텀-웹-서버-이미지와-포트-매핑)부터 재현할 수 있습니다.
+다른 사람도 같은 웹 서버를 실행할 수 있도록 개발 환경을 구성했습니다. 먼저 Ubuntu의 Bash에서 파일과 권한을 다뤘습니다. 그다음 Dockerfile로 NGINX 웹 서버를 만들고, PC에서 접속해 HTML 변경이 반영되는지 확인했습니다. 별도의 Ubuntu 컨테이너에서는 볼륨에 쓴 데이터가 컨테이너 교체 후에도 남는지 확인했습니다. 소스와 실습 기록은 Git으로 관리하고 GitHub에 공유했습니다. 다른 사람도 저장소를 받아 [빌드·실행 절차](#6-커스텀-웹-서버-이미지와-포트-매핑)부터 재현할 수 있습니다.
 
 ## 2. 실행 환경과 저장소 구성
 
@@ -37,7 +37,7 @@ Docker 명령은 Docker Desktop을 실행한 뒤 PowerShell에서 입력합니�
 
 ## 4. 터미널과 권한 실습
 
-**목적과 시작 위치.** 파일을 만든 위치와 복사본의 이동·삭제를 확인하려고 Ubuntu Bash에서 실습했습니다. 기존 `e1-1-ubuntu`가 실행 중이면 PowerShell에서 `docker exec -it e1-1-ubuntu bash`로 들어갑니다. 새 환경에서는 `docker run --rm -it ubuntu:24.04 bash`로 시작할 수 있습니다.
+Ubuntu 컨테이너에서 작업 폴더와 메모를 만들었습니다. 원본을 남겨 둔 채 복사본만 옮기고 삭제하기 위해 `cp`로 복사하고, `mv`로 위치와 이름을 바꾼 뒤 `rm`으로 지웠습니다. 기존 `e1-1-ubuntu`가 실행 중이면 PowerShell에서 `docker exec -it e1-1-ubuntu bash`로 들어갑니다. 새 환경에서는 `docker run --rm -it ubuntu:24.04 bash`로 시작할 수 있습니다.
 
 **실행 명령과 실제 출력**
 
@@ -79,7 +79,7 @@ $ rmdir archive
 
 재실습 화면입니다. 이동 뒤에는 `archive`에 `memo-renamed.txt`가 보이고, 삭제 뒤에는 `.`과 `..`만 남았습니다. 마지막 목록에는 원본 `memo.txt`가 남아 있습니다.
 
-**권한 변경과 실제 출력.** 같은 작업 폴더에서 파일과 디렉터리의 권한을 하나씩 바꾸고 조회했습니다.
+**권한 변경과 실제 출력.** 소유자만 사용할 수 있게 설정한 뒤 그룹과 다른 사용자에게 어떤 권한이 추가되는지 확인했습니다. 같은 작업 폴더에서 `chmod`로 권한을 바꾸고, 파일은 `ls -l`, 디렉터리 자체는 `ls -ld`로 조회했습니다.
 
 ```console
 $ mkdir -p permissions-dir
@@ -111,7 +111,7 @@ CMD에서 Ubuntu 컨테이너의 숨김 파일과 최종 권한, 메모 내용�
 
 ## 5. Docker 점검과 운영
 
-**목적과 시작 위치.** PowerShell에서 엔진이 요청을 받는지 확인한 뒤 컨테이너를 실행하고, 목록·로그·리소스 조회로 상태를 확인했습니다. 운영 명령에 사용한 컨테이너는 해당 실습에서 미리 실행했습니다.
+웹 서버를 만들기 전에 Docker가 컨테이너를 실행할 수 있는지 확인했습니다. PowerShell에서 `docker info`로 엔진 응답을 확인하고 `hello-world`를 실행했습니다. 이후 목록으로 실행·종료 상태를, 로그로 서버 응답을, `docker stats`로 리소스 사용량을 확인했습니다. 운영 명령에 사용한 컨테이너는 해당 실습에서 미리 실행했습니다.
 
 ```console
 PS> docker --version
@@ -153,7 +153,7 @@ exited
 
 ## 6. 커스텀 웹 서버 이미지와 포트 매핑
 
-**선택과 목적.** 정적 HTML을 바로 제공할 수 있는 `nginx:stable-alpine`을 베이스로 사용했습니다. [Dockerfile](Dockerfile)의 `COPY`로 페이지와 서버 설정을 넣고, `LABEL`로 이미지 용도를 기록했습니다. `EXPOSE 80`은 이미지가 사용하는 포트를 명시하고, `HEALTHCHECK`는 내부에서 `/healthz` 응답을 점검합니다. 실제 수신 포트는 [nginx.conf](nginx.conf)의 `listen 80`으로 설정합니다.
+웹페이지를 컨테이너로 제공하기 위해 `nginx:stable-alpine`을 바탕으로 이미지를 만들었습니다. 이 이미지에 NGINX가 들어 있어 실습용 HTML과 서버 설정을 추가할 수 있었습니다. [Dockerfile](Dockerfile)의 `COPY`로 페이지와 서버 설정을 넣고, `LABEL`로 이미지 용도를 기록했습니다. `EXPOSE 80`은 이미지가 사용하는 포트를 명시하고, `HEALTHCHECK`는 내부에서 `/healthz` 응답을 점검합니다. 실제 수신 포트는 [nginx.conf](nginx.conf)의 `listen 80`으로 설정합니다.
 
 **재현 명령.** 저장소를 내려받고 `Dockerfile`이 있는 루트에서 PowerShell로 실행합니다.
 
@@ -190,7 +190,7 @@ ok
 
 ### HTML 수정 반영
 
-**목적과 시작 위치.** PC에서 편집한 파일을 NGINX가 바로 읽는지 확인하기 위해, 저장소 루트에서 같은 이미지로 서버를 두 개 실행하고 `8081`에만 PC의 `app/` 폴더를 읽기 전용으로 연결했습니다.
+PC에서 HTML을 수정하면 서버 응답이 바뀌는지 확인했습니다. 연결 방식의 차이를 비교하기 위해 저장소 루트에서 같은 이미지로 서버를 두 개 실행하고, `8081`에만 PC의 `app/` 폴더를 읽기 전용으로 연결했습니다.
 
 ```powershell
 docker build --progress=plain -t codyssey-workstation:student-1 .
@@ -215,7 +215,7 @@ curl.exe -s --max-time 10 http://localhost:8082/ | Select-String 'SIMPLE_PAGE'
 
 ### 컨테이너 교체 후 데이터 확인
 
-**목적과 시작 위치.** 데이터가 컨테이너를 삭제한 뒤에도 남는지 확인하려고 PowerShell에서 이름 있는 볼륨을 만들었습니다. 첫 Ubuntu 컨테이너에 연결해 메모를 쓴 뒤, 컨테이너만 삭제하고 같은 볼륨을 새 Ubuntu 컨테이너에 연결했습니다. 재현 시 기존 데이터를 건드리지 않도록 새 실습용 볼륨과 컨테이너 이름을 정해 아래 명령에 일관되게 적용합니다.
+컨테이너를 교체한 뒤에도 같은 메모를 읽을 수 있는지 확인했습니다. 이를 위해 PowerShell에서 이름 있는 볼륨을 만들었습니다. 첫 Ubuntu 컨테이너에 연결해 메모를 쓴 뒤, 컨테이너만 삭제하고 같은 볼륨을 새 Ubuntu 컨테이너에 연결했습니다. 재현 시 기존 데이터를 건드리지 않도록 새 실습용 볼륨과 컨테이너 이름을 정해 아래 명령에 일관되게 적용합니다.
 
 ```console
 PS> docker volume create e1-1-user-data
@@ -238,7 +238,7 @@ E1-1-volume-proof
 
 ## 8. Git 설정과 GitHub 연동
 
-**목적과 시작 위치.** 저장소 루트에서 Git의 작성자와 기본 브랜치 설정을 조회했습니다. Git은 PC에서 변경 이력을 기록하고, GitHub는 푸시한 이력을 원격에서 공유합니다. 아래는 `git config --list`에 로컬 범위를 지정해 조회한 실제 출력의 마스킹 발췌입니다.
+HTML 수정 이력을 남기고 공유하기 위해 Git으로 커밋한 뒤 GitHub에 푸시했습니다. 저장소 루트에서 작성자 설정과 기본 브랜치를 확인하고, 현재 브랜치는 별도 명령으로 조회했습니다. Git은 PC에서 변경 이력을 기록하고, GitHub는 푸시한 이력을 원격에서 공유합니다. 아래는 `git config --list`에 로컬 범위를 지정해 조회한 실제 출력의 마스킹 발췌입니다.
 
 ```console
 CMD> git config --local --list
@@ -270,7 +270,7 @@ PS> git push
 
 ## 10. 보너스 1번 · Docker Compose 기초
 
-**목적과 방법.** 실행 옵션을 매번 입력하지 않고 공유하기 위해 [compose.yaml](compose.yaml)에 단일 `web` 서비스의 빌드 위치와 `127.0.0.1:8083:80` 포트 매핑을 기록했습니다. Docker Desktop이 켜진 상태에서 저장소 루트의 PowerShell로 실행했습니다.
+웹 서버 한 개를 같은 설정으로 다시 띄울 수 있도록 Docker Compose로 실행했습니다. 빌드와 포트 옵션을 함께 공유하기 위해 [compose.yaml](compose.yaml)에 단일 `web` 서비스의 빌드 위치와 `127.0.0.1:8083:80` 포트 매핑을 기록했습니다. Docker Desktop이 켜진 상태에서 저장소 루트의 PowerShell로 실행했습니다.
 
 ```console
 PS> docker compose -p e1-1-bonus up -d --build --wait
