@@ -1,6 +1,6 @@
 # 14. 사용자 직접 Git 설정·VS Code 연동·최종 제출 확인
 
-실습일: 2026-11-03 (Asia/Seoul). 사용자가 제공한 실제 출력이다. 개인 PC 경로는 생략하고, 반복된 pager 도움말은 핵심 부분만 발췌했다. 사용자 직접 HTML 수정본 커밋·푸시는 확인했으며 VS Code GitHub 로그인 화면 증거는 추가 수집 대상이다.
+실습일: 2026-11-03 (Asia/Seoul). 사용자가 제공한 실제 출력과 화면을 정리했다. 개인 PC 경로는 생략하고, 반복된 pager 도움말은 핵심 부분만 발췌했다.
 
 ## 14-A. Git 버전 및 저장소별 설정
 
@@ -123,4 +123,20 @@ PS> git status --short --branch
 
 사용자 직접 Git 설정 확인, 변경 검토, 스테이징, 로컬 커밋, 원격 푸시와 깨끗한 작업 상태를 확인했다. [주소창 포함 브라우저 캡처](15-browser.md)도 수집했다.
 
-사용자가 제공한 VS Code 계정 메뉴 캡처에는 Copilot 로그인, 백업 및 동기화 설정 등의 항목만 보이며 GitHub 계정 이름은 표시되지 않는다. 이 화면만으로 VS Code의 GitHub 로그인 성공을 확인할 수 없으므로 연동 증거는 미완료로 유지한다. 터미널 Git의 push 성공과 VS Code 앱의 계정 로그인 화면은 구별한다.
+## 14-E. VS Code GitHub 계정 연결 확인
+
+사용자가 PowerShell에서 아래 명령을 실행해 GitHub Pull Requests 확장 v0.174.0을 설치했다.
+
+```powershell
+code --install-extension GitHub.vscode-pull-request-github
+```
+
+사용자가 제공한 설치 완료 출력이다.
+
+```text
+Extension 'github.vscode-pull-request-github' v0.174.0 was successfully installed.
+```
+
+로그인 후 VS Code 계정 메뉴에 `gyungmini306-blip (GitHub)`과 로그아웃 항목이 표시됐다. 계정 이름은 과제 저장소 소유자와 일치한다.
+
+![VS Code 계정 메뉴에 표시된 gyungmini306-blip GitHub 계정](14-vscode-github.png)

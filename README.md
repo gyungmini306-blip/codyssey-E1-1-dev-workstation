@@ -12,7 +12,7 @@
 2. [파일 수정 반영·볼륨 데이터 보존](docs/guides/02-mount-volume.md)
 3. [Docker 운영·VS Code 연동·README·GitHub 제출](docs/guides/03-record-submit.md)
 
-> 진행 중: 사용자 직접 CLI·Docker 실습, HTML 수정본의 커밋·푸시(d580e49), 주소창 포함 브라우저 캡처를 완료했습니다. 남은 제출 증거는 VS Code의 GitHub 연동 화면입니다.
+터미널·Docker 실습, HTML 수정본 커밋·푸시, 브라우저 접속, VS Code GitHub 연동의 실제 증거를 정리했습니다.
 
 ## 실행 환경
 
@@ -25,7 +25,7 @@
 | Git | 2.52.0.windows.1 |
 | Docker Desktop | 4.97.0 설치 성공 |
 | Docker CLI / 엔진 | CLI 29.9.2, build a82e528 / Server 29.9.2, OSType=linux |
-| VS Code | 설치 확인, GitHub 로그인 검증 대기 |
+| VS Code | GitHub Pull Requests 확장 v0.174.0 설치, `gyungmini306-blip` 계정 연결 확인 |
 
 실제 명령과 출력: [최초 환경 확인](docs/evidence/01-environment.md), [설치 및 재시작 대기 상태](docs/evidence/02-installation.md), [최초 Git 인증 확인](docs/evidence/03-git.md), [최종 E1-1 저장소 업로드 성공](docs/evidence/04-repository.md).
 
@@ -43,7 +43,7 @@
 
 사용자 직접 운영 실습: [Docker 운영·셸 종료 방식 기록](docs/evidence/13-user-operations.md). exec 추가 Bash 종료 후 true, attach 연결 분리 후 true, 주 Bash 종료 후 exited를 실제 결과로 비교했습니다.
 
-사용자 직접 Git 실습: [Git 설정·연동·제출 기록](docs/evidence/14-user-git.md). 설정·브랜치·원격 조회 후 사용자가 HTML 수정본을 d580e49로 커밋·푸시했고, 남은 수정이 없음을 확인했습니다. VS Code 화면 증거는 추가 수집 대상입니다.
+사용자가 Git 설정·브랜치·원격을 확인하고 HTML 수정본을 d580e49로 커밋·푸시했습니다. VS Code 계정 메뉴에 `gyungmini306-blip (GitHub)`이 표시됩니다. [Git 실습과 VS Code 연동 증거](docs/evidence/14-user-git.md)
 
 문제 해결 과정: [트러블슈팅](docs/troubleshooting.md).
 
@@ -62,7 +62,7 @@
 - [x] 컨테이너 삭제 전후 Docker 볼륨 데이터 보존 확인
 - [x] Git 사용자 정보·기본 브랜치 및 로컬 커밋 확인
 - [x] GitHub 업로드 및 원격 커밋 일치 검증
-- [ ] VS Code GitHub 연동 증거
+- [x] VS Code GitHub 연동 증거
 - [x] 실제 문제의 원인 가설·확인·해결을 기록한 트러블슈팅 2건
 
 ## 소스 구성과 커스텀 목적
