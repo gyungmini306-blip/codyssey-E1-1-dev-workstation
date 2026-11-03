@@ -44,11 +44,12 @@
 - **결과:** 컨테이너 ID가 출력되고 e1-1-bind-guide가 healthy / 8081→80으로 나타났다.
 - **증거:** [실제 실패·성공 로그](evidence/11-user-bind.md#11-c-copybind-컨테이너-생성과-입력-오류-해결).
 
-## 6. curl 파이프라인의 한글 깨짐 (원본 정상, 사용자 세션 재확인 대기)
+## 6. curl 파이프라인의 한글 깨짐 (해결)
 
 - **문제:** 사용자 Windows PowerShell에서 curl을 Select-String으로 넘기자 페이지 버전의 한글이 깨졌다. SIMPLE_PAGE_V1 식별자는 정상 출력되었다.
 - **원인 가설:** UTF-8 웹 응답과 터미널의 외부 명령 출력 해석이 일치하지 않을 수 있다.
 - **확인:** 보조 도구가 8081·8082의 HTTP 바이트를 UTF-8로 해석하고 호스트 파일과 비교해 일치를 확인했다. HTML 원본 손상은 관찰되지 않았다.
-- **해결 방법 검증:** 별도의 Windows PowerShell에서 `[Console]::OutputEncoding = [System.Text.Encoding]::UTF8` 적용 후 같은 요청의 한글이 정상 출력되었다. 사용자의 현재 터미널에서 같은 설정을 적용한 결과는 이어서 확인한다.
+- **해결:** `[Console]::OutputEncoding = [System.Text.Encoding]::UTF8`을 현재 세션에 적용했다. 사용자가 처음 UTF8code로 붙여 입력해 null 값 설정 예외가 발생했으나, UTF8 설정 명령과 code 편집 명령을 별도 줄로 나눠 실행해 고쳤다.
+- **결과:** 사용자 재실행에서 8081은 SIMPLE_PAGE_V2 / 페이지 버전: 2, 8082는 SIMPLE_PAGE_V1 / 페이지 버전: 1을 한글 깨짐 없이 출력했다. 보조 도구뿐 아니라 사용자의 현재 세션에서도 해결을 확인했다.
 - **증거:** [사용자 원본 출력과 보조 검증](evidence/11-user-bind.md#11-d-수정-전-응답과-한글-표시-문제).
 - **참고:** [PowerShell 문자 인코딩](https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_character_encoding?view=powershell-5.1).

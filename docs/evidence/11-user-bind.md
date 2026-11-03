@@ -105,6 +105,56 @@ PS> curl.exe -s --max-time 10 http://localhost:8082/ | Select-String 'SIMPLE_PAG
 
 HTML 원본과 서버 응답의 UTF-8 내용은 정상이다. 사용자 PowerShell의 외부 명령 출력 해석 과정에서 인코딩이 맞지 않는 것으로 판단했다. 별도의 Windows PowerShell에서 `[Console]::OutputEncoding = [System.Text.Encoding]::UTF8`을 적용한 뒤 같은 curl 파이프라인을 실행해 한글이 정상 표시됨을 확인했다. 이는 보조 도구의 검증이며 사용자 세션에 적용한 결과는 아직 받지 않았다.
 
+## 11-E. 사용자 세션의 출력 설정 수정 및 HTML 편집
+
+사용자가 제공한 실제 명령과 핵심 출력이다. 설정 명령 뒤에 다음 명령 이름 code를 붙여 입력한 첫 시도는 실패했고, 두 명령을 나눠 입력해 해결했다.
+
+```powershell
+PS> [Console]::OutputEncoding = [System.Text.Encoding]::UTF8code
+"OutputEncoding"을(를) 설정하는 동안 예외가 발생했습니다. "값은 null일 수 없습니다.
+매개 변수 이름: value"
+[위치 표시 및 부가 예외 정보 생략]
+
+PS> [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
+PS> code .\app\index.html
+```
+
+보조 도구가 저장소의 실제 git diff로 확인한 사용자 수정은 다음 한 줄이다. 파일을 새로 덮어쓰거나 대신 수정하지 않았다.
+
+```diff
+-    <p class="version" id="mount-marker" data-version="SIMPLE_PAGE_V1">페이지 버전: 1</p>
++    <p class="version" id="mount-marker" data-version="SIMPLE_PAGE_V2">페이지 버전: 2</p>
+```
+
+## 11-F. 재빌드·컨테이너 재생성 없이 수정 후 비교 성공
+
+사용자가 이어서 실행해 제공한 결과다. 화면의 긴 줄 줄바꿈은 정리했다.
+
+```powershell
+PS> curl.exe -s --max-time 10 http://localhost:8081/ | Select-String 'SIMPLE_PAGE'
+    <p class="version" id="mount-marker" data-version="SIMPLE_PAGE_V2">
+페이지 버전: 2</p>
+
+PS> curl.exe -s --max-time 10 http://localhost:8082/ | Select-String 'SIMPLE_PAGE'
+    <p class="version" id="mount-marker" data-version="SIMPLE_PAGE_V1">
+페이지 버전: 1</p>
+```
+
+| 비교 대상 | 수정 전 | 호스트 HTML만 수정한 뒤 | 관찰 |
+|---|---|---|---|
+| 8081 / e1-1-bind-guide | SIMPLE_PAGE_V1 | SIMPLE_PAGE_V2 | 연결된 호스트 폴더의 수정 내용이 반영됨 |
+| 8082 / e1-1-copy-guide | SIMPLE_PAGE_V1 | SIMPLE_PAGE_V1 | 기존 이미지에 COPY된 내용이 유지됨 |
+
+두 응답에서 한글도 정상 표시되어 사용자 PowerShell의 출력 설정 수정 결과까지 확인했다. 이 비교 과정의 사용자 기록에는 재빌드·컨테이너 재생성 명령이 없고, 기존 두 서버의 응답 차이로 파일 수정 반영을 검증했다.
+
+## 사용자 제공 화면
+
+![사용자가 첨부한 페이지 버전 1 화면](11-user-page-v1.png)
+
+첨부 이미지는 페이지 버전 1의 콘텐츠를 보여준다. 주소창이 없어 포트나 해당 컨테이너를 특정할 수 없다. 8081/8082의 실제 비교 근거는 위 명령과 출력이며, 과제의 주소창 포함 브라우저 증거는 추가 수집 대상이다.
+
 ## 현재 수행 상태
 
-사용자 직접 이미지 빌드, COPY/bind 두 컨테이너 생성 및 healthy 상태, 양쪽의 수정 전 V1 응답까지 확인했다. 브라우저 기준 화면 캡처, 호스트 HTML 수정, 수정 후 비교는 아직 수행 결과를 받지 않았다. 따라서 README의 바인드 마운트 변경 반영 체크는 미완료 상태로 유지한다.
+사용자 직접 이미지 빌드, 두 서버 실행, 수정 전 V1/V1 조회, 호스트 HTML 수정, 수정 후 V2/V1 비교와 한글 정상 표시를 확인했다. 바인드 마운트 변경 반영은 실제 로그로 검증했다. 주소창 포함 브라우저 캡처와 볼륨 영속성은 별도로 남아 있다.
+
+수정한 app/index.html은 사용자 작업 트리에 유지하며, 이후 사용자 직접 Git 커밋·푸시 실습에서 반영한다. 이 문서 갱신 커밋에는 해당 파일을 포함하지 않는다.
