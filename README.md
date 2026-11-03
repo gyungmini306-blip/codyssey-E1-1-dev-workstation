@@ -17,7 +17,11 @@ curl.exe -i http://127.0.0.1:8083/healthz
 
 브라우저에서 `http://localhost:8083/`을 열 수 있습니다. 확인이 끝나면 `docker compose -p e1-1-bonus down`으로 종료합니다.
 
-## 1. 실행 환경과 구성
+## 1. 왜 이 작업을 했나
+
+다른 PC에서도 웹 서버를 띄우려면 코드와 함께 빌드 방법, 포트, 저장 방식이 필요합니다. 이 실습에서는 실행 설정을 파일에 남기고 실제 명령과 출력으로 동작을 확인했습니다.
+
+## 2. 실행 환경과 구성
 
 | 항목 | 실습 환경 |
 |---|---|
@@ -27,36 +31,7 @@ curl.exe -i http://127.0.0.1:8083/healthz
 
 권한 실습은 Ubuntu 컨테이너 안에서 했습니다. 웹 서버는 NGINX 베이스 이미지를 사용하고, Dockerfile에서 HTML과 NGINX 설정을 복사했습니다. Compose에는 같은 Dockerfile의 빌드 위치와 포트 연결을 적어 한 명령으로 실행할 수 있게 했습니다.
 
-## 2. 핵심 실습과 결과
-
-### 파일과 권한
-
-파일과 폴더를 터미널에서 다루고 권한 표기를 확인했습니다. `chmod` 전후에 파일은 `600 → 644`, 폴더는 `700 → 755`로 바뀌었습니다. 아래 출력은 변경 후 조회 결과입니다.
-
-```console
-$ ls -l memo.txt
--rw-r--r-- 1 root root 23 Nov  3 00:05 memo.txt
-$ ls -ld permissions-dir
-drwxr-xr-x 2 root root 4096 Nov  3 00:12 permissions-dir
-```
-
-### Docker 웹 서버와 데이터
-
-PC에서 접속할 수 있도록 컨테이너의 80번 포트를 연결했습니다. 같은 이미지에서 띄운 두 서버가 처음에는 V1을 반환했고, PC의 HTML만 수정한 뒤 바인드 서버 **8081은 V2**, COPY 서버 **8082는 V1**을 반환했습니다. 기존 컨테이너를 삭제한 뒤 같은 볼륨을 연결한 새 컨테이너에서도 **`E1-1-volume-proof`**를 읽었습니다.
-
-![Docker 컨테이너 상태, 두 포트의 HTML 버전과 새 컨테이너에서 읽은 볼륨 메모](docs/evidence/17-cmd-docker.png)
-
-### Git·GitHub와 Compose 보너스
-
-- **Git·GitHub** — HTML 변경 이력을 남기고 공유하기 위해 커밋 `d580e49`를 푸시했습니다. VS Code에서도 GitHub 계정을 확인했습니다.
-- **Compose 단일 서비스** — 실행 옵션을 설정 파일에 담았습니다. `8083/healthz`의 **HTTP 200** 응답을 확인했고, `down` 뒤에는 해당 프로젝트의 컨테이너 목록이 비었습니다.
-
-## 3. 실습 로그와 근거
-
-항목을 펼치면 같은 페이지에서 명령, 실제 출력, 캡처를 확인할 수 있습니다.
-
-<details>
-<summary>전체 수행 체크리스트</summary>
+## 3. 수행 체크리스트
 
 - [x] 터미널 기본 조작: 현재 위치, 숨김 파일, 이동, 생성, 복사, 이름 변경, 삭제, 내용 확인, 빈 파일
 - [x] 파일과 디렉토리 각각의 리눅스 권한 변경 전후 비교
@@ -73,11 +48,25 @@ PC에서 접속할 수 있도록 컨테이너의 80번 포트를 연결했습니
 - [x] GitHub 업로드 및 원격 커밋 일치 검증
 - [x] VS Code GitHub 연동 증거
 - [x] 실제 문제의 원인 가설·확인·해결을 기록한 트러블슈팅 2건
+- [x] 보너스 Docker Compose 단일 서비스
 
-</details>
+## 4. 수행 로그와 증거
+
+### 4-1. 터미널과 파일 권한
+
+Ubuntu 컨테이너에서 파일을 생성·복사·이동·삭제했습니다. 권한 변경은 `chmod`를 실행한 뒤 파일과 폴더 자체를 각각 조회해 확인했습니다.
+
+```console
+$ chmod 644 memo.txt
+$ chmod 755 permissions-dir
+$ ls -l memo.txt
+-rw-r--r-- 1 root root 23 Nov  3 00:05 memo.txt
+$ ls -ld permissions-dir
+drwxr-xr-x 2 root root 4096 Nov  3 00:12 permissions-dir
+```
 
 <details>
-<summary>파일 생성·이동·삭제와 chmod 전후</summary>
+<summary>실제 명령·출력 및 추가 캡처</summary>
 
 실습일: 2026-11-03 (Asia/Seoul). 사용자가 직접 실행해 채팅으로 제공한 실제 명령과 출력이다. Windows 사용자 홈 경로는 생략했다. 보조 도구는 이 기록을 문서로 정리했다.
 
@@ -233,8 +222,12 @@ Windows로 돌아온 뒤에도 원래 Ubuntu 컨테이너가 실행 중임을 �
 
 </details>
 
+### 4-2. Docker 설치와 첫 실행
+
+Docker 엔진이 실제로 이미지를 실행할 수 있는지 확인했습니다. `docker run --name e1-1-hello hello-world`에서 `Hello from Docker!`가 출력됐고, `docker ps -a`에서 종료 코드 `0`을 확인했습니다.
+
 <details>
-<summary>Docker 엔진 점검과 hello-world 실행</summary>
+<summary>실제 명령·출력 및 추가 캡처</summary>
 
 확인일: 2026-11-02 (Asia/Seoul).
 
@@ -291,8 +284,12 @@ PS> docker inspect e1-1-hello --format '{{.Id}} {{.Config.Image}} {{.State.Statu
 
 </details>
 
+### 4-3. 컨테이너 운영과 셸 종료
+
+`docker images`, `docker ps -a`, `docker logs`, `docker stats`로 실행 상태를 확인했습니다. `exec`로 추가한 Bash를 종료했을 때는 컨테이너가 계속 실행됐고, 주 Bash를 종료했을 때는 `exited`로 바뀌었습니다.
+
 <details>
-<summary>Docker 운영 명령과 Ubuntu 셸 종료 실습</summary>
+<summary>실제 명령·출력 및 추가 캡처</summary>
 
 실습일: 2026-11-03 (Asia/Seoul). 사용자가 직접 실행해 제공한 실제 명령과 출력이다. 반복되는 Windows 개인 경로와 프롬프트는 축약했다. 보조 도구는 이 기록을 문서화했다.
 
@@ -432,8 +429,12 @@ exited
 
 </details>
 
+### 4-4. 커스텀 웹 서버와 포트 연결
+
+NGINX 베이스에 HTML과 서버 설정을 담아 이미지를 빌드했습니다. PC의 `8080`을 컨테이너의 `80`에 연결한 뒤 브라우저에서 응답을 확인했습니다. 맨 위 브라우저 캡처에서 `8080` 화면을 볼 수 있습니다.
+
 <details>
-<summary>Dockerfile 빌드와 포트 접속</summary>
+<summary>실제 명령·출력 및 추가 캡처</summary>
 
 > 이 문서는 최초 V1 이미지와 컨테이너의 검증 기록이다. 현재는 원리 설명 페이지 V2를 제공하며, 최신 상태와 빌드 기록은 를 참고한다.
 
@@ -529,8 +530,14 @@ PS> docker logs --tail 12 codyssey-web
 
 </details>
 
+### 4-5. HTML 수정 반영
+
+같은 이미지에서 띄운 두 서버는 처음에 모두 V1을 반환했습니다. PC의 HTML만 수정하자 연결된 파일을 읽는 **8081은 V2**, 빌드할 때 복사한 파일을 읽는 **8082는 V1**을 반환했습니다.
+
+![CMD에서 확인한 두 서버의 응답과 볼륨 메모](docs/evidence/17-cmd-docker.png)
+
 <details>
-<summary>바인드 마운트와 COPY 전후 비교</summary>
+<summary>실제 명령·출력 및 추가 캡처</summary>
 
 실습일: 2026-11-03 (Asia/Seoul). 사용자가 직접 실행해 제공한 실제 명령과 출력이다. 반복되는 Windows 개인 경로·프롬프트는 줄였고, 긴 줄의 화면 줄바꿈은 읽기 쉽게 정리했다. 보조 도구는 받은 결과를 문서화했다.
 
@@ -693,8 +700,17 @@ PS> curl.exe -s --max-time 10 http://localhost:8082/ | Select-String 'SIMPLE_PAG
 
 </details>
 
+### 4-6. 볼륨에 남은 데이터
+
+컨테이너를 교체해도 데이터를 다시 읽을 수 있는지 확인했습니다. 기존 컨테이너를 삭제하고 같은 볼륨을 새 컨테이너에 연결한 뒤, 아래 결과를 확인했습니다.
+
+```console
+PS> docker exec e1-1-volume-after cat /data/memo.txt
+E1-1-volume-proof
+```
+
 <details>
-<summary>볼륨 삭제 전후 데이터 비교</summary>
+<summary>실제 명령·출력 및 추가 캡처</summary>
 
 실습일: 2026-11-03 (Asia/Seoul). 사용자가 직접 실행해 제공한 실제 명령과 출력이다. 반복되는 Windows 개인 경로는 생략했다. 보조 도구는 받은 결과를 문서로 정리했다.
 
@@ -760,8 +776,12 @@ E1-1-volume-proof
 
 </details>
 
+### 4-7. Git·GitHub와 VS Code
+
+HTML의 V2 수정본을 커밋 `d580e49`로 기록하고 GitHub `main`에 푸시했습니다. VS Code 계정 메뉴에도 `gyungmini306-blip (GitHub)`가 표시됐습니다.
+
 <details>
-<summary>Git 커밋·푸시와 VS Code 연동</summary>
+<summary>실제 명령·출력 및 추가 캡처</summary>
 
 실습일: 2026-11-03 (Asia/Seoul). 사용자가 제공한 실제 출력과 화면을 정리했다. 개인 PC 경로는 생략하고, 반복된 pager 도움말은 핵심 부분만 발췌했다.
 
@@ -908,8 +928,12 @@ Extension 'github.vscode-pull-request-github' v0.174.0 was successfully installe
 
 </details>
 
+### 4-8. 보너스 · Docker Compose
+
+빌드 위치와 포트를 `compose.yaml`에 담아 단일 웹 서버를 실행했습니다. `8083/healthz`가 **HTTP 200**을 반환했고, `down` 이후 `ps -a`에는 해당 프로젝트의 컨테이너가 없었습니다.
+
 <details>
-<summary>보너스 Compose 시작·상태·로그·종료</summary>
+<summary>전체 문제 해결 기록</summary>
 
 은 웹 서버 한 개를 정의한다. `build: .`은 기존 Dockerfile을 사용하고, `ports`는 PC의 8083번과 컨테이너의 80번을 연결한다.
 
@@ -957,8 +981,15 @@ NAME      IMAGE     COMMAND   SERVICE   CREATED   STATUS    PORTS
 
 </details>
 
+## 5. 트러블슈팅
+
+| 문제 | 확인과 해결 |
+|---|---|
+| 파일 목록 명령이 실패함 | 셸이 `ls-`를 명령 이름으로 읽었습니다. `ls -la`로 고쳐 실제 파일 목록을 확인했습니다. |
+| 바인드 마운트 실행이 실패함 | `--mount` 인수 누락을 오류 메시지로 확인했습니다. 마운트 설정과 이미지 이름을 한 줄에 넣어 실행하고 HTTP 응답을 확인했습니다. |
+
 <details>
-<summary>문제 해결 사례</summary>
+<summary>실제 명령·출력 및 추가 캡처</summary>
 
 ## 1. WSL 패키지 설치가 관리자 권한 오류로 실패
 
