@@ -71,6 +71,10 @@ $ rmdir archive
 
 `/root/e1-1/guided-practice`는 루트부터 찾는 절대 경로이고, `archive/memo-renamed.txt`는 현재 폴더를 기준으로 찾는 상대 경로입니다. 목록에서 빈 파일 두 개의 크기가 0이고, 복사본을 지운 뒤 `archive`에 파일이 남지 않은 것을 확인했습니다.
 
+![Ubuntu에서 폴더와 파일을 만들고 메모를 조회한 실제 화면](docs/evidence/21-terminal-create-read.png)
+
+재실습 화면입니다. `pwd`로 작업 위치를 확인했고, `ls -la`에서 두 빈 파일을, `cat memo.txt`에서 저장한 문구를 확인했습니다.
+
 ![Ubuntu에서 메모 복사본을 이동하고 삭제한 실제 화면](docs/evidence/21-terminal-copy-move-delete.png)
 
 재실습 화면입니다. 이동 뒤에는 `archive`에 `memo-renamed.txt`가 보이고, 삭제 뒤에는 `.`과 `..`만 남았습니다. 마지막 목록에는 원본 `memo.txt`가 남아 있습니다.
