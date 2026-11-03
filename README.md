@@ -4,6 +4,14 @@
 
 터미널, Docker, Git/GitHub를 사용해 재현 가능한 개발 작업 환경을 구성하는 실습 프로젝트입니다. 명령의 의미를 이해하고 실제 출력으로 결과를 검증합니다.
 
+## 직접 실습 가이드
+
+아래 문서는 앞으로 사용자가 직접 실행할 단계별 가이드입니다. 예상 결과는 실제 수행 로그가 아니며, 실행 후 실제 출력과 캡처로 체크리스트를 갱신합니다.
+
+1. [파일·폴더·권한 실습](docs/guides/01-terminal-permissions.md)
+2. [파일 수정 반영·볼륨 데이터 보존](docs/guides/02-mount-volume.md)
+3. [Docker 운영·VS Code 연동·README·GitHub 제출](docs/guides/03-record-submit.md)
+
 > 진행 중: 제목·소개·페이지 버전이 있는 간단한 첫 화면을 이미지 `codyssey-workstation:3.0`으로 빌드해 `http://localhost:8080`에서 제공합니다. 원리 설명 화면은 `/principles.html`의 선택 자료로 보존했습니다. 터미널 전체 조작, 권한, attach/exec, 마운트·볼륨 및 VS Code 연동 검증은 남아 있습니다.
 
 ## 실행 환경
