@@ -1,6 +1,6 @@
 # 14. 사용자 직접 Git 설정·VS Code 연동·최종 제출 확인
 
-실습일: 2026-11-03 (Asia/Seoul). 사용자가 첨부 텍스트로 제공한 실제 출력이다. 개인 PC 경로는 생략하고, 반복된 pager 도움말은 핵심 부분만 발췌했다. VS Code GitHub 로그인과 최종 사용자 커밋·푸시는 아직 검증하지 않았다.
+실습일: 2026-11-03 (Asia/Seoul). 사용자가 제공한 실제 출력이다. 개인 PC 경로는 생략하고, 반복된 pager 도움말은 핵심 부분만 발췌했다. 사용자 직접 HTML 수정본 커밋·푸시는 확인했으며 VS Code GitHub 로그인 화면 증거는 추가 수집 대상이다.
 
 ## 14-A. Git 버전 및 저장소별 설정
 
@@ -80,6 +80,45 @@ PS> $PSVersionTable.PSVersion.ToString()
 - 사용자 Windows PowerShell의 실제 버전은 5.1.26100.9711이다.
 - --no-pager 조회에서는 less 화면에 머무르지 않고 각 명령의 출력과 다음 명령을 확인했다.
 
+## 14-D. 사용자 직접 HTML 수정본 검토·스테이징·커밋·푸시
+
+사용자가 실제 실행한 결과다. 동일 diff를 두 번 조회한 기록은 한 번으로 줄였고, HTML 변경 내용은 [11-E의 실제 diff](11-user-bind.md#11-e-사용자-세션의-출력-설정-수정-및-html-편집)와 같다.
+
+```powershell
+PS> git --no-pager diff -- app/index.html
+warning: in the working copy of 'app/index.html', CRLF will be replaced by LF the next time Git touches it
+[V1 → V2 한 줄 변경의 diff 본문 생략: 위 링크 참고]
+
+PS> git add app/index.html
+warning: in the working copy of 'app/index.html', CRLF will be replaced by LF the next time Git touches it
+PS> git --no-pager diff --cached --stat
+ app/index.html | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+PS> git commit -m "Update practice page to version 2"
+[main d580e49] Update practice page to version 2
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+PS> git push
+Enumerating objects: 7, done.
+Counting objects: 100% (7/7), done.
+Delta compression using up to 8 threads
+Compressing objects: 100% (4/4), done.
+Writing objects: 100% (4/4), 386 bytes | 386.00 KiB/s, done.
+Total 4 (delta 3), reused 0 (delta 0), pack-reused 0 (from 0)
+remote: Resolving deltas: 100% (3/3), completed with 3 local objects.
+To https://github.com/gyungmini306-blip/codyssey-E1-1-dev-workstation.git
+   58c49d9..d580e49  main -> main
+PS> git status --short --branch
+## main...origin/main
+```
+
+### 관찰
+
+- diff에서 버전 식별자와 화면 문구의 V1→V2 변경을 검토했다.
+- add로 해당 파일을 선택하고 d580e49 커밋을 만들었다.
+- push 결과에서 원격 main이 d580e49로 갱신됐고, 최종 상태에는 작업 트리 수정 표시가 없다.
+- CRLF→LF는 저장소의 텍스트 줄바꿈 정규화 안내다. 이후 커밋·푸시가 실제 성공했으며 해당 안내는 실패 오류가 아니다.
+- d580e49는 사용자 본인이 직접 만든 실습 커밋이다. 이후 증거 문서 갱신 커밋과 구별해 기록한다.
+
 ## 현재 수행 상태
 
-사용자 직접 Git 버전·로컬 설정·현재 브랜치·원격·수정 상태·PowerShell 버전 조회를 완료했다. VS Code 계정·저장소 연동 캡처와 HTML 수정본의 사용자 커밋·푸시는 아직 결과 대기다.
+사용자 직접 Git 설정 확인, 변경 검토, 스테이징, 로컬 커밋, 원격 푸시와 깨끗한 작업 상태를 확인했다. 남은 것은 VS Code GitHub 연동 화면과 주소창을 포함한 브라우저 캡처다.

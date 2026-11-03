@@ -12,7 +12,7 @@
 2. [파일 수정 반영·볼륨 데이터 보존](docs/guides/02-mount-volume.md)
 3. [Docker 운영·VS Code 연동·README·GitHub 제출](docs/guides/03-record-submit.md)
 
-> 진행 중: 사용자 직접 파일·권한·Docker 운영·COPY/bind 수정 전후·볼륨 보존·attach/exec 종료 차이 검증을 완료했습니다. 주소창 포함 브라우저 캡처, VS Code 연동 증거와 사용자 직접 최종 Git 커밋·푸시는 이어서 수행합니다.
+> 진행 중: 사용자 직접 CLI·Docker 실습과 HTML 수정본의 커밋·푸시(d580e49)를 완료했습니다. 남은 제출 증거는 주소창 포함 브라우저 캡처와 VS Code의 GitHub 연동 화면입니다.
 
 ## 실행 환경
 
@@ -43,7 +43,7 @@
 
 사용자 직접 운영 실습: [Docker 운영·셸 종료 방식 기록](docs/evidence/13-user-operations.md). exec 추가 Bash 종료 후 true, attach 연결 분리 후 true, 주 Bash 종료 후 exited를 실제 결과로 비교했습니다.
 
-사용자 직접 Git 실습: [Git 설정·연동·제출 기록](docs/evidence/14-user-git.md). 계정·기본 브랜치·현재 main·원격·수정 파일·PowerShell 버전 조회를 완료했습니다. VS Code 증거와 HTML 수정본의 직접 커밋·푸시는 이어서 수행합니다.
+사용자 직접 Git 실습: [Git 설정·연동·제출 기록](docs/evidence/14-user-git.md). 설정·브랜치·원격 조회 후 사용자가 HTML 수정본을 d580e49로 커밋·푸시했고, 남은 수정이 없음을 확인했습니다. VS Code 화면 증거는 추가 수집 대상입니다.
 
 문제 해결 과정: [트러블슈팅](docs/troubleshooting.md).
 
