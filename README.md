@@ -65,6 +65,8 @@
 - [x] VS Code GitHub 연동 증거
 - [x] 실제 문제의 원인 가설·확인·해결을 기록한 트러블슈팅 2건
 
+선택 과제로 Docker Compose에서 웹 서버 한 개를 빌드·실행하고 상태·로그·종료를 확인했습니다. [Compose 실행 방법과 실제 출력](docs/evidence/16-compose-bonus.md)
+
 ## 소스 구성과 커스텀 목적
 
 ```text
