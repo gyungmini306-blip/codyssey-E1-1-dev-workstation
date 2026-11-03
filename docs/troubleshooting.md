@@ -25,3 +25,12 @@
 - **확인:** CLI 버전은 출력되지만 Server 연결은 실패했다. Windows의 `RebootPending`도 `True`다.
 - **해결 계획:** Windows 재시작 후 Docker Desktop을 시작하고, WSL 2 및 Ubuntu 통합 상태를 확인한다.
 - **결과:** 사용자의 Windows 재시작 이후 `docker info`에서 ServerVersion `29.9.2`, OSType `linux`를 확인했다. 사용자가 직접 실행한 hello-world도 `Exited (0)`로 정상 종료했다. [검증 결과](evidence/05-hello-world.md).
+
+## 4. ls- la 입력 오류
+
+- **문제:** 사용자 직접 실습에서 `ls- la` 입력 후 `bash: ls-: command not found`가 발생했다.
+- **원인 가설:** 명령과 옵션 사이 공백이 잘못되어 Bash가 ls 대신 ls-라는 프로그램을 찾았을 수 있다.
+- **확인:** 실제 입력의 첫 단어가 ls-였고, 오류에도 ls-를 찾지 못했다고 표시되었다. 명령 ls와 옵션 -la는 공백으로 구분해야 한다.
+- **해결:** `ls -la`로 고쳐 입력했다.
+- **결과:** archive와 memo-copy.txt 등을 포함한 상세 목록이 정상 출력되었다. 이후 이동·삭제 명령도 수행했다.
+- **증거:** [사용자 직접 터미널 로그](evidence/10-user-terminal.md#10-b-복사-이동이름-변경-삭제).
