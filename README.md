@@ -2,11 +2,7 @@
 
 다른 사람도 같은 방법으로 웹 서버를 실행할 수 있도록 Docker로 환경을 만들고, 접속·파일 수정·데이터 보존을 직접 확인했습니다.
 
-![브라우저 접속 결과. 기존 서버 8080은 V1, PC 파일을 연결한 서버 8081은 V2](docs/evidence/15-browser-addresses.png)
-
-*주소창과 페이지 버전을 함께 보면 됩니다. 왼쪽은 기존 서버 `8080`의 V1, 오른쪽은 PC 파일을 연결한 `8081`의 V2입니다.*
-
-## 빠른 실행
+## 실행 환경과 빠른 실행
 
 Windows에서 Docker Desktop을 켜고 CMD에서 실행합니다. 실습 환경은 Windows 11 · Windows Terminal(CMD/PowerShell) · Ubuntu 컨테이너(Bash), Docker 29.9.2, Compose 5.6.1, Git 2.52.0입니다.
 
@@ -19,35 +15,20 @@ curl.exe -i http://127.0.0.1:8083/healthz
 
 브라우저에서 `http://localhost:8083/`을 엽니다. 확인을 마치면 `docker compose -p e1-1-bonus down`으로 종료합니다.
 
-## 무엇을 했고 왜 했나
-
-| 실습 | 한 일과 이유 | 확인한 결과 |
-|---|---|---|
-| 터미널과 권한 | Ubuntu 컨테이너에서 파일 생성·복사·이동·삭제를 연습하고, `chmod`로 접근 권한을 바꿨습니다. | 파일은 `600 → 644`, 폴더는 `700 → 755`로 바뀌었습니다. |
-| Docker 점검 | Docker가 실제로 컨테이너를 실행하는지 확인하려고 `hello-world`를 실행하고 상태·로그를 조회했습니다. | `Hello from Docker!`가 출력됐고 종료 코드는 `0`이었습니다. |
-| 이미지와 웹 접속 | 누구나 같은 서버를 띄울 수 있도록 Dockerfile에 NGINX와 HTML을 담는 방법을 적었습니다. 내 PC에서 접속하려고 `8080:80`으로 포트를 연결했습니다. | 브라우저에서 `localhost:8080`으로 페이지가 열렸습니다. |
-| HTML 수정 반영 | PC 파일을 수정했을 때 바로 반영되는지 보려고, 같은 이미지로 실행한 두 서버의 파일 읽는 방식만 바꿨습니다. | PC 폴더를 연결한 **8081은 V2**, 이미지에 복사한 파일을 쓰는 **8082는 V1**을 반환했습니다. |
-| 볼륨 | 서버를 교체해도 메모를 읽을 수 있도록 Docker가 따로 관리하는 저장 공간에 메모를 넣었습니다. | 기존 컨테이너를 삭제하고 같은 볼륨을 새 컨테이너에 연결하니 `E1-1-volume-proof`가 남아 있었습니다. |
-| Git과 GitHub | Git으로 HTML 변경을 기록하고, 다른 사람이 확인할 수 있도록 GitHub에 공유했습니다. | 커밋 `d580e49`를 푸시했고 VS Code에서 GitHub 계정 연결을 확인했습니다. |
-| 보너스 Compose | 빌드와 포트 옵션을 매번 입력하지 않도록 `compose.yaml`에 기록했습니다. | 웹 서버 하나를 실행해 `8083/healthz`의 HTTP 200을 확인했고, `down` 뒤 프로젝트 컨테이너 목록이 비었습니다. |
-
 ## 수행 체크리스트
-
 - [x] 터미널 조작과 파일·폴더 권한 변경
-
 - [x] Docker 설치·점검, 이미지·컨테이너 운영, Ubuntu 셸 진입
-
 - [x] Dockerfile 빌드·실행, 포트 접속, 바인드 마운트와 볼륨 검증
-
 - [x] Git 설정·푸시 및 VS Code GitHub 연결
-
 - [x] 보너스 Compose 단일 서비스 실행·종료
 
-## 실제 명령과 결과
+## 본과제 실습과 검증 결과
 
 아래 코드 블록은 실습 당시 출력의 발췌입니다. 빠른 실행은 새 환경에서 재현할 때 사용하는 명령입니다.
 
-### 터미널과 권한
+### 1. Ubuntu에서 파일과 권한 다루기
+
+**결과**
 
 ![CMD에서 ls와 cat을 실행한 화면](docs/evidence/17-cmd-terminal.png)
 
@@ -148,7 +129,9 @@ $ ls -ld permissions-dir
 drwxr-xr-x 2 root root 4096 Nov  3 00:12 permissions-dir
 ```
 
-### Docker 설치·운영과 셸
+### 2. NGINX 웹 서버 실행과 검증
+
+#### Docker 설치·운영과 셸
 
 서버 로그에서 상태 확인 요청이 HTTP 200으로 처리된 것을 확인했습니다. 아래는 처음 한 줄을 발췌한 결과입니다.
 
@@ -244,7 +227,7 @@ exited
 
 추가 Bash를 `exec`로 열었다가 종료해도 컨테이너는 유지됐습니다. `attach`로 연결한 주 Bash를 종료하자 컨테이너 상태가 `exited`로 바뀌었습니다.
 
-### 이미지 빌드와 웹 접속
+#### 이미지 빌드와 웹 접속
 
 기본 서버로 `nginx:stable-alpine`을 선택했습니다. Dockerfile은 `app/`의 HTML을 NGINX가 읽는 위치에 담고, `nginx.conf`로 문서 위치와 상태 확인 경로를 지정합니다. `HEALTHCHECK`는 서버가 응답하는지 확인합니다.
 
@@ -294,7 +277,15 @@ Connection: keep-alive
 ok
 ```
 
-### 바인드 마운트와 COPY 비교
+**결과**
+
+![브라우저 접속 결과. 기존 서버 8080은 V1, PC 파일을 연결한 서버 8081은 V2](docs/evidence/15-browser-addresses.png)
+
+*주소창과 페이지 버전을 함께 보면 됩니다. 왼쪽은 기존 서버 `8080`의 V1, 오른쪽은 PC 파일을 연결한 `8081`의 V2입니다.*
+
+#### HTML 수정 반영
+
+**결과**
 
 ![CMD에서 확인한 두 서버의 버전과 볼륨 메모](docs/evidence/17-cmd-docker.png)
 
@@ -327,7 +318,9 @@ CONTAINER ID   IMAGE                            COMMAND                   CREATE
 
 수정 전에는 두 서버가 V1을 반환했습니다. HTML만 바꾼 뒤 `8081`은 V2, `8082`는 V1이었습니다.
 
-### 볼륨 생성·삭제·재연결
+#### 볼륨 데이터 보존
+
+**결과** — 기존 컨테이너를 지운 뒤 새 컨테이너에 같은 볼륨을 연결했고, `cat /data/memo.txt`에서 기존 메모 `E1-1-volume-proof`가 다시 나왔습니다. 삭제 전후의 실제 출력은 아래에 있습니다.
 
 ```powershell
 PS> docker volume create e1-1-user-data
@@ -362,7 +355,9 @@ PS> docker exec e1-1-volume-after cat /data/memo.txt
 E1-1-volume-proof
 ```
 
-### Git 설정과 GitHub 연결
+### 3. Git으로 기록하고 GitHub에 공유하기
+
+**결과**
 
 ![CMD에서 git log와 git ls-remote를 실행한 화면](docs/evidence/17-cmd-git.png)
 
@@ -418,7 +413,16 @@ PS> git status --short --branch
 
 ![VS Code에 표시된 GitHub 계정](docs/evidence/14-vscode-github.png)
 
-### 보너스 Docker Compose
+## 문제 해결
+
+- `ls- la`를 입력했을 때 셸이 `ls-`를 명령으로 읽었습니다. `ls -la`로 고쳐 숨김 파일을 포함한 목록을 확인했습니다.
+- `--mount`에 인수가 빠져 컨테이너 실행이 실패했습니다. 마운트 설정과 이미지 이름을 한 줄에 적어 다시 실행했고, `docker ps`와 HTTP 응답으로 확인했습니다.
+
+## 보너스 1번 · Docker Compose 기초
+
+빌드 위치와 포트 연결을 `compose.yaml`에 저장해 단일 웹 서버를 같은 설정으로 다시 실행했습니다.
+
+**결과**
 
 ![CMD에서 열어 본 기존 Compose 실습 기록](docs/evidence/17-cmd-compose.png)
 
@@ -459,8 +463,3 @@ PS> docker compose -p e1-1-bonus down
 PS> docker compose -p e1-1-bonus ps -a
 NAME      IMAGE     COMMAND   SERVICE   CREATED   STATUS    PORTS
 ```
-
-## 문제 해결
-
-- `ls- la`를 입력했을 때 셸이 `ls-`를 명령으로 읽었습니다. `ls -la`로 고쳐 숨김 파일을 포함한 목록을 확인했습니다.
-- `--mount`에 인수가 빠져 컨테이너 실행이 실패했습니다. 마운트 설정과 이미지 이름을 한 줄에 적어 다시 실행했고, `docker ps`와 HTTP 응답으로 확인했습니다.
