@@ -14,7 +14,7 @@
 
 ## 빠른 실행
 
-Windows에서 Docker Desktop을 켜고 CMD에서 실행합니다. 실습 환경은 Windows 11 · Windows Terminal(CMD/PowerShell) · Ubuntu 컨테이너(Bash), Docker 29.9.2, Compose 5.6.1, Git 2.52.0입니다.
+Windows에서 Docker Desktop을 켜고 아래 명령을 실행합니다. 실습에서는 주로 **PowerShell**에서 Docker 명령을 입력하고, **VS Code**에서 HTML을 수정했습니다. Linux 파일·권한 실습은 Ubuntu 컨테이너의 Bash에서 했고, 완료 상태를 다시 확인할 때는 CMD를 사용했습니다. 버전은 Docker 29.9.2, Compose 5.6.1, Git 2.52.0입니다.
 
 ```cmd
 git clone https://github.com/gyungmini306-blip/codyssey-E1-1-dev-workstation.git
@@ -220,7 +220,9 @@ exited
 
 ### 이미지 빌드와 웹 접속
 
-**왜 했나** — HTML을 브라우저에서 직접 여는 방식과 웹 서버에서 받아오는 방식을 구분하기 위해, NGINX가 HTML을 보내도록 구성했습니다. `docker build`로 NGINX와 HTML을 담은 이미지를 만들고, `docker run`으로 그 이미지에서 컨테이너를 띄웠습니다. `8080:80`은 내 PC의 8080번으로 온 요청을 컨테이너 안 NGINX의 80번으로 전달합니다.
+**왜 했나** — NGINX가 HTML을 보내도록 `docker build`로 이미지를 만들고, `docker run`으로 컨테이너를 띄웠습니다. **외부 8080 → 내부 80**으로 연결했기 때문에, 브라우저에서 내 PC의 8080번에 접속하면 컨테이너 안 NGINX가 요청을 받습니다.
+
+`docker build` 명령 끝의 `.`은 **현재 폴더를 빌드에 사용할 범위로 지정**합니다. 이미지에 어떤 파일을 넣는지는 Dockerfile의 `COPY`가 정합니다.
 
 기본 서버로 `nginx:stable-alpine`을 선택했습니다. Dockerfile은 `app/`의 HTML을 NGINX가 읽는 위치에 담고, `nginx.conf`로 문서 위치와 상태 확인 경로를 지정합니다. `HEALTHCHECK`는 서버가 응답하는지 확인합니다.
 
@@ -251,7 +253,7 @@ ok
 
 ### 바인드 마운트와 COPY 비교
 
-**왜 두 서버를 띄웠나** — HTML이 달라지는 원인이 파일을 연결하는 방식인지 확인하려고 같은 이미지로 비교했습니다. 8081은 내 PC의 폴더를 직접 읽고, 8082는 빌드할 때 이미지에 복사한 HTML을 읽습니다. PC의 HTML만 V2로 수정했을 때 8081만 바뀐 이유입니다.
+**왜 두 서버를 띄웠나** — VS Code에서 HTML을 버전 2로 직접 바꾼 뒤, 수정 내용이 어느 서버에 반영되는지 확인했습니다. 같은 이미지로 띄운 두 서버 중 8081은 내 PC의 폴더를 읽어서 V2가 됐고, 8082는 빌드할 때 복사한 파일을 읽어서 V1이 남았습니다. README 첫 화면은 별도로 켜 둔 기존 8080 서버의 V1과 8081의 V2를 보여줍니다.
 
 ![CMD에서 확인한 두 서버의 버전과 볼륨 메모](docs/evidence/17-cmd-docker.png)
 
@@ -270,7 +272,7 @@ PS> docker ps --filter name=guide
 
 ### 볼륨 생성·삭제·재연결
 
-**왜 컨테이너를 삭제했나** — 잠깐 껐다 켜는 것보다, 새 컨테이너에서도 이전 데이터를 읽을 수 있는지 확인하고 싶었습니다. 이미지는 서버를 다시 만드는 데 쓰는 초기 묶음이고, 볼륨은 게임의 세이브 폴더처럼 데이터를 따로 두는 공간입니다. 새 컨테이너에 같은 볼륨을 연결해 기존 메모를 다시 읽었습니다.
+**왜 컨테이너를 삭제했나** — 기존 컨테이너에서 볼륨에 저장한 데이터가 새 컨테이너에서도 유지되는지 확인했습니다. 볼륨은 게임의 세이브 폴더처럼 데이터를 따로 두는 공간입니다. 기존 컨테이너를 삭제한 뒤 같은 볼륨을 연결하니 메모를 다시 읽을 수 있었습니다.
 
 ```powershell
 PS> docker volume create e1-1-user-data
@@ -302,7 +304,7 @@ E1-1-volume-proof
 
 ### Git 설정과 GitHub 연결
 
-**왜 했나** — Git으로 HTML을 V2로 바꾼 이력을 남겼습니다. GitHub에 푸시해 평가자가 같은 소스와 README를 볼 수 있게 했고, VS Code에서도 GitHub 계정 연결을 확인했습니다.
+**왜 했나** — HTML을 V2로 바꾼 내용을 Git으로 내 PC에 커밋했습니다. 그 기록을 GitHub의 원격 저장소에 푸시해 다른 사람도 볼 수 있게 했고, VS Code에서 GitHub 계정 연결을 확인했습니다.
 
 ![CMD에서 git log와 git ls-remote를 실행한 화면](docs/evidence/17-cmd-git.png)
 
