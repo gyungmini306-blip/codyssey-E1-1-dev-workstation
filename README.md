@@ -104,7 +104,12 @@ FROM nginx:stable-alpine
 COPY index.html /usr/share/nginx/html/index.html
 ```
 
-주소창과 응답 화면이 함께 나온 [최초 브라우저 접속 기록](docs/evidence/15-browser.md)을 보관했습니다. 현재 페이지 디자인은 **V1의 어두운 기본 화면**과 **V2의 밝은 배경·보라색 버전 표시**로 구분됩니다. 빠른 실행으로 띄운 서버에는 현재 저장소의 V2가 표시됩니다.
+| V1 · 어두운 기본 화면 | V2 · 밝은 화면과 보라색 버전 표시 |
+|---|---|
+| ![이름과 하단 링크를 뺀 어두운 V1 화면](docs/evidence/20-web-preview-v1.png) | ![이름과 하단 링크를 뺀 밝은 V2 화면](docs/evidence/20-web-preview-v2.png) |
+| `localhost:18080` · 디자인 확인용 V1 | `localhost:8081` · 바인드 마운트 서버 |
+
+위 이미지는 수정된 디자인의 실제 브라우저 화면입니다. 주소창을 포함한 [최초 포트 매핑 증거](docs/evidence/15-browser.md)는 별도로 보관했습니다. 빠른 실행으로 띄운 서버에는 현재 저장소의 V2가 표시됩니다.
 
 ### 3-4. 바인드 마운트와 볼륨
 
