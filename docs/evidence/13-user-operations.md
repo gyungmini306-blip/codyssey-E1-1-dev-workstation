@@ -97,6 +97,41 @@ true
 - exec는 별도의 추가 Bash를 생성했다.
 - 추가 Bash에서 exit한 뒤에도 State.Running이 true다. 추가 셸의 종료와 컨테이너 주 프로세스의 종료가 다름을 확인했다.
 
+## 13-G. attach 연결 후 분리해도 컨테이너 유지
+
+사용자가 같은 e1-1-shell-guide에 직접 연결하고 분리한 결과다.
+
+```console
+PS> docker attach e1-1-shell-guide
+root@be12c0450ba9:/# echo "main shell connected by attach"
+main shell connected by attach
+root@be12c0450ba9:/# read escape sequence
+PS> docker inspect e1-1-shell-guide --format '{{.State.Running}}'
+true
+```
+
+read escape sequence는 사용자가 입력한 Bash 명령이 아니라 Docker 클라이언트가 분리 키 입력을 감지한 안내다. 연결을 분리한 뒤에도 State.Running이 true여서 원래 Bash가 계속 실행 중임을 확인했다.
+
+## 13-H. attach로 연결한 주 프로세스 종료
+
+```console
+PS> docker attach e1-1-shell-guide
+root@be12c0450ba9:/# exit
+exit
+PS> docker inspect e1-1-shell-guide --format '{{.State.Status}}'
+exited
+```
+
+이번에는 주 프로세스인 원래 Bash를 종료했으므로 컨테이너의 상태도 exited가 되었다.
+
+## 비교 결과
+
+| 사용자 직접 수행한 작업 | 실제 확인 값 | 해석 |
+|---|---|---|
+| exec로 연 추가 Bash에서 exit | Running=true | 추가 프로세스만 종료, 주 Bash 유지 |
+| attach 연결에서 분리 키 사용 | Running=true | 터미널 연결만 분리, 주 Bash 유지 |
+| attach로 연결한 주 Bash에서 exit | Status=exited | 주 프로세스 종료로 컨테이너 종료 |
+
 ## 현재 수행 상태
 
-사용자 직접 버전·엔진·이미지·전체 컨테이너·로그·자원 사용량 및 exec 추가 Bash 종료 후 컨테이너 유지를 확인했다. attach 연결·분리와 주 프로세스 종료 비교는 이어서 기록한다. 아직 전체 셸 종료 방식 비교를 완료 표시하지 않는다.
+사용자 직접 Docker 운영 명령과 Ubuntu의 exec/attach/분리/종료 차이 관찰을 완료했다. 위 표는 예상이 아니라 사용자가 제공한 실제 명령·출력에 근거한다.

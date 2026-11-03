@@ -12,7 +12,7 @@
 2. [파일 수정 반영·볼륨 데이터 보존](docs/guides/02-mount-volume.md)
 3. [Docker 운영·VS Code 연동·README·GitHub 제출](docs/guides/03-record-submit.md)
 
-> 진행 중: 간단한 웹 서버를 제공하며, 사용자 직접 파일·권한 실습, COPY/bind의 수정 전후 비교, 컨테이너 삭제 후 같은 볼륨의 데이터 보존을 확인했습니다. attach/exec 전체 비교, 주소창 포함 브라우저 캡처, VS Code 연동 증거와 사용자 직접 최종 Git 커밋·푸시는 이어서 수행합니다.
+> 진행 중: 사용자 직접 파일·권한·Docker 운영·COPY/bind 수정 전후·볼륨 보존·attach/exec 종료 차이 검증을 완료했습니다. 주소창 포함 브라우저 캡처, VS Code 연동 증거와 사용자 직접 최종 Git 커밋·푸시는 이어서 수행합니다.
 
 ## 실행 환경
 
@@ -41,7 +41,7 @@
 
 사용자 직접 저장 공간 실습: [볼륨 검증 기록](docs/evidence/12-user-volume.md). 기존 컨테이너를 삭제하고 새 컨테이너에 같은 볼륨을 연결한 뒤 동일한 메모가 읽히는 것을 확인했습니다.
 
-사용자 직접 운영 실습: [Docker 운영·셸 종료 방식 기록](docs/evidence/13-user-operations.md). 운영 명령과 exec 추가 Bash 종료 후 컨테이너 유지(true)를 확인했고, attach 연결·분리와 주 프로세스 종료 비교는 이어서 수행합니다.
+사용자 직접 운영 실습: [Docker 운영·셸 종료 방식 기록](docs/evidence/13-user-operations.md). exec 추가 Bash 종료 후 true, attach 연결 분리 후 true, 주 Bash 종료 후 exited를 실제 결과로 비교했습니다.
 
 문제 해결 과정: [트러블슈팅](docs/troubleshooting.md).
 
@@ -52,7 +52,7 @@
 - [x] Docker 버전 및 데몬 점검
 - [x] 이미지 다운로드와 목록, 컨테이너 실행·중지·목록·로그·리소스 확인
 - [x] hello-world 실행
-- [ ] Ubuntu 컨테이너에서 명령 실행 및 attach/exec/종료 차이 관찰
+- [x] Ubuntu 컨테이너에서 명령 실행 및 attach/exec/종료 차이 관찰
 - [x] Dockerfile 커스텀 이미지 빌드 및 실행
 - [x] 포트 매핑 HTTP 접속 검증
 - [ ] 주소창을 포함한 브라우저 증거
