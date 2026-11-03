@@ -37,7 +37,7 @@
 
 사용자 직접 추가 실습: [터미널·권한 실습 기록](docs/evidence/10-user-terminal.md). 2026-11-03 파일·폴더 조작 및 파일 600→644, 디렉토리 700→755의 권한 전후 비교를 완료했습니다.
 
-사용자 직접 웹 실습: [student-1 빌드 및 파일 수정 반영 실습 기록](docs/evidence/11-user-bind.md). V1 소스 조회와 직접 빌드를 완료했고, COPY/bind 비교는 이어서 수행합니다.
+사용자 직접 웹 실습: [student-1 빌드 및 파일 수정 반영 실습 기록](docs/evidence/11-user-bind.md). 직접 빌드와 COPY/bind 서버 실행, 두 서버의 수정 전 V1 응답을 확인했습니다. 호스트 수정 후 비교는 이어서 수행합니다.
 
 문제 해결 과정: [트러블슈팅](docs/troubleshooting.md).
 

@@ -48,13 +48,20 @@ docker run -d --name e1-1-copy-guide -p 127.0.0.1:8082:80 codyssey-workstation:s
 
 ```powershell
 $appPath = (Resolve-Path .\app).Path
-docker run -d --name e1-1-bind-guide -p 127.0.0.1:8081:80 --mount "type=bind,source=$appPath,target=/usr/share/nginx/html,readonly" codyssey-workstation:student-1
+$mountSpec = "type=bind,source=$appPath,target=/usr/share/nginx/html,readonly"
+docker run -d --name e1-1-bind-guide -p 127.0.0.1:8081:80 --mount $mountSpec codyssey-workstation:student-1
 docker ps --filter name=guide
 ```
 
-source는 이 PC의 app 폴더 절대 경로이고, target은 컨테이너 안에서 그 폴더를 읽을 위치다. readonly는 컨테이너 쪽에서 호스트 파일을 수정하지 못하도록 한다. PC에서 원본을 편집하는 것은 가능하다.
+source는 이 PC의 app 폴더 절대 경로이고, target은 컨테이너 안에서 그 폴더를 읽을 위치다. readonly는 컨테이너 쪽에서 호스트 파일을 수정하지 못하도록 한다. PC에서 원본을 편집하는 것은 가능하다. 각 줄은 명령 하나이며, 화면의 자동 줄바꿈 위치에서 Enter로 끊지 않는다. --mount에는 연결 설정과 실행할 이미지까지 같은 명령으로 전달해야 한다.
 
 ## 2-D. 수정 전 결과 확인
+
+Windows PowerShell에서 curl 결과의 한글이 깨지면, 먼저 현재 터미널 세션의 출력 해석을 UTF-8로 설정한다. 파일 내용이나 시스템 전체 설정을 바꾸는 명령은 아니다.
+
+```powershell
+[Console]::OutputEncoding = [System.Text.Encoding]::UTF8
+```
 
 ```powershell
 curl.exe -s --max-time 10 http://localhost:8081/ | Select-String 'SIMPLE_PAGE'
