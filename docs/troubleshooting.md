@@ -53,3 +53,12 @@
 - **결과:** 사용자 재실행에서 8081은 SIMPLE_PAGE_V2 / 페이지 버전: 2, 8082는 SIMPLE_PAGE_V1 / 페이지 버전: 1을 한글 깨짐 없이 출력했다. 보조 도구뿐 아니라 사용자의 현재 세션에서도 해결을 확인했다.
 - **증거:** [사용자 원본 출력과 보조 검증](evidence/11-user-bind.md#11-d-수정-전-응답과-한글-표시-문제).
 - **참고:** [PowerShell 문자 인코딩](https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_character_encoding?view=powershell-5.1).
+
+## 7. Git 출력의 less 화면에서 셸 명령 입력 (해결)
+
+- **문제:** Git 설정 조회 뒤 SUMMARY OF LESS COMMANDS와 log file 입력 화면이 반복되어 다음 셸 명령의 결과가 나오지 않았다.
+- **원인 가설:** 긴 출력을 보여주는 less를 종료하지 않아 셸 명령의 문자가 less의 조작 키로 처리됐을 수 있다. 당시 셸은 CMD였으므로 PowerShell 전용 버전 조회도 구분해야 했다.
+- **확인:** 사용자 첨부 출력에 less 도움말과 파일 이름 입력이 나타났고, 작업 폴더의 tatus --short 파일도 실제 less 도움말 로그로 확인했다. 이 로그는 삭제하지 않고 제외 폴더 work에 보관했다.
+- **해결 안내:** 파일 이름 입력은 Ctrl+C로 취소, q로 보기 화면 종료, PowerShell로 전환, Git 조회에는 --no-pager 사용.
+- **결과:** 사용자 재조회에서 현재 main, 올바른 origin, M app/index.html과 PowerShell 5.1.26100.9711이 정상 출력됐다.
+- **증거:** [Git 조회 복구 및 실제 결과](evidence/14-user-git.md#14-c-powershell에서-현재-브랜치원격작업-상태-확인).

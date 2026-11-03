@@ -20,7 +20,7 @@
 |---|---|
 | 확인일 | 2026-11-02 초기 점검 / 2026-11-03 사용자 직접 재검증 (Asia/Seoul) |
 | 호스트 | Windows, NT 10.0.26200.0 초기 점검 / 사용자 CMD 출력 10.0.26200.9711 |
-| 현재 셸 | 자동 점검: PowerShell 7.6.5 / 사용자 직접 실습: Windows PowerShell 및 CMD (PowerShell 버전 재조회 대기) |
+| 현재 셸 | 사용자 직접 실습: Windows PowerShell 5.1.26100.9711 및 CMD / 보조 도구: PowerShell 7.6.5 |
 | 리눅스 환경 | WSL 2.7.14.0, docker-desktop VERSION 2 / ubuntu:24.04 컨테이너의 Ubuntu 24.04.5 LTS 및 Bash 실행 확인 |
 | Git | 2.52.0.windows.1 |
 | Docker Desktop | 4.97.0 설치 성공 |
@@ -43,7 +43,7 @@
 
 사용자 직접 운영 실습: [Docker 운영·셸 종료 방식 기록](docs/evidence/13-user-operations.md). exec 추가 Bash 종료 후 true, attach 연결 분리 후 true, 주 Bash 종료 후 exited를 실제 결과로 비교했습니다.
 
-사용자 직접 Git 실습: [Git 설정·연동·제출 기록](docs/evidence/14-user-git.md). 계정·기본 브랜치·원격 설정을 확인했습니다. less 보기 화면 복구 후 나머지 조회와 VS Code·최종 업로드를 이어서 확인합니다.
+사용자 직접 Git 실습: [Git 설정·연동·제출 기록](docs/evidence/14-user-git.md). 계정·기본 브랜치·현재 main·원격·수정 파일·PowerShell 버전 조회를 완료했습니다. VS Code 증거와 HTML 수정본의 직접 커밋·푸시는 이어서 수행합니다.
 
 문제 해결 과정: [트러블슈팅](docs/troubleshooting.md).
 
