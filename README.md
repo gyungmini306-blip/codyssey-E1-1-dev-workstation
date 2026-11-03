@@ -15,6 +15,8 @@ curl.exe -i http://127.0.0.1:8083/healthz
 
 브라우저에서 `http://localhost:8083/`을 엽니다. 확인을 마치면 `docker compose -p e1-1-bonus down`으로 종료합니다.
 
+위 명령은 복제한 저장소의 루트에서 실행합니다. `127.0.0.1`에 연결한 포트는 같은 PC에서 접속할 때 사용합니다. 이미 포트를 쓰는 서버가 있으면 `netstat -ano | findstr :8083`으로 점유 상태를 확인하고, `compose.yaml`에서 PC 쪽 포트만 빈 번호로 바꾼 뒤 접속 주소에도 같은 번호를 사용합니다.
+
 ## 수행 체크리스트
 - [x] 터미널 조작과 파일·폴더 권한 변경
 - [x] Docker 설치·점검, 이미지·컨테이너 운영, Ubuntu 셸 진입
@@ -80,6 +82,46 @@ curl.exe -i http://127.0.0.1:8083/healthz
 
 *두 `curl.exe` 응답에서 V2와 V1을 비교하고, 마지막 `cat` 아래에서 새 컨테이너가 읽은 메모를 확인할 수 있습니다.*
 
+##### 현재 저장소로 HTML 변경을 재현하는 방법
+
+비교에는 버전 번호 대신 **같은 내용에서 시작해 PC 쪽 문구만 바꾸는 방식**을 사용할 수 있습니다. 아래 명령은 PowerShell에서 실행합니다. 별도 Git 작업 폴더를 만들어 제출 파일의 수정본을 보호합니다. `18081`, `18082`가 이미 사용 중이면 다른 빈 호스트 포트로 바꾸고 요청 주소도 맞춥니다.
+
+```powershell
+# 저장소 루트에서 실행
+$repo = (Get-Location).Path
+$lab = Join-Path $repo 'e1-1-mount-demo'
+git worktree add --detach $lab HEAD
+Set-Location $lab
+docker build -t e1-1-mount-demo .
+$appPath = (Resolve-Path .\app).Path
+docker run -d --name e1-1-demo-bind -p 127.0.0.1:18081:80 --mount "type=bind,source=$appPath,target=/usr/share/nginx/html,readonly" e1-1-mount-demo
+docker run -d --name e1-1-demo-copy -p 127.0.0.1:18082:80 e1-1-mount-demo
+
+# 수정 전 두 응답 확인
+curl.exe -fsS http://127.0.0.1:18081/ | Select-String SIMPLE_PAGE
+curl.exe -fsS http://127.0.0.1:18082/ | Select-String SIMPLE_PAGE
+
+# PC 쪽 HTML만 수정하고 같은 두 주소를 다시 조회
+$htmlPath = (Resolve-Path .\app\index.html).Path
+$html = [IO.File]::ReadAllText($htmlPath)
+[IO.File]::WriteAllText($htmlPath, $html.Replace('SIMPLE_PAGE_V2', 'SIMPLE_PAGE_HOST_EDIT').Replace('페이지 버전: 2', 'PC에서 수정한 페이지'))
+curl.exe -fsS http://127.0.0.1:18081/ | Select-String SIMPLE_PAGE
+curl.exe -fsS http://127.0.0.1:18082/ | Select-String SIMPLE_PAGE
+
+# 실습용 컨테이너와 작업 폴더 정리
+docker rm -f e1-1-demo-bind e1-1-demo-copy
+git restore --worktree -- app/index.html
+Set-Location $repo
+git worktree remove $lab
+```
+
+이 절차를 별도 작업 폴더에서 다시 실행한 결과입니다. 두 서버는 같은 이미지로 시작했고 HTML 수정 후에는 재빌드 없이 응답을 확인했습니다.
+
+| 주소 | 수정 전 응답 표식 | 수정 후 응답 표식 |
+|---|---|---|
+| `localhost:18081` · PC 폴더 연결 | `SIMPLE_PAGE_V2` | `SIMPLE_PAGE_HOST_EDIT` |
+| `localhost:18082` · 이미지에 복사 | `SIMPLE_PAGE_V2` | `SIMPLE_PAGE_V2` |
+
 ### 3. Git으로 기록하고 GitHub에 공유하기
 
 VS Code에서 HTML을 V2로 바꾸고 `git add`와 `git commit`으로 내 PC에 변경을 기록했습니다. `git push`로 GitHub에 올렸고, 실제 출력의 `58c49d9..d580e49  main -> main`으로 전송을 확인했습니다. `git config --local --list`에서 사용자 이름과 기본 브랜치를, VS Code 계정 메뉴에서 GitHub 로그인을 확인했습니다. [Git 설정·커밋·푸시의 실제 출력](docs/evidence/14-user-git.md)
@@ -93,6 +135,8 @@ VS Code에서 HTML을 V2로 바꾸고 `git add`와 `git commit`으로 내 PC에 
 *계정 메뉴에 `gyungmini306-blip (GitHub)`이 표시됩니다.*
 
 ## 문제 해결
+
+캡처에는 명령과 결과를 함께 남기고, 브라우저 캡처에는 포트가 포함된 주소창을 넣습니다. 공개할 로그나 캡처에 토큰·비밀번호·개인키·인증 코드가 보이면 가린 뒤 올립니다.
 
 | 문제 | 원인과 확인 | 해결 |
 |---|---|---|
