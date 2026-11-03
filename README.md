@@ -71,6 +71,10 @@ $ rmdir archive
 
 `/root/e1-1/guided-practice`는 루트부터 찾는 절대 경로이고, `archive/memo-renamed.txt`는 현재 폴더를 기준으로 찾는 상대 경로입니다. 목록에서 빈 파일 두 개의 크기가 0이고, 복사본을 지운 뒤 `archive`에 파일이 남지 않은 것을 확인했습니다.
 
+![Ubuntu에서 메모 복사본을 이동하고 삭제한 실제 화면](docs/evidence/21-terminal-copy-move-delete.png)
+
+재실습 화면입니다. 이동 뒤에는 `archive`에 `memo-renamed.txt`가 보이고, 삭제 뒤에는 `.`과 `..`만 남았습니다. 마지막 목록에는 원본 `memo.txt`가 남아 있습니다.
+
 **권한 변경과 실제 출력.** 같은 작업 폴더에서 파일과 디렉터리의 권한을 하나씩 바꾸고 조회했습니다.
 
 ```console
