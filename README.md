@@ -44,9 +44,9 @@ curl.exe -fsS -i --retry 5 --retry-connrefused http://127.0.0.1:18086/healthz
 
 ### 3-1. 터미널과 권한
 
-Ubuntu 컨테이너에서 작업 폴더를 만들고 파일을 복사·이동·삭제했습니다. `/root/e1-1/guided-practice`는 루트부터 시작하는 절대 경로이고, `archive/memo-renamed.txt`는 현재 폴더를 기준으로 찾는 상대 경로입니다.
+원본 메모를 남겨 둔 채 복사본만 정리하기 위해 `cp`로 복사하고, `mv`로 이름과 위치를 바꾼 뒤, `rm`으로 복사본을 삭제했습니다. 아래 마지막 목록에서 `archive`에 복사본이 사라진 것을 확인했습니다. `/root/e1-1/guided-practice`는 루트부터 시작하는 절대 경로이고, `archive/memo-renamed.txt`는 현재 폴더를 기준으로 찾는 상대 경로입니다.
 
-실제 파일 목록에서 작업과 관련된 행을 발췌했습니다.
+아래는 실제 명령과 파일 목록에서 관련 부분을 발췌한 기록입니다.
 
 ```console
 $ cp memo.txt memo-copy.txt
@@ -63,6 +63,8 @@ drwxr-xr-x 2 root root 4096 Nov  3 00:09 .
 drwxr-xr-x 3 root root 4096 Nov  3 00:09 ..
 ```
 
+파일을 읽는 권한과 디렉토리에 들어가는 권한이 어떻게 달라지는지 확인하기 위해, `chmod`로 권한을 바꾸고 `ls`로 비교했습니다.
+
 | 대상 | 변경 명령 | 조회 결과 |
 |---|---|---|
 | 파일 | `chmod 600 memo.txt` → `chmod 644 memo.txt` | `ls -l memo.txt`에서 `-rw-------` → `-rw-r--r--` |
@@ -73,6 +75,8 @@ drwxr-xr-x 3 root root 4096 Nov  3 00:09 ..
 ![실습 파일 목록과 최종 권한](docs/evidence/17-cmd-terminal.png)
 
 ### 3-2. Docker 설치·운영과 셸 종료
+
+웹 서버를 빌드하기 전에 Docker 명령이 엔진과 통신하고 컨테이너를 실행할 수 있는지 확인했습니다. 이후에는 상태·로그·리소스를 각각 조회해 실행 여부와 실제 응답을 확인했습니다.
 
 | 확인한 것 | 명령과 결과 |
 |---|---|
@@ -85,7 +89,7 @@ drwxr-xr-x 3 root root 4096 Nov  3 00:09 ..
 
 ### 3-3. 커스텀 이미지와 포트 매핑
 
-**웹 서버 베이스 이미지 활용 방식(A)**을 선택했습니다. `nginx:stable-alpine`은 정적 HTML을 제공할 NGINX를 포함합니다. [Dockerfile](Dockerfile)은 [웹 파일](app/)을 NGINX의 문서 폴더에 복사하고, [서버 설정](nginx.conf)으로 페이지 위치와 `/healthz` 응답을 정의합니다. `HEALTHCHECK`로 NGINX가 실제로 응답하는지 점검합니다.
+**웹 서버 베이스 이미지 활용 방식(A)**을 선택했습니다. `nginx:stable-alpine`에는 정적 HTML을 제공할 NGINX가 들어 있어, 실습 페이지와 서버 설정을 추가하는 데 집중할 수 있습니다. [Dockerfile](Dockerfile)은 [웹 파일](app/)을 NGINX의 문서 폴더에 복사하고, [서버 설정](nginx.conf)으로 페이지 위치와 `/healthz` 응답을 정의합니다. `HEALTHCHECK`로 NGINX가 실제로 응답하는지 점검합니다.
 
 ```console
 PS> docker build --progress=plain -t codyssey-workstation:1.0 .
@@ -96,7 +100,7 @@ HTTP/1.1 200 OK
 ok
 ```
 
-PC의 `8080`으로 들어온 요청은 컨테이너 안의 `80`으로 전달됩니다. [최초 빌드·실행 기록](docs/evidence/07-web-server.md) · [직접 실행한 이미지 빌드 기록](docs/evidence/11-user-bind.md)
+브라우저에서 컨테이너 안의 NGINX에 접속하기 위해 PC의 `8080`과 컨테이너의 `80`을 연결했습니다. PC에서 보낸 요청에 `200 OK`와 `ok`가 돌아와 이 연결이 동작하는 것을 확인했습니다. [최초 빌드·실행 기록](docs/evidence/07-web-server.md) · [직접 실행한 이미지 빌드 기록](docs/evidence/11-user-bind.md)
 
 별도 재실습에서는 PowerShell에서 아래 두 줄을 `Dockerfile`로 직접 저장하고, `docker build -t e1-1-replay .`를 실행했습니다. 빌드 출력에 `naming to docker.io/library/e1-1-replay:latest`가 표시됐고, 컨테이너를 실행한 뒤 `localhost:8084`에서 `Hello Docker`를 확인했습니다.
 
@@ -108,6 +112,8 @@ COPY index.html /usr/share/nginx/html/index.html
 당시 웹 접속에 사용한 8080과 바인드 마운트 서버의 8081을 주소창에서 확인할 수 있습니다. [브라우저 접속 캡처](docs/evidence/15-browser.md)를 보관했습니다.
 
 ### 3-4. 바인드 마운트와 볼륨
+
+두 가지를 따로 검증했습니다. HTML 비교에서는 바인드 마운트가 변경 반영에 미치는 영향을 보려고 **같은 이미지로 시작해 폴더 연결 여부만** 다르게 설정했습니다. 데이터 보존 실험에서는 컨테이너가 바뀌어도 메모를 읽을 수 있는지 보려고 **컨테이너만 교체하고 볼륨은 그대로** 연결했습니다.
 
 | 검증 | 비교 방법 | 결과 |
 |---|---|---|
