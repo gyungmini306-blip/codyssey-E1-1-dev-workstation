@@ -4,6 +4,8 @@
 
 ![브라우저 접속 결과. 기존 서버 8080은 V1, PC 파일을 연결한 서버 8081은 V2](docs/evidence/15-browser-addresses.png)
 
+*주소창과 페이지 버전을 함께 보면 됩니다. 왼쪽은 기존 서버 `8080`의 V1, 오른쪽은 PC 파일을 연결한 `8081`의 V2입니다.*
+
 ## 빠른 실행
 
 Windows에서 Docker Desktop을 켜고 CMD에서 실행합니다. 실습 환경은 Windows 11 · Windows Terminal(CMD/PowerShell) · Ubuntu 컨테이너(Bash), Docker 29.9.2, Compose 5.6.1, Git 2.52.0입니다.
@@ -46,6 +48,10 @@ curl.exe -i http://127.0.0.1:8083/healthz
 아래 코드 블록은 실습 당시 출력의 발췌입니다. 빠른 실행은 새 환경에서 재현할 때 사용하는 명령입니다.
 
 ### 터미널과 권한
+
+![CMD에서 ls와 cat을 실행한 화면](docs/evidence/17-cmd-terminal.png)
+
+**화면에서 볼 곳** — `ls -la` 아래의 `memo.txt`는 `-rw-r--r--`(644), `permissions-dir`은 `drwxr-xr-x`(755)입니다. 마지막 `cat` 아래에는 파일에 적은 내용이 나옵니다. 이 화면은 최종 상태이고, 변경 전후의 명령과 출력은 아래에 있습니다.
 
 절대 경로 `/root/e1-1/guided-practice`는 현재 위치와 관계없이 같은 폴더를 가리킵니다. 상대 경로 `archive/memo-renamed.txt`는 현재 폴더를 기준으로 찾습니다. 권한 숫자는 읽기(4), 쓰기(2), 실행 또는 디렉토리 진입(1)을 더한 값입니다. `644`는 소유자가 읽고 쓸 수 있고, `755`는 다른 사용자도 읽고 진입할 수 있습니다.
 
@@ -290,6 +296,10 @@ ok
 
 ### 바인드 마운트와 COPY 비교
 
+![CMD에서 확인한 두 서버의 버전과 볼륨 메모](docs/evidence/17-cmd-docker.png)
+
+**화면에서 볼 곳** — `docker ps`에는 두 서버가 각각 `8081 → 80`, `8082 → 80`으로 연결돼 있습니다. 바로 아래 `curl` 결과에서 **8081은 V2, 8082는 V1**입니다. 맨 아래 `cat /data/memo.txt` 결과는 새 컨테이너에서 다시 읽은 볼륨 메모입니다.
+
 ```powershell
 PS> docker run -d --name e1-1-copy-guide -p 127.0.0.1:8082:80 codyssey-workstation:student-1
 5e144b9a442f062a6bc7e4a0130863bb85866f327bc17a38ea88642c5c038665
@@ -315,9 +325,7 @@ CONTAINER ID   IMAGE                            COMMAND                   CREATE
 5e144b9a442f   codyssey-workstation:student-1   "/docker-entrypoint.…"   About a minute ago   Up About a minute (healthy)   127.0.0.1:8082->80/tcp   e1-1-copy-guide
 ```
 
-수정 전에는 두 서버가 V1을 반환했습니다. HTML만 바꾼 뒤 `8081`은 V2, `8082`는 V1이었습니다. CMD 화면의 두 응답 줄에서 확인할 수 있습니다.
-
-![CMD에서 확인한 두 서버의 버전과 볼륨 메모](docs/evidence/17-cmd-docker.png)
+수정 전에는 두 서버가 V1을 반환했습니다. HTML만 바꾼 뒤 `8081`은 V2, `8082`는 V1이었습니다.
 
 ### 볼륨 생성·삭제·재연결
 
@@ -355,6 +363,10 @@ E1-1-volume-proof
 ```
 
 ### Git 설정과 GitHub 연결
+
+![CMD에서 git log와 git ls-remote를 실행한 화면](docs/evidence/17-cmd-git.png)
+
+**화면에서 볼 곳** — `git log` 아래에 HTML을 V2로 바꾼 실습 커밋 `d580e49`가 보입니다. `git ls-remote` 아래에는 캡처 당시 GitHub의 `main` 커밋이 표시됩니다.
 
 ```console
 CMD> git --version
@@ -407,6 +419,10 @@ PS> git status --short --branch
 ![VS Code에 표시된 GitHub 계정](docs/evidence/14-vscode-github.png)
 
 ### 보너스 Docker Compose
+
+![CMD에서 열어 본 기존 Compose 실습 기록](docs/evidence/17-cmd-compose.png)
+
+**화면에서 볼 곳** — 이 화면은 CMD에서 기존 PowerShell 로그를 열어 본 것입니다. `GET /healthz` 옆의 `200`은 정상 응답이고, `down` 뒤 `ps -a`에 표 제목만 보이는 것은 프로젝트 컨테이너가 정리됐다는 뜻입니다.
 
 ```text
 PS> docker compose version
