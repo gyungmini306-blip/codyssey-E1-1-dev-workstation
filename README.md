@@ -1,23 +1,40 @@
-# E1-1 · 개발 작업실
+# Codyssey E1-1 · 개발 작업실
 
-다른 사람도 같은 방법으로 웹 서버를 실행할 수 있도록 Docker로 환경을 만들고, 접속·파일 수정·데이터 보존을 직접 확인했습니다.
+**내 PC에서 띄운 웹 서버를 다른 사람도 같은 방법으로 실행할 수 있게 만든 실습입니다.** Ubuntu에서 파일과 권한을 다루고, Docker로 NGINX를 실행한 뒤 접속·HTML 수정·데이터 보존을 확인했습니다.
+
+[빠른 실행](#실행-환경과-빠른-실행) · [실습 결과](#본과제-실습과-검증-결과) · [문제 해결](#문제-해결) · [Compose 보너스](#보너스-1번--docker-compose-기초)
+
+## 결과 한눈에 보기
+
+| 확인한 것 | 실습에서 나온 결과 |
+|---|---|
+| **웹 접속** | 내 PC의 `8080`번을 컨테이너의 `80`번에 연결하니 브라우저에서 페이지가 열렸습니다. |
+| **HTML 수정** | PC 파일을 직접 읽는 **8081은 V2**, 이미지에 복사한 파일을 읽는 **8082는 V1**을 보여줬습니다. |
+| **데이터 보존** | 컨테이너를 교체한 뒤 같은 볼륨을 연결하니 `E1-1-volume-proof`가 다시 나왔습니다. |
 
 ## 실행 환경과 빠른 실행
 
-Windows에서 Docker Desktop을 켜고 CMD에서 실행합니다. 실습 환경은 Windows 11 · Windows Terminal(CMD/PowerShell) · Ubuntu 컨테이너(Bash), Docker 29.9.2, Compose 5.6.1, Git 2.52.0입니다.
+| 구분 | 실습 환경 |
+|---|---|
+| 운영체제·터미널 | Windows 11 · Windows Terminal |
+| 셸 | PowerShell · CMD · Ubuntu 컨테이너의 Bash |
+| 도구 | Docker 29.9.2 · Compose 5.6.1 · Git 2.52.0 |
 
-```cmd
+Docker Desktop을 켜고 PowerShell에서 아래 명령을 실행합니다.
+
+```powershell
 git clone https://github.com/gyungmini306-blip/codyssey-E1-1-dev-workstation.git
 cd codyssey-E1-1-dev-workstation
 docker compose -p e1-1-bonus up -d --build --wait
 curl.exe -i http://127.0.0.1:8083/healthz
 ```
 
-브라우저에서 `http://localhost:8083/`을 엽니다. 확인을 마치면 `docker compose -p e1-1-bonus down`으로 종료합니다.
+**정상 실행 결과:** 상태 확인 요청에 `HTTP/1.1 200 OK`와 본문 `ok`가 반환됩니다. 브라우저에서 `http://localhost:8083/`을 엽니다. 확인을 마치면 `docker compose -p e1-1-bonus down`으로 종료합니다.
 
 위 명령은 복제한 저장소의 루트에서 실행합니다. `127.0.0.1`에 연결한 포트는 같은 PC에서 접속할 때 사용합니다. 이미 포트를 쓰는 서버가 있으면 `netstat -ano | findstr :8083`으로 점유 상태를 확인하고, `compose.yaml`에서 PC 쪽 포트만 빈 번호로 바꾼 뒤 접속 주소에도 같은 번호를 사용합니다.
 
 ## 수행 체크리스트
+
 - [x] 터미널 조작과 파일·폴더 권한 변경
 - [x] Docker 설치·점검, 이미지·컨테이너 운영, Ubuntu 셸 진입
 - [x] Dockerfile 빌드·실행, 포트 접속, 바인드 마운트와 볼륨 검증
