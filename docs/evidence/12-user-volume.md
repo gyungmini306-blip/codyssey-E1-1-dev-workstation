@@ -23,6 +23,41 @@ E1-1-volume-proof
 - sleep infinity는 주 프로세스를 유지해 이후 exec로 명령을 실행할 수 있게 한다.
 - /data/memo.txt에 쓴 문장이 cat에서 동일하게 출력됐다. 이 값이 삭제 후 비교할 기준 데이터다.
 
+## 12-B. 기존 컨테이너 삭제와 볼륨 잔존 확인
+
+사용자가 이어서 실행한 실제 명령과 출력이다.
+
+```powershell
+PS> docker stop e1-1-volume-before
+e1-1-volume-before
+PS> docker rm e1-1-volume-before
+e1-1-volume-before
+PS> docker ps -a --filter name=e1-1-volume-before
+CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES
+PS> docker volume ls --filter name=e1-1-user-data
+DRIVER    VOLUME NAME
+local     e1-1-user-data
+```
+
+컨테이너 목록에는 헤더만 표시되어 기존 before 컨테이너가 제거됐음을 확인했다. 볼륨 목록에는 e1-1-user-data가 남아 있다.
+
+## 12-C. 새 컨테이너에 같은 볼륨 연결 후 읽기
+
+```powershell
+PS> $volumeMount = "type=volume,source=e1-1-user-data,target=/data"
+PS> docker run -d --name e1-1-volume-after --mount $volumeMount ubuntu:24.04 sleep infinity
+91ff958c97f598400a36d7de5c44b38a9b530b320cb4e7e514ea185c151ad9b4
+PS> docker exec e1-1-volume-after cat /data/memo.txt
+E1-1-volume-proof
+```
+
+| 비교 | 컨테이너 | 내용 |
+|---|---|---|
+| 삭제 전 | e1-1-volume-before / 77d4a4244955… | E1-1-volume-proof |
+| 삭제 후 새 연결 | e1-1-volume-after / 91ff958c97f5… | E1-1-volume-proof |
+
+서로 다른 ID와 이름의 컨테이너에서 같은 파일 내용이 읽혔다. after 컨테이너에서는 파일을 새로 작성하지 않았고, 같은 이름의 볼륨을 다시 연결했다. 컨테이너 수명과 볼륨 데이터의 수명이 분리됨을 실제 결과로 확인했다.
+
 ## 현재 수행 상태
 
-이름 있는 볼륨 생성, 첫 컨테이너 연결, 메모 저장·읽기까지 확인했다. 아직 컨테이너 삭제와 새 컨테이너 재연결 결과를 받지 않았으므로 영속성 검증 전체를 완료 표시하지 않는다.
+볼륨 생성·연결·메모 저장과 읽기, 첫 컨테이너 중지·삭제, 볼륨 잔존, 새 컨테이너 재연결·동일 메모 읽기를 모두 사용자 직접 출력으로 확인했다. 볼륨 영속성 검증을 완료했다. 볼륨 자체는 삭제하지 않고 남겨두었다.
