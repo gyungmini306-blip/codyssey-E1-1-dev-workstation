@@ -23,8 +23,24 @@ Docker Desktop을 켜고 아래 명령을 실행합니다.
 git clone https://github.com/gyungmini306-blip/codyssey-E1-1-dev-workstation.git
 cd codyssey-E1-1-dev-workstation
 docker compose -p e1-1-bonus up -d --build --wait
-curl.exe -i http://127.0.0.1:8083/healthz
+curl.exe -fsS -i http://127.0.0.1:8083/healthz
 ```
+
+### 실제 실행 결과
+
+실습 당시 PowerShell 출력에서 핵심 줄만 발췌했습니다.
+
+```console
+PS> docker compose -p e1-1-bonus up -d --build --wait
+Image e1-1-bonus-web Built
+Container e1-1-bonus-web-1 Healthy
+
+PS> curl.exe -fsS -i http://127.0.0.1:8083/healthz
+HTTP/1.1 200 OK
+ok
+```
+
+`Built`는 이미지가 만들어졌고, `Healthy`는 컨테이너의 상태 확인을 통과했다는 뜻입니다. `200 OK`와 응답 본문의 `ok`는 내 PC에서 `8083`번으로 보낸 요청에 서버가 응답했음을 보여줍니다.
 
 브라우저에서 `http://localhost:8083/`을 엽니다. 확인이 끝나면 `docker compose -p e1-1-bonus down`으로 종료합니다. `8083`은 빠른 실행에 쓰는 포트이고, 아래의 `8080`~`8082`는 원래 실습에 사용한 포트입니다.
 
