@@ -45,7 +45,7 @@ curl.exe -i http://127.0.0.1:8083/healthz
 
 ## 실제 명령과 결과
 
-아래 코드 블록은 실습 당시 출력의 발췌입니다. 빠른 실행은 새 환경에서 재현할 때 사용하는 명령입니다.
+아래 코드 블록은 실습 당시 명령과 핵심 출력입니다. 반복 줄과 긴 ID는 줄였습니다. 빠른 실행은 새 환경에서 재현할 때 사용하는 명령입니다.
 
 ### 터미널과 권한
 
@@ -57,29 +57,23 @@ curl.exe -i http://127.0.0.1:8083/healthz
 
 ```console
 PS> docker exec -it e1-1-ubuntu bash
-root@9e28c1505a09:/# mkdir -p /root/e1-1/guided-practice
-root@9e28c1505a09:/# cd /root/e1-1/guided-practice
-root@9e28c1505a09:~/e1-1/guided-practice# pwd
+$ mkdir -p /root/e1-1/guided-practice
+$ cd /root/e1-1/guided-practice
+$ pwd
 /root/e1-1/guided-practice
-root@9e28c1505a09:~/e1-1/guided-practice# touch empty.txt .hidden-note
-root@9e28c1505a09:~/e1-1/guided-practice# echo "E1-1 terminal practice" > memo.txt
-root@9e28c1505a09:~/e1-1/guided-practice# ls -la
-total 12
-drwxr-xr-x 2 root root 4096 Nov  3 00:05 .
-drwxr-xr-x 3 root root 4096 Nov  3 00:05 ..
+$ touch empty.txt .hidden-note
+$ echo "E1-1 terminal practice" > memo.txt
+$ ls -la
 -rw-r--r-- 1 root root    0 Nov  3 00:05 .hidden-note
 -rw-r--r-- 1 root root    0 Nov  3 00:05 empty.txt
 -rw-r--r-- 1 root root   23 Nov  3 00:05 memo.txt
-root@9e28c1505a09:~/e1-1/guided-practice# cat memo.txt
+$ cat memo.txt
 E1-1 terminal practice
 ```
 
 ```console
 $ cp memo.txt memo-copy.txt
 $ ls -la
-total 16
-drwxr-xr-x 2 root root 4096 Nov  3 00:08 .
-drwxr-xr-x 3 root root 4096 Nov  3 00:05 ..
 -rw-r--r-- 1 root root    0 Nov  3 00:05 .hidden-note
 -rw-r--r-- 1 root root    0 Nov  3 00:05 empty.txt
 -rw-r--r-- 1 root root   23 Nov  3 00:08 memo-copy.txt
@@ -88,9 +82,6 @@ $ mkdir -p archive
 $ ls- la
 bash: ls-: command not found
 $ ls -la
-total 20
-drwxr-xr-x 3 root root 4096 Nov  3 00:08 .
-drwxr-xr-x 3 root root 4096 Nov  3 00:05 ..
 -rw-r--r-- 1 root root    0 Nov  3 00:05 .hidden-note
 drwxr-xr-x 2 root root 4096 Nov  3 00:08 archive
 -rw-r--r-- 1 root root    0 Nov  3 00:05 empty.txt
@@ -98,35 +89,20 @@ drwxr-xr-x 2 root root 4096 Nov  3 00:08 archive
 -rw-r--r-- 1 root root   23 Nov  3 00:05 memo.txt
 $ mv memo-copy.txt archive/memo-renamed.txt
 $ ls -la
-total 16
-drwxr-xr-x 3 root root 4096 Nov  3 00:09 .
-drwxr-xr-x 3 root root 4096 Nov  3 00:05 ..
 -rw-r--r-- 1 root root    0 Nov  3 00:05 .hidden-note
 drwxr-xr-x 2 root root 4096 Nov  3 00:09 archive
 -rw-r--r-- 1 root root    0 Nov  3 00:05 empty.txt
 -rw-r--r-- 1 root root   23 Nov  3 00:05 memo.txt
 $ cd archive
 $ ls -la
-total 12
-drwxr-xr-x 2 root root 4096 Nov  3 00:09 .
-drwxr-xr-x 3 root root 4096 Nov  3 00:09 ..
 -rw-r--r-- 1 root root   23 Nov  3 00:08 memo-renamed.txt
 $ cd ..
 $ ls -la archive
-total 12
-drwxr-xr-x 2 root root 4096 Nov  3 00:09 .
-drwxr-xr-x 3 root root 4096 Nov  3 00:09 ..
 -rw-r--r-- 1 root root   23 Nov  3 00:08 memo-renamed.txt
 $ rm archive/memo-renamed.txt
 $ ls -la archive
-total 8
-drwxr-xr-x 2 root root 4096 Nov  3 00:09 .
-drwxr-xr-x 3 root root 4096 Nov  3 00:09 ..
 $ rmdir archive
 $ ls -la
-total 12
-drwxr-xr-x 2 root root 4096 Nov  3 00:09 .
-drwxr-xr-x 3 root root 4096 Nov  3 00:05 ..
 -rw-r--r-- 1 root root    0 Nov  3 00:05 .hidden-note
 -rw-r--r-- 1 root root    0 Nov  3 00:05 empty.txt
 -rw-r--r-- 1 root root   23 Nov  3 00:05 memo.txt
@@ -163,37 +139,28 @@ Unable to find image 'hello-world:latest' locally
 latest: Pulling from library/hello-world
 4f55086f7dd0: Pull complete
 d5e71e642bf5: Download complete
-Digest: sha256:c567b231f65614688711a75f31518a064258a51d442117a3e771a3a8fdba78ef
+Digest: sha256:c567b231f656…
 Status: Downloaded newer image for hello-world:latest
-
 Hello from Docker!
 This message shows that your installation appears to be working correctly.
 [이후 안내문 생략]
-
 PS> docker ps
-CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES
-
 PS> docker ps -a
-CONTAINER ID   IMAGE         COMMAND    CREATED          STATUS                      PORTS     NAMES
 30df56aa1c4b   hello-world   "/hello"   11 seconds ago   Exited (0) 10 seconds ago             e1-1-hello
 ```
 
 ```powershell
 PS> docker info --format 'ServerVersion={{.ServerVersion}} OSType={{.OSType}}'
 ServerVersion=29.9.2 OSType=linux
-
 PS> docker images --digests hello-world
-REPOSITORY    TAG       DIGEST                                                                    IMAGE ID       CREATED        SIZE
-hello-world   latest    sha256:c567b231f65614688711a75f31518a064258a51d442117a3e771a3a8fdba78ef   c567b231f656   7 months ago   25.9kB
-
+hello-world   latest    sha256:c567b231f656…   c567b231f656   7 months ago   25.9kB
 PS> docker inspect e1-1-hello --format '{{.Id}} {{.Config.Image}} {{.State.Status}} exit={{.State.ExitCode}}'
-30df56aa1c4ba9ddcb044cafdd8542b172a1b4b9a1ffefaf6277678ba2db12d4 hello-world exited exit=0
+30df56aa1c4b… hello-world exited exit=0
 ```
 
 ```powershell
 PS> docker images codyssey-workstation
                                                     i Info →   U  In Use
-IMAGE                   ID             DISK USAGE   CONTENT SIZE   EXTRA
 codyssey-workstation:1.0
                         47411e29e641       92.7MB         26.1MB    U
 codyssey-workstation:2.0
@@ -206,7 +173,6 @@ codyssey-workstation:student-1
 
 ```powershell
 PS> docker ps -a
-CONTAINER ID   IMAGE                            COMMAND                  CREATED          STATUS                    PORTS                    NAMES
 91ff958c97f5   ubuntu:24.04                     "sleep infinity"         2 minutes ago    Up 2 minutes                                       e1-1-volume-after
 9fdf6ee013be   codyssey-workstation:student-1   "/docker-entrypoint.…"   15 minutes ago   Up 15 minutes (healthy)   127.0.0.1:8081->80/tcp   e1-1-bind-guide
 5e144b9a442f   codyssey-workstation:student-1   "/docker-entrypoint.…"   16 minutes ago   Up 16 minutes (healthy)   127.0.0.1:8082->80/tcp   e1-1-copy-guide
@@ -218,15 +184,13 @@ eed7564ae9ed   codyssey-workstation:1.0         "/docker-entrypoint.…"   21 ho
 
 ```powershell
 PS> docker stats --no-stream e1-1-bind-guide
-CONTAINER ID   NAME              CPU %     MEM USAGE / LIMIT     MEM %     NET I/O           BLOCK I/O        PIDS
 9fdf6ee013be   e1-1-bind-guide   0.00%     8.945MiB / 7.527GiB   0.12%     16.7kB / 72.2kB   868kB / 8.19kB   9
 ```
 
 ```console
 PS> docker run -dit --name e1-1-shell-guide ubuntu:24.04 bash
-be12c0450ba9f86acf1ba8fc5634f202f9d306755471fb446ef1dbd156c2e05c
 PS> docker exec -it e1-1-shell-guide bash
-root@be12c0450ba9:/# echo "additional shell opened by exec"
+$ echo "additional shell opened by exec"
 exit
 additional shell opened by exec
 exit
@@ -236,7 +200,7 @@ true
 
 ```console
 PS> docker attach e1-1-shell-guide
-root@be12c0450ba9:/# exit
+$ exit
 exit
 PS> docker inspect e1-1-shell-guide --format '{{.State.Status}}'
 exited
@@ -261,36 +225,15 @@ PS> docker build --progress=plain -t codyssey-workstation:1.0 .
 
 ```powershell
 PS> docker run -d --name codyssey-web -p 127.0.0.1:8080:80 codyssey-workstation:1.0
-eed7564ae9ed46f40f1881785db85794623b222c3935d314769f93532e5097ef
-
 PS> docker ps --filter name=codyssey-web
-CONTAINER ID   IMAGE                      COMMAND                  CREATED          STATUS                    PORTS                    NAMES
 eed7564ae9ed   codyssey-workstation:1.0   "/docker-entrypoint.…"   34 seconds ago   Up 33 seconds (healthy)   127.0.0.1:8080->80/tcp   codyssey-web
-
 PS> docker inspect codyssey-web --format '{{.State.Health.Status}}'
 healthy
 ```
 
 ```powershell
-PS> curl.exe -i --max-time 15 http://localhost:8080/
-HTTP/1.1 200 OK
-Server: nginx/1.30.6
-Date: Mon, 02 Nov 2026 03:59:14 GMT
-Content-Type: text/html
-Content-Length: 2229
-[나머지 헤더 및 HTML 중간 부분 생략]
-  <title>Codyssey E1-1 · Dev Workstation Lab</title>
-    <h1>나의 개발 작업실</h1>
-    <p class="marker" id="mount-marker">콘텐츠 버전: WORKSTATION_V1</p>
-
 PS> curl.exe -i --max-time 15 http://localhost:8080/healthz
 HTTP/1.1 200 OK
-Server: nginx/1.30.6
-Date: Mon, 02 Nov 2026 03:59:15 GMT
-Content-Type: text/plain
-Content-Length: 3
-Connection: keep-alive
-
 ok
 ```
 
@@ -302,25 +245,9 @@ ok
 
 ```powershell
 PS> docker run -d --name e1-1-copy-guide -p 127.0.0.1:8082:80 codyssey-workstation:student-1
-5e144b9a442f062a6bc7e4a0130863bb85866f327bc17a38ea88642c5c038665
-
-PS> $appPath = (Resolve-Path .\app).Path
-PS> docker run -d --name e1-1-bind-guide -p 127.0.0.1:8081:80 ==mount
-docker: invalid reference format
-
-PS> docker run -d --name e1-1-bind-guide -p 127.0.0.1:8081:80 --mount
-flag needs an argument: --mount
-
-PS> "type=bind,source=$appPath,target=/usr/share/nginx/html,readonly" codyssey-workstation:student-1
-식 또는 문에서 예기치 않은 'codyssey-workstation:student-1' 토큰입니다.
-[ParserError / UnexpectedToken: 위치 표시 등 중간 출력 생략]
-
 PS> $appPath = (Resolve-Path .\app).Path
 PS> docker run -d --name e1-1-bind-guide -p 127.0.0.1:8081:80 --mount "type=bind,source=$appPath,target=/usr/share/nginx/html,readonly" codyssey-workstation:student-1
-9fdf6ee013be8740e6d2e557f52e9ece75de503524217568cef9416bb83ff45d
-
 PS> docker ps --filter name=guide
-CONTAINER ID   IMAGE                            COMMAND                   CREATED              STATUS                        PORTS                    NAMES
 9fdf6ee013be   codyssey-workstation:student-1   "/docker-entrypoint.…"   15 seconds ago       Up 14 seconds (healthy)       127.0.0.1:8081->80/tcp   e1-1-bind-guide
 5e144b9a442f   codyssey-workstation:student-1   "/docker-entrypoint.…"   About a minute ago   Up About a minute (healthy)   127.0.0.1:8082->80/tcp   e1-1-copy-guide
 ```
@@ -332,11 +259,8 @@ CONTAINER ID   IMAGE                            COMMAND                   CREATE
 ```powershell
 PS> docker volume create e1-1-user-data
 e1-1-user-data
-
 PS> $volumeMount = "type=volume,source=e1-1-user-data,target=/data"
 PS> docker run -d --name e1-1-volume-before --mount $volumeMount ubuntu:24.04 sleep infinity
-77d4a42449559c220892e446f3b117a622b57398cb5ae41cf716ccf6187ad886
-
 PS> docker exec e1-1-volume-before sh -c 'echo E1-1-volume-proof > /data/memo.txt'
 PS> docker exec e1-1-volume-before cat /data/memo.txt
 E1-1-volume-proof
@@ -350,14 +274,12 @@ e1-1-volume-before
 PS> docker ps -a --filter name=e1-1-volume-before
 CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES
 PS> docker volume ls --filter name=e1-1-user-data
-DRIVER    VOLUME NAME
 local     e1-1-user-data
 ```
 
 ```powershell
 PS> $volumeMount = "type=volume,source=e1-1-user-data,target=/data"
 PS> docker run -d --name e1-1-volume-after --mount $volumeMount ubuntu:24.04 sleep infinity
-91ff958c97f598400a36d7de5c44b38a9b530b320cb4e7e514ea185c151ad9b4
 PS> docker exec e1-1-volume-after cat /data/memo.txt
 E1-1-volume-proof
 ```
@@ -372,48 +294,19 @@ E1-1-volume-proof
 CMD> git --version
 git version 2.52.0.windows.1
 CMD> git config --local --list
-core.repositoryformatversion=0
-core.filemode=false
-core.bare=false
-core.logallrefupdates=true
-core.symlinks=false
-core.ignorecase=true
-core.autocrlf=input
 remote.origin.url=https://github.com/gyungmini306-blip/codyssey-E1-1-dev-workstation.git
-remote.origin.fetch=+refs/heads/*:refs/remotes/origin/*
-branch.main.remote=origin
-branch.main.merge=refs/heads/main
 init.defaultbranch=main
 user.email=[마스킹]
 user.name=gyungmini306-blip
-credential.https://github.com.username=gyungmini306-blip
 ```
 
 ```powershell
-PS> git --no-pager diff -- app/index.html
-warning: in the working copy of 'app/index.html', CRLF will be replaced by LF the next time Git touches it
-[V1 → V2 한 줄 변경의 diff 본문 생략: 위 링크 참고]
-
-PS> git add app/index.html
-warning: in the working copy of 'app/index.html', CRLF will be replaced by LF the next time Git touches it
-PS> git --no-pager diff --cached --stat
- app/index.html | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 PS> git commit -m "Update practice page to version 2"
 [main d580e49] Update practice page to version 2
- 1 file changed, 1 insertion(+), 1 deletion(-)
 PS> git push
-Enumerating objects: 7, done.
-Counting objects: 100% (7/7), done.
-Delta compression using up to 8 threads
-Compressing objects: 100% (4/4), done.
-Writing objects: 100% (4/4), 386 bytes | 386.00 KiB/s, done.
-Total 4 (delta 3), reused 0 (delta 0), pack-reused 0 (from 0)
-remote: Resolving deltas: 100% (3/3), completed with 3 local objects.
 To https://github.com/gyungmini306-blip/codyssey-E1-1-dev-workstation.git
    58c49d9..d580e49  main -> main
 PS> git status --short --branch
-## main...origin/main
 ```
 
 ![VS Code에 표시된 GitHub 계정](docs/evidence/14-vscode-github.png)
