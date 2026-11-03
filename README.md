@@ -2,7 +2,7 @@
 
 **내 PC에서 띄운 웹 서버를 다른 사람도 같은 방법으로 실행할 수 있게 만든 실습입니다.** Ubuntu에서 파일과 권한을 다루고, Docker로 NGINX를 실행한 뒤 접속·HTML 수정·데이터 보존을 확인했습니다.
 
-[빠른 실행](#실행-환경과-빠른-실행) · [실습 결과](#본과제-실습과-검증-결과) · [문제 해결](#문제-해결) · [Compose 보너스](#보너스-1번--docker-compose-기초)
+[빠른 실행](#실행-환경과-빠른-실행) · [실습 명령어](#실습-명령어-한눈에-보기) · [실습 결과](#본과제-실습과-검증-결과) · [문제 해결](#문제-해결) · [Compose 보너스](#보너스-1번--docker-compose-기초)
 
 ## 결과 한눈에 보기
 
@@ -40,6 +40,22 @@ curl.exe -i http://127.0.0.1:8083/healthz
 - [x] Dockerfile 빌드·실행, 포트 접속, 바인드 마운트와 볼륨 검증
 - [x] Git 설정·푸시 및 VS Code GitHub 연결
 - [x] 보너스 Compose 단일 서비스 실행·종료
+
+## 실습 명령어 한눈에 보기
+
+실습에서 사용한 명령을 하는 일별로 묶었습니다. 실행에 필요한 전체 옵션과 출력은 오른쪽의 실습 기록에서 확인할 수 있습니다.
+
+| 실습 | 사용한 명령 | 하는 일과 확인한 결과 |
+|---|---|---|
+| **파일 조작** | `pwd` · `mkdir` · `cd` · `touch` · `echo` · `ls -la` · `cat` · `cp` · `mv` · `rm` · `rmdir` | 폴더를 만들고 파일을 복사·이동·삭제했습니다. 마지막 목록에 원본 파일이 남았습니다. [파일 조작 출력](docs/evidence/10-user-terminal.md) |
+| **파일·폴더 권한** | `chmod` · `ls -l` · `ls -ld` | 권한을 바꾼 뒤 상세 목록에서 파일의 600 → 644, 폴더의 700 → 755를 확인했습니다. [권한 변경 전후](docs/evidence/10-user-terminal.md#10-c-파일과-디렉토리-권한-변경-전후) |
+| **Docker 점검** | `docker --version` · `docker info` · `docker run hello-world` | CLI와 엔진이 동작하고 컨테이너가 `Hello from Docker!`를 출력한 뒤 정상 종료했습니다. [설치·실행 출력](docs/evidence/05-hello-world.md) |
+| **컨테이너 운영** | `docker images` · `docker ps -a` · `docker logs` · `docker stats` · `docker exec` · `docker attach` · `docker inspect` | 이미지, 실행 상태, 로그와 자원 사용량을 조회했습니다. 추가 셸과 주 셸을 각각 닫아 컨테이너 상태를 비교했습니다. [운영과 셸 실습](docs/evidence/13-user-operations.md) |
+| **웹 서버·포트** | `docker build` · `docker run -p` · `curl.exe` | Dockerfile로 이미지를 만들고 PC의 8080번을 컨테이너의 80번에 연결해 HTTP 200을 확인했습니다. [빌드·접속 출력](docs/evidence/07-web-server.md) |
+| **바인드 마운트** | `Resolve-Path` · `docker run --mount type=bind` · `curl.exe` | PC 폴더를 연결한 8081은 수정 후 V2, 이미지 파일을 읽는 8082는 V1이었습니다. [수정 전후 출력](docs/evidence/11-user-bind.md) |
+| **볼륨** | `docker volume create` · `docker run --mount type=volume` · `docker exec` · `docker stop` · `docker rm` | 기존 컨테이너를 지우고 같은 볼륨을 새 컨테이너에 연결해 같은 메모를 읽었습니다. [삭제·재연결 출력](docs/evidence/12-user-volume.md) |
+| **Git·GitHub** | `git config --local --list` · `git add` · `git commit` · `git push` | 저장소 설정을 조회하고 HTML 수정 커밋 `d580e49`를 GitHub의 `main`에 올렸습니다. [설정과 푸시 출력](docs/evidence/14-user-git.md) |
+| **Compose 보너스** | `docker compose up` · `docker compose ps` · `docker compose logs` · `docker compose down` | 설정 파일로 웹 서버 하나를 띄우고 8083에서 HTTP 200을 확인한 뒤 정리했습니다. [실행·종료 출력](docs/evidence/16-compose-bonus.md) |
 
 ## 본과제 실습과 검증 결과
 
