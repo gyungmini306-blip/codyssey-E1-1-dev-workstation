@@ -420,45 +420,22 @@ PS> git status --short --branch
 
 ### 보너스 Docker Compose
 
-![CMD에서 열어 본 기존 Compose 실습 기록](docs/evidence/17-cmd-compose.png)
+빌드 위치와 포트 연결을 `compose.yaml`에 적어 두면, 같은 옵션을 매번 입력하지 않고 웹 서버 한 개를 다시 띄울 수 있습니다. 이번 실습에서는 PC의 `8083`을 컨테이너의 `80`에 연결했습니다.
 
-**화면에서 볼 곳** — 이 화면은 CMD에서 기존 PowerShell 로그를 열어 본 것입니다. `GET /healthz` 옆의 `200`은 정상 응답이고, `down` 뒤 `ps -a`에 표 제목만 보이는 것은 프로젝트 컨테이너가 정리됐다는 뜻입니다.
+아래는 실제 실행 출력에서 핵심 줄만 뽑은 것입니다.
 
-```text
-PS> docker compose version
-Docker Compose version v5.6.1
+```console
 PS> docker compose -p e1-1-bonus up -d --build --wait
-Image e1-1-bonus-web Built
 Container e1-1-bonus-web-1 Healthy
-PS> docker compose -p e1-1-bonus ps
-NAME               IMAGE            COMMAND                  SERVICE   CREATED         STATUS                   PORTS
-e1-1-bonus-web-1   e1-1-bonus-web   "/docker-entrypoint.…"   web       6 seconds ago   Up 6 seconds (healthy)   127.0.0.1:8083->80/tcp
+
 PS> curl.exe -fsS -i http://127.0.0.1:8083/healthz
 HTTP/1.1 200 OK
-Server: nginx/1.30.6
-Date: Tue, 03 Nov 2026 03:24:48 GMT
-Content-Type: text/plain
-Content-Length: 3
-Connection: keep-alive
 
-ok
-PS> docker compose -p e1-1-bonus logs --tail 6 web
-web-1  | 2026/11/03 03:24:42 [notice] 1#1: start worker process 33
-web-1  | 2026/11/03 03:24:42 [notice] 1#1: start worker process 34
-web-1  | 2026/11/03 03:24:42 [notice] 1#1: start worker process 35
-web-1  | 2026/11/03 03:24:42 [notice] 1#1: start worker process 36
-web-1  | 127.0.0.1 - - [03/Nov/2026:03:24:47 +0000] "GET /healthz HTTP/1.1" 200 3 "-" "Wget" "-"
-web-1  | 172.18.0.1 - - [03/Nov/2026:03:24:48 +0000] "GET /healthz HTTP/1.1" 200 3 "-" "curl/8.21.0" "-"
 PS> docker compose -p e1-1-bonus down
- Container e1-1-bonus-web-1 Stopping
- Container e1-1-bonus-web-1 Stopped
- Container e1-1-bonus-web-1 Removing
- Container e1-1-bonus-web-1 Removed
- Network e1-1-bonus_default Removing
- Network e1-1-bonus_default Removed
-PS> docker compose -p e1-1-bonus ps -a
-NAME      IMAGE     COMMAND   SERVICE   CREATED   STATUS    PORTS
+Container e1-1-bonus-web-1 Removed
 ```
+
+`Healthy`는 서버가 준비됐다는 뜻이고, `200 OK`는 PC에서 보낸 요청에 서버가 응답했다는 뜻입니다. `down` 후 `ps -a`에서 프로젝트 컨테이너가 남지 않은 것도 확인했습니다.
 
 ## 문제 해결
 
