@@ -77,6 +77,26 @@ CONTAINER ID   NAME              CPU %     MEM USAGE / LIMIT     MEM %     NET I
 
 해당 시점의 CPU·메모리·입출력·프로세스 수를 확인했다. 수치는 실행 시점에 따라 달라진다.
 
+## 13-F. exec의 추가 Bash 종료 후 컨테이너 유지
+
+사용자가 별도 실습 컨테이너에서 직접 실행한 기록이다. Ubuntu 터미널에 여러 줄을 입력하면서 표시된 입력·출력 순서를 보존했다. 이후 Docker가 출력한 일반 Debug 기능 안내는 생략했다.
+
+```console
+PS> docker run -dit --name e1-1-shell-guide ubuntu:24.04 bash
+be12c0450ba9f86acf1ba8fc5634f202f9d306755471fb446ef1dbd156c2e05c
+PS> docker exec -it e1-1-shell-guide bash
+root@be12c0450ba9:/# echo "additional shell opened by exec"
+exit
+additional shell opened by exec
+exit
+PS> docker inspect e1-1-shell-guide --format '{{.State.Running}}'
+true
+```
+
+- run -dit로 생성한 원래 Bash가 컨테이너의 주 프로세스다.
+- exec는 별도의 추가 Bash를 생성했다.
+- 추가 Bash에서 exit한 뒤에도 State.Running이 true다. 추가 셸의 종료와 컨테이너 주 프로세스의 종료가 다름을 확인했다.
+
 ## 현재 수행 상태
 
-사용자 직접 버전·엔진·이미지·전체 컨테이너·로그·자원 사용량 확인을 완료했다. 별도 실습 컨테이너에서 exec/attach/detach/주 셸 종료를 비교하는 결과는 이어서 기록한다. 아직 전체 셸 종료 방식 비교를 완료 표시하지 않는다.
+사용자 직접 버전·엔진·이미지·전체 컨테이너·로그·자원 사용량 및 exec 추가 Bash 종료 후 컨테이너 유지를 확인했다. attach 연결·분리와 주 프로세스 종료 비교는 이어서 기록한다. 아직 전체 셸 종료 방식 비교를 완료 표시하지 않는다.

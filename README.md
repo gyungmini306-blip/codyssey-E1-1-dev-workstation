@@ -41,7 +41,7 @@
 
 사용자 직접 저장 공간 실습: [볼륨 검증 기록](docs/evidence/12-user-volume.md). 기존 컨테이너를 삭제하고 새 컨테이너에 같은 볼륨을 연결한 뒤 동일한 메모가 읽히는 것을 확인했습니다.
 
-사용자 직접 운영 실습: [Docker 운영·셸 종료 방식 기록](docs/evidence/13-user-operations.md). 버전·엔진·이미지·컨테이너·로그·리소스 확인을 완료했고, attach/exec 전체 비교는 이어서 수행합니다.
+사용자 직접 운영 실습: [Docker 운영·셸 종료 방식 기록](docs/evidence/13-user-operations.md). 운영 명령과 exec 추가 Bash 종료 후 컨테이너 유지(true)를 확인했고, attach 연결·분리와 주 프로세스 종료 비교는 이어서 수행합니다.
 
 문제 해결 과정: [트러블슈팅](docs/troubleshooting.md).
 
