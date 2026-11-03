@@ -71,74 +71,21 @@ curl.exe -i http://127.0.0.1:8083/healthz
 
 절대 경로 `/root/e1-1/guided-practice`는 현재 위치와 관계없이 같은 폴더를 가리킵니다. 상대 경로 `archive/memo-renamed.txt`는 현재 폴더를 기준으로 찾습니다. 권한 숫자는 읽기(4), 쓰기(2), 실행 또는 디렉토리 진입(1)을 더한 값입니다. `644`는 소유자가 읽고 쓸 수 있고, `755`는 다른 사용자도 읽고 진입할 수 있습니다.
 
-```console
-PS> docker exec -it e1-1-ubuntu bash
-$ mkdir -p /root/e1-1/guided-practice
-$ cd /root/e1-1/guided-practice
-$ pwd
-/root/e1-1/guided-practice
-$ touch empty.txt .hidden-note
-$ echo "E1-1 terminal practice" > memo.txt
-$ ls -la
--rw-r--r-- 1 root root    0 Nov  3 00:05 .hidden-note
--rw-r--r-- 1 root root    0 Nov  3 00:05 empty.txt
--rw-r--r-- 1 root root   23 Nov  3 00:05 memo.txt
-$ cat memo.txt
-E1-1 terminal practice
-```
+아래 표는 실제 명령과 출력에서 작업별로 확인한 내용만 뽑았습니다. PowerShell에서 `docker exec -it e1-1-ubuntu bash`를 실행해 Ubuntu 컨테이너에 들어간 뒤 실습했습니다.
 
-```console
-$ cp memo.txt memo-copy.txt
-$ ls -la
--rw-r--r-- 1 root root    0 Nov  3 00:05 .hidden-note
--rw-r--r-- 1 root root    0 Nov  3 00:05 empty.txt
--rw-r--r-- 1 root root   23 Nov  3 00:08 memo-copy.txt
--rw-r--r-- 1 root root   23 Nov  3 00:05 memo.txt
-$ mkdir -p archive
-$ ls- la
-bash: ls-: command not found
-$ ls -la
--rw-r--r-- 1 root root    0 Nov  3 00:05 .hidden-note
-drwxr-xr-x 2 root root 4096 Nov  3 00:08 archive
--rw-r--r-- 1 root root    0 Nov  3 00:05 empty.txt
--rw-r--r-- 1 root root   23 Nov  3 00:08 memo-copy.txt
--rw-r--r-- 1 root root   23 Nov  3 00:05 memo.txt
-$ mv memo-copy.txt archive/memo-renamed.txt
-$ ls -la
--rw-r--r-- 1 root root    0 Nov  3 00:05 .hidden-note
-drwxr-xr-x 2 root root 4096 Nov  3 00:09 archive
--rw-r--r-- 1 root root    0 Nov  3 00:05 empty.txt
--rw-r--r-- 1 root root   23 Nov  3 00:05 memo.txt
-$ cd archive
-$ ls -la
--rw-r--r-- 1 root root   23 Nov  3 00:08 memo-renamed.txt
-$ cd ..
-$ ls -la archive
--rw-r--r-- 1 root root   23 Nov  3 00:08 memo-renamed.txt
-$ rm archive/memo-renamed.txt
-$ ls -la archive
-$ rmdir archive
-$ ls -la
--rw-r--r-- 1 root root    0 Nov  3 00:05 .hidden-note
--rw-r--r-- 1 root root    0 Nov  3 00:05 empty.txt
--rw-r--r-- 1 root root   23 Nov  3 00:05 memo.txt
-```
+| 작업 | 실행한 명령 | 확인한 결과 |
+|---|---|---|
+| 폴더 만들기와 이동 | `mkdir -p /root/e1-1/guided-practice` → `cd /root/e1-1/guided-practice` → `pwd` | 현재 경로가 `/root/e1-1/guided-practice`로 표시됐습니다. |
+| 파일 만들기와 읽기 | `touch empty.txt .hidden-note` → `echo "E1-1 terminal practice" > memo.txt` → `ls -la`와 `cat memo.txt` | 빈 파일과 숨김 파일이 목록에 보였고, 메모에는 `E1-1 terminal practice`가 들어 있었습니다. |
+| 복사와 이름 변경 | `cp memo.txt memo-copy.txt` → `mkdir -p archive` → `mv memo-copy.txt archive/memo-renamed.txt` | `ls -la archive`에서 `memo-renamed.txt`를 확인했습니다. |
+| 삭제 | `rm archive/memo-renamed.txt` → `rmdir archive` | 마지막 `ls -la`에서 `archive`는 사라지고 원본 `memo.txt`는 남았습니다. |
 
-```console
-$ mkdir -p permissions-dir
-$ chmod 600 memo.txt
-$ chmod 700 permissions-dir
-$ ls -l memo.txt
--rw------- 1 root root 23 Nov  3 00:05 memo.txt
-$ ls -ld permissions-dir
-drwx------ 2 root root 4096 Nov  3 00:12 permissions-dir
-$ chmod 644 memo.txt
-$ chmod 755 permissions-dir
-$ ls -l memo.txt
--rw-r--r-- 1 root root 23 Nov  3 00:05 memo.txt
-$ ls -ld permissions-dir
-drwxr-xr-x 2 root root 4096 Nov  3 00:12 permissions-dir
-```
+파일과 폴더의 권한을 각각 바꾼 뒤, `ls -l memo.txt`와 `ls -ld permissions-dir`에서 확인했습니다. 아래는 출력에서 권한 부분만 뽑은 비교입니다.
+
+| 대상 | 처음 설정과 출력 | 변경 후 설정과 출력 |
+|---|---|---|
+| 파일 | `chmod 600 memo.txt` → `-rw-------` | `chmod 644 memo.txt` → `-rw-r--r--` |
+| 폴더 | `chmod 700 permissions-dir` → `drwx------` | `chmod 755 permissions-dir` → `drwxr-xr-x` |
 
 ### Docker 설치·운영과 셸
 
