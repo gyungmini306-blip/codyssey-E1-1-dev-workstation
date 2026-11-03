@@ -17,16 +17,17 @@ Dockerfile과 실행 명령을 공유해 다른 사람도 같은 웹 서버를 �
 | Docker | Docker Desktop 4.97.0 · CLI/엔진 29.9.2 · Compose v5.6.1 |
 | 버전 관리·편집기 | Git 2.52.0.windows.1 · GitHub · VS Code |
 
-Docker Desktop을 켜고 PowerShell에서 실행합니다.
+Docker Desktop을 켜고 PowerShell에서 저장소를 받은 뒤 **이미지 빌드 → 컨테이너 실행 → 응답 확인** 순서로 진행합니다.
 
 ```powershell
 git clone https://github.com/gyungmini306-blip/codyssey-E1-1-dev-workstation.git
 cd codyssey-E1-1-dev-workstation
-docker compose -p e1-1-bonus up -d --build --wait
-curl.exe -fsS -i http://127.0.0.1:8083/healthz
+docker build -t e1-1-quickstart .
+docker run -d --rm --name e1-1-quickstart -p 127.0.0.1:18086:80 e1-1-quickstart
+curl.exe -fsS -i --retry 5 --retry-connrefused http://127.0.0.1:18086/healthz
 ```
 
-성공하면 **HTTP 200과 `ok`**가 표시됩니다. 웹페이지는 `http://localhost:8083/`에서 열 수 있고, 확인 후에는 `docker compose -p e1-1-bonus down`으로 종료합니다. 포트가 사용 중이면 `netstat -ano | findstr :8083`으로 점유를 확인하고, `compose.yaml`의 호스트 포트와 접속 주소를 같은 빈 번호로 바꿉니다.
+성공하면 **HTTP 200과 `ok`**가 표시됩니다. 브라우저에서 `http://localhost:18086/`을 열면 현재 저장소의 V2가 보입니다. 포트가 이미 사용 중이면 실행 명령과 접속 주소의 `18086`을 같은 빈 포트로 바꾸세요. 확인을 마치면 `docker stop e1-1-quickstart`로 종료합니다. Compose 실행은 [보너스 1번](#5-보너스-1번--docker-compose-기초)에서 다룹니다.
 
 ## 2. 수행 체크리스트
 
@@ -104,12 +105,7 @@ FROM nginx:stable-alpine
 COPY index.html /usr/share/nginx/html/index.html
 ```
 
-| V1 · 어두운 기본 화면 | V2 · 밝은 화면과 보라색 버전 표시 |
-|---|---|
-| ![이름과 하단 링크를 뺀 어두운 V1 화면](docs/evidence/20-web-preview-v1.png) | ![이름과 하단 링크를 뺀 밝은 V2 화면](docs/evidence/20-web-preview-v2.png) |
-| `localhost:18080` · 디자인 확인용 V1 | `localhost:8081` · 바인드 마운트 서버 |
-
-위 이미지는 수정된 디자인의 실제 브라우저 화면입니다. 주소창을 포함한 [최초 포트 매핑 증거](docs/evidence/15-browser.md)는 별도로 보관했습니다. 빠른 실행으로 띄운 서버에는 현재 저장소의 V2가 표시됩니다.
+주소창에서 8080과 8081을 확인할 수 있는 [최초 브라우저 접속 증거](docs/evidence/15-browser.md)를 보관했습니다.
 
 ### 3-4. 바인드 마운트와 볼륨
 
@@ -144,7 +140,7 @@ curl.exe -fsS http://127.0.0.1:18082/ | Select-String SIMPLE_PAGE
 # PC 쪽 HTML만 수정하고 같은 두 주소를 다시 조회
 $htmlPath = (Resolve-Path .\app\index.html).Path
 $html = [IO.File]::ReadAllText($htmlPath)
-[IO.File]::WriteAllText($htmlPath, $html.Replace('SIMPLE_PAGE_V2', 'SIMPLE_PAGE_HOST_EDIT').Replace('페이지 버전: 2', 'PC에서 수정한 페이지'))
+[IO.File]::WriteAllText($htmlPath, $html.Replace('id="mount-marker" data-version="SIMPLE_PAGE_V2"', 'id="mount-marker" data-version="SIMPLE_PAGE_HOST_EDIT"').Replace('페이지 버전: 2', 'PC에서 수정한 페이지'))
 curl.exe -fsS http://127.0.0.1:18081/ | Select-String SIMPLE_PAGE
 curl.exe -fsS http://127.0.0.1:18082/ | Select-String SIMPLE_PAGE
 
@@ -162,6 +158,32 @@ git worktree remove $lab
 | `localhost:18081` · PC 폴더 연결 | `SIMPLE_PAGE_V2` | `SIMPLE_PAGE_HOST_EDIT` |
 | `localhost:18082` · 이미지에 복사 | `SIMPLE_PAGE_V2` | `SIMPLE_PAGE_V2` |
 
+#### 볼륨 보존 재현
+
+PowerShell에서 **볼륨 생성 → 메모 저장·조회 → 기존 컨테이너 삭제 → 같은 볼륨 재연결 → 새 컨테이너에서 조회** 순서로 실행합니다. 아래 이름이 이미 사용 중이면 실습용 이름을 바꿔 실행하세요.
+
+```powershell
+docker volume create e1-1-demo-data
+docker run -d --name e1-1-demo-before --mount "type=volume,source=e1-1-demo-data,target=/data" ubuntu:24.04 sleep infinity
+docker exec e1-1-demo-before sh -c 'echo E1-1-volume-proof > /data/memo.txt'
+docker exec e1-1-demo-before cat /data/memo.txt
+docker rm -f e1-1-demo-before
+
+docker run -d --name e1-1-demo-after --mount "type=volume,source=e1-1-demo-data,target=/data" ubuntu:24.04 sleep infinity
+docker exec e1-1-demo-after cat /data/memo.txt
+```
+
+두 조회에서 모두 `E1-1-volume-proof`가 나오면 컨테이너 교체 후에도 데이터가 유지된 것입니다. 실습이 끝나면 `docker rm -f e1-1-demo-after`로 정리합니다. 실습 메모까지 지우려면 `docker volume rm e1-1-demo-data`를 실행합니다.
+
+#### 화면 디자인 참고
+
+아래 캡처는 V1과 V2의 디자인을 보여줍니다. 바인드 마운트의 수정 반영 여부는 위 8081·8082 응답 기록에서 확인할 수 있습니다.
+
+| V1 · 어두운 기본 화면 | V2 · 밝은 화면과 보라색 버전 표시 |
+|---|---|
+| ![이름과 하단 링크를 뺀 어두운 V1 화면](docs/evidence/20-web-preview-v1.png) | ![이름과 하단 링크를 뺀 밝은 V2 화면](docs/evidence/20-web-preview-v2.png) |
+| `localhost:18080` · 디자인 확인용 V1 | `localhost:8081` · 바인드 마운트 서버 |
+
 ### 3-5. Git과 GitHub·VS Code 연결
 
 Git으로 HTML 수정 이력을 내 PC에 커밋하고, GitHub에 푸시해 소스와 실습 결과를 공유했습니다. `git config --local --list`에서 사용자 이름과 기본 브랜치 `main`을 확인했습니다. `git push`의 `58c49d9..d580e49  main -> main` 출력에서 수정 커밋이 원격에 올라간 것을 확인했습니다. [Git 설정·커밋·푸시 출력](docs/evidence/14-user-git.md)
@@ -176,6 +198,10 @@ Git으로 HTML 수정 이력을 내 PC에 커밋하고, GitHub에 푸시해 소�
 |---|---|---|
 | `ls- la`로 파일 목록을 보려다 실패 | 공백 위치가 틀려 셸이 `ls-`를 명령 이름으로 읽었다고 판단했습니다. 실제로 `bash: ls-: command not found`가 출력됐습니다. | `ls -la`로 수정하니 숨김 파일을 포함한 목록이 나왔습니다. |
 | 바인드 마운트 서버가 시작되지 않음 | `--mount` 인수가 빠졌다고 판단했습니다. Docker가 `flag needs an argument: --mount`를 출력했습니다. | 마운트 설정과 이미지 이름을 한 줄에 넣어 다시 실행했고, `docker ps`와 HTTP 응답으로 확인했습니다. |
+
+### 포트 충돌 실측
+
+`docker ps`와 `netstat -ano`에서 기존 Compose 서버가 `8083`을 사용 중임을 확인했습니다. 같은 호스트 포트로 새 컨테이너를 실행하자 `port is already allocated` 오류가 났고, 호스트 포트를 `18085`로 바꾸자 `/healthz`에서 **HTTP 200과 `ok`**를 받았습니다. [점유 확인·실행 실패·재실행 출력](docs/evidence/18-port-conflict.md)
 
 검증 주소는 로컬 PC로 제한했습니다. 로그와 캡처는 명령과 결과가 함께 보이는 자료를 사용하며, 인증 정보는 공개 문서에서 제외합니다.
 
