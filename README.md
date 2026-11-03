@@ -18,7 +18,7 @@
 
 | 항목 | 실제 확인 결과 |
 |---|---|
-| 확인일 | 2026-11-02 (Asia/Seoul) |
+| 확인일 | 2026-11-02 초기 점검 / 2026-11-03 사용자 직접 재검증 (Asia/Seoul) |
 | 호스트 | Windows, NT 10.0.26200.0 |
 | 현재 셸 | 자동 점검: PowerShell 7.6.5 / 사용자 직접 실습: Windows PowerShell (버전 미기록) |
 | 리눅스 환경 | WSL 2.7.14.0, docker-desktop VERSION 2 / ubuntu:24.04 컨테이너의 Ubuntu 24.04.5 LTS 및 Bash 실행 확인 |
@@ -40,6 +40,8 @@
 사용자 직접 웹 실습: [student-1 빌드 및 파일 수정 반영 실습 기록](docs/evidence/11-user-bind.md). 호스트 HTML을 수정한 뒤 바인드 8081은 V2, COPY 8082는 V1을 응답해 변경 반영 차이를 확인했습니다. 주소창 포함 캡처는 추가 수집이 필요합니다.
 
 사용자 직접 저장 공간 실습: [볼륨 검증 기록](docs/evidence/12-user-volume.md). 기존 컨테이너를 삭제하고 새 컨테이너에 같은 볼륨을 연결한 뒤 동일한 메모가 읽히는 것을 확인했습니다.
+
+사용자 직접 운영 실습: [Docker 운영·셸 종료 방식 기록](docs/evidence/13-user-operations.md). 버전·엔진·이미지·컨테이너·로그·리소스 확인을 완료했고, attach/exec 전체 비교는 이어서 수행합니다.
 
 문제 해결 과정: [트러블슈팅](docs/troubleshooting.md).
 
