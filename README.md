@@ -167,11 +167,7 @@ curl.exe -fsS -i --retry 5 --retry-connrefused http://127.0.0.1:18086/healthz
 
 PC의 `18086`을 컨테이너의 `80`에 연결합니다. 브라우저에서는 `http://localhost:18086/`을 엽니다. 호스트 포트가 사용 중이면 실행 명령과 접속 주소를 같은 빈 포트로 바꿉니다. 끝나면 `docker stop e1-1-quickstart`로 종료합니다.
 
-**재현 결과 · 호스트 18086 → 컨테이너 80.** `/healthz`는 HTTP 200과 `ok`를 반환했습니다. 아래는 같은 포트 매핑으로 띄운 검증용 서버(`e1-1-capture`)에 브라우저로 접속한 화면입니다. 주소창의 `localhost:18086`과 페이지 버전 2를 확인할 수 있습니다.
-
-![주소창에 localhost:18086이 표시된 개발 작업실 V2 화면](docs/evidence/22-browser-port-mapping.png)
-
-**최초 실습 기록 · 호스트 8080 → 컨테이너 80.** 처음에는 PC의 `8080`으로 접속했습니다.
+**실제 확인 결과.** 빠른 실행 검증에서 `18086`의 `/healthz`는 HTTP 200과 `ok`를 반환했고, 루트 페이지의 V2 표식도 확인했습니다. 최초 실습에서는 아래와 같이 PC의 `8080`으로 같은 내부 포트에 접속했습니다.
 
 ```console
 PS> docker build --progress=plain -t codyssey-workstation:1.0 .
@@ -182,7 +178,11 @@ HTTP/1.1 200 OK
 ok
 ```
 
-[최초 빌드·실행·HTTP 기록](docs/evidence/07-web-server.md) · [사용자 직접 빌드 기록](docs/evidence/11-user-bind.md)
+[최초 빌드·실행·HTTP 기록](docs/evidence/07-web-server.md) · [사용자 직접 빌드 기록](docs/evidence/11-user-bind.md).
+
+![주소창에 localhost:18086이 표시된 개발 작업실 V2 화면](docs/evidence/22-browser-port-mapping.png)
+
+재현 실습에서 PC의 `18086`을 컨테이너의 `80`에 연결한 뒤, 브라우저에서 `localhost:18086`의 V2 페이지를 확인했습니다.
 
 **웹 화면 참고.** 이후 별도로 촬영한 V1과 V2의 디자인입니다. 실제 바인드 마운트 비교는 7절의 8081·8082 응답 기록에 있습니다.
 
