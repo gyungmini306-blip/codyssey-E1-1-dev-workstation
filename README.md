@@ -104,9 +104,7 @@ FROM nginx:stable-alpine
 COPY index.html /usr/share/nginx/html/index.html
 ```
 
-![주소창과 접속 결과가 함께 보이는 브라우저 화면](docs/evidence/15-browser-addresses.png)
-
-*왼쪽은 기존 서버 8080의 V1, 오른쪽은 PC 폴더를 연결한 8081의 V2입니다.*
+주소창과 응답 화면이 함께 나온 [최초 브라우저 접속 기록](docs/evidence/15-browser.md)을 보관했습니다. 현재 페이지 디자인은 **V1의 어두운 기본 화면**과 **V2의 밝은 배경·보라색 버전 표시**로 구분됩니다. 빠른 실행으로 띄운 서버에는 현재 저장소의 V2가 표시됩니다.
 
 ### 3-4. 바인드 마운트와 볼륨
 
@@ -117,7 +115,7 @@ COPY index.html /usr/share/nginx/html/index.html
 
 ![CMD에서 확인한 두 서버의 버전과 새 컨테이너에서 읽은 메모](docs/evidence/17-cmd-docker.png)
 
-*두 `curl.exe` 응답과 마지막 `cat` 출력을 보면 비교 결과를 확인할 수 있습니다.*
+*당시 실측 화면입니다. 두 `curl.exe` 응답과 마지막 `cat` 출력에서 버전과 볼륨 메모를 확인할 수 있습니다.*
 
 #### 현재 저장소로 HTML 변경을 재현하는 방법
 
