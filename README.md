@@ -1,56 +1,62 @@
 # E1-1 · 개발 작업실
 
-Docker로 웹 서버를 띄우고, 다른 사람도 같은 절차로 실행할 수 있도록 구성과 실습 결과를 기록했습니다.
+Windows에서 Docker와 Git으로 웹 서버 실행 환경을 구성했습니다. 다른 사람도 같은 소스와 명령으로 실행할 수 있도록 Dockerfile, Compose 설정과 검증 결과를 남겼습니다.
 
-## 발표에서 보여줄 세 가지
+![기존 COPY 서버 8080의 V1과 바인드 서버 8081의 V2가 열린 브라우저](docs/evidence/15-browser-addresses.png)
 
-| 실습 | 왜 했나 | 확인한 결과 |
-|---|---|---|
-| 웹 서버와 포트 | PC에서 컨테이너의 웹 서버에 접속하기 위해 | NGINX의 80번을 PC의 8080번에 연결해 페이지를 열었습니다. |
-| HTML 수정 | PC에서 수정한 파일이 언제 서버에 반영되는지 확인하기 위해 | 같은 이미지로 실행한 두 서버 중 바인드 방식인 **8081은 V2**, COPY 방식인 **8082는 V1**을 반환했습니다. |
-| 볼륨 | 컨테이너를 교체해도 데이터를 다시 읽을 수 있는지 확인하기 위해 | 기존 컨테이너를 삭제하고 같은 볼륨을 연결한 새 컨테이너에서 `E1-1-volume-proof`를 읽었습니다. |
+## 빠른 실행
 
-![실제 브라우저 화면. 왼쪽은 기존 COPY 서버 8080의 V1, 오른쪽은 바인드 서버 8081의 V2](docs/evidence/15-browser-addresses.png)
-
-*캡처는 기존 8080 서버와 8081 서버를 나란히 보여줍니다. 같은 이미지로 비교한 8081/8082의 결과는 [실제 응답 로그](docs/evidence/11-user-bind.md)에 있습니다.*
-
-## CMD 실습 결과
-
-![CMD에서 확인한 Docker 상태, 8081의 V2와 8082의 V1, 볼륨 메모](docs/evidence/17-cmd-docker.png)
-
-<details>
-<summary>파일·권한, Git, Compose 캡처 보기</summary>
-
-**파일·권한** — 파일 목록과 최종 권한을 확인했습니다.
-
-![CMD에서 확인한 파일 목록과 권한](docs/evidence/17-cmd-terminal.png)
-
-**Git** — 실습 커밋과 캡처 당시 원격 브랜치를 조회했습니다.
-
-![CMD에서 확인한 Git 커밋과 원격 브랜치](docs/evidence/17-cmd-git.png)
-
-**Compose** — 이전 PowerShell 실습 로그를 CMD에서 열어 본 화면입니다. HTTP 200 요청과 종료 후 빈 컨테이너 목록을 확인할 수 있습니다.
-
-![CMD에서 열어 본 Compose 실습 로그](docs/evidence/17-cmd-compose.png)
-
-</details>
-
-## 실행해 보기
-
-Docker가 실행 중인 상태에서 저장소 루트의 CMD를 열어 아래 명령을 실행합니다. Compose 설정은 Dockerfile과 포트 연결을 한 파일에 기록한 보너스 과제입니다.
+Docker Desktop을 켜고 CMD에서 실행합니다.
 
 ```cmd
+git clone https://github.com/gyungmini306-blip/codyssey-E1-1-dev-workstation.git
+cd codyssey-E1-1-dev-workstation
 docker compose -p e1-1-bonus up -d --build --wait
 curl.exe -i http://127.0.0.1:8083/healthz
-docker compose -p e1-1-bonus down
 ```
 
-실행 중에는 브라우저에서 `http://127.0.0.1:8083/`을 열 수 있습니다. 실습에서 `/healthz`의 HTTP 200 응답과 종료 후 컨테이너 목록이 비어 있음을 확인했습니다. [Compose 실행 기록](docs/evidence/16-compose-bonus.md)
+브라우저에서 `http://localhost:8083/`을 열 수 있습니다. 확인이 끝나면 `docker compose -p e1-1-bonus down`으로 종료합니다. [Dockerfile을 직접 빌드하는 명령과 결과](docs/evidence/07-web-server.md)
 
-## 실습 기록
+## 1. 실행 환경과 구성
 
-- **터미널·권한** — 파일 생성·복사·이동·삭제, `chmod` 전후 비교. [실제 명령과 출력](docs/evidence/10-user-terminal.md)
-- **Docker** — 이미지 빌드와 웹 접속, 바인드 마운트 비교, 볼륨 데이터 보존. [빌드·접속](docs/evidence/07-web-server.md) · [바인드 마운트](docs/evidence/11-user-bind.md) · [볼륨](docs/evidence/12-user-volume.md)
-- **Git·GitHub** — 사용자 커밋 `d580e49` 푸시와 VS Code GitHub 로그인 확인. [커밋·푸시 출력과 계정 캡처](docs/evidence/14-user-git.md)
+| 항목 | 실습 환경 |
+|---|---|
+| OS·셸 | Windows · PowerShell/CMD · Ubuntu 컨테이너의 Bash |
+| Docker | Desktop 4.97.0 · Docker CLI/엔진 29.9.2 · Compose v5.6.1 |
+| Git | 2.52.0.windows.1 · GitHub · VS Code |
 
-[실행 환경·전체 체크리스트·CMD 재확인 출력](README-details.md) · [트러블슈팅](docs/troubleshooting.md)
+권한 실습은 Ubuntu 컨테이너 안에서 했습니다. 웹 서버는 NGINX 베이스 이미지를 사용하고, Dockerfile에서 HTML과 NGINX 설정을 복사했습니다. Compose에는 같은 Dockerfile의 빌드 위치와 포트 연결을 적어 한 명령으로 실행할 수 있게 했습니다.
+
+## 2. 핵심 실습과 결과
+
+### 파일과 권한
+
+파일과 폴더를 터미널에서 다루고 권한 표기를 확인했습니다. `chmod` 전후에 파일은 `600 → 644`, 폴더는 `700 → 755`로 바뀌었습니다. 아래 출력은 변경 후 조회 결과입니다.
+
+```console
+$ ls -l memo.txt
+-rw-r--r-- 1 root root 23 Nov  3 00:05 memo.txt
+$ ls -ld permissions-dir
+drwxr-xr-x 2 root root 4096 Nov  3 00:12 permissions-dir
+```
+
+[파일 생성·복사·이동·삭제 및 chmod 전후 로그](docs/evidence/10-user-terminal.md) · [CMD 캡처](docs/evidence/17-cmd-terminal.png)
+
+### Docker 웹 서버와 데이터
+
+PC에서 접속할 수 있도록 컨테이너의 80번 포트를 연결했습니다. 같은 이미지에서 띄운 두 서버가 처음에는 V1을 반환했고, PC의 HTML만 수정한 뒤 바인드 서버 **8081은 V2**, COPY 서버 **8082는 V1**을 반환했습니다. 기존 컨테이너를 삭제한 뒤 같은 볼륨을 연결한 새 컨테이너에서도 **`E1-1-volume-proof`**를 읽었습니다.
+
+![Docker 컨테이너 상태, 두 포트의 HTML 버전과 새 컨테이너에서 읽은 볼륨 메모](docs/evidence/17-cmd-docker.png)
+
+[이미지 빌드·포트 접속](docs/evidence/07-web-server.md) · [수정 전후 응답](docs/evidence/11-user-bind.md) · [볼륨 삭제 전후 비교](docs/evidence/12-user-volume.md)
+
+### Git·GitHub와 Compose 보너스
+
+- **Git·GitHub** — HTML 변경 이력을 남기고 공유하기 위해 커밋 `d580e49`를 푸시했습니다. VS Code에서도 GitHub 계정을 확인했습니다. [푸시 로그와 로그인 캡처](docs/evidence/14-user-git.md) · [CMD 캡처](docs/evidence/17-cmd-git.png)
+- **Compose 단일 서비스** — 실행 옵션을 설정 파일에 담았습니다. `8083/healthz`의 **HTTP 200** 응답을 확인했고, `down` 뒤에는 해당 프로젝트의 컨테이너 목록이 비었습니다. [실행 로그](docs/evidence/16-compose-bonus.md) · [CMD에서 열어 본 이전 PowerShell 로그](docs/evidence/17-cmd-compose.png)
+
+## 3. 문제 해결과 전체 증거
+
+바인드 실행 중 `--mount`에 인수가 빠져 오류가 났습니다. 마운트 옵션과 이미지 이름까지 한 줄에 넣어 실행한 뒤, `docker ps`와 HTTP 응답으로 확인했습니다. [문제 해결 기록](docs/troubleshooting.md)
+
+[전체 체크리스트·실습별 판단 근거](README-details.md)
