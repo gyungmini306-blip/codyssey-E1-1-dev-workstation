@@ -97,6 +97,10 @@ drwxr-xr-x 2 root root 4096 Nov  3 00:12 permissions-dir
 
 숫자는 소유자·그룹·기타 사용자 순서입니다. `644`는 `rw-r--r--`, `755`는 `rwxr-xr-x`입니다. 위 실습에서는 권한 비트 변경을 확인했습니다. [터미널 전체 기록](docs/evidence/10-user-terminal.md)
 
+![실습 파일 목록과 최종 권한](docs/evidence/17-cmd-terminal.png)
+
+CMD에서 Ubuntu 컨테이너의 숨김 파일과 최종 권한, 메모 내용을 다시 확인한 화면입니다.
+
 ## 5. Docker 점검과 운영
 
 **목적과 시작 위치.** PowerShell에서 엔진이 요청을 받는지 확인한 뒤 컨테이너를 실행하고, 목록·로그·리소스 조회로 상태를 확인했습니다. 운영 명령에 사용한 컨테이너는 해당 실습에서 미리 실행했습니다.
@@ -167,6 +171,12 @@ ok
 ```
 
 [최초 빌드·실행·HTTP 기록](docs/evidence/07-web-server.md) · [사용자 직접 빌드 기록](docs/evidence/11-user-bind.md). 주소창과 응답이 보이는 기존 캡처는 확인했으며, 공개 제출용 마스킹은 [보완 항목](#9-트러블슈팅과-제출-전-보완-항목)에 적었습니다.
+
+**웹 화면 참고.** 이후 별도로 촬영한 V1과 V2의 디자인입니다. 실제 바인드 마운트 비교는 7절의 8081·8082 응답 기록에 있습니다.
+
+| V1 · 어두운 화면 | V2 · 밝은 화면 |
+|---|---|
+| ![어두운 V1 화면](docs/evidence/20-web-preview-v1.png) | ![밝은 V2 화면](docs/evidence/20-web-preview-v2.png) |
 
 ## 7. 바인드 마운트와 볼륨 영속성
 
@@ -265,3 +275,7 @@ Container e1-1-bonus-web-1 Removed
 ```
 
 설정 파일로 빌드와 실행이 재현됐고, `down` 이후에는 프로젝트 컨테이너가 목록에 남지 않았습니다. [Compose 실행·응답·종료 전체 기록](docs/evidence/16-compose-bonus.md)
+
+![Compose 웹 서버의 상태 점검 로그와 종료 후 컨테이너 목록](docs/evidence/17-cmd-compose.png)
+
+CMD에서 기존 PowerShell 실습 로그를 연 화면입니다. `GET /healthz`의 200 응답과 종료 후 비어 있는 컨테이너 목록을 확인할 수 있습니다.
