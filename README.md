@@ -131,6 +131,10 @@ drwxr-xr-x 2 root root 4096 Nov  3 00:12 permissions-dir
 
 ### 2. NGINX 웹 서버 실행과 검증
 
+![같은 이미지로 띄운 두 서버의 HTML 응답과 볼륨 재연결 흐름](docs/evidence/docker-workstation-flow.svg)
+
+*동작을 설명하는 개념 그림입니다. 실제 명령과 결과는 아래 각 실습의 출력과 캡처에서 확인할 수 있습니다.*
+
 #### Docker 설치·운영과 셸
 
 서버 로그에서 상태 확인 요청이 HTTP 200으로 처리된 것을 확인했습니다. 아래는 처음 한 줄을 발췌한 결과입니다.

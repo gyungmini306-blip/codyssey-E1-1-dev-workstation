@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 590" role="img" aria-labelledby="title desc">
+  <title id="title">E1-1 웹 서버 요청과 Docker 볼륨 동작</title>
+  <desc id="desc">PC의 8081번과 8082번은 별도 NGINX 컨테이너의 80번에 연결된다. 8081은 PC의 V2 파일을 읽고 8082는 이미지에 복사된 V1을 읽는다. 볼륨은 기존 컨테이너를 삭제한 뒤 새 컨테이너에 연결할 수 있다.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0l10 5-10 5z" fill="#7994ae"/></marker>
+    <style>
+      text { font-family: "Malgun Gothic", "Noto Sans KR", sans-serif; fill: #eff7ff; }
+      .label { font-size: 19px; font-weight: 700; }
+      .tag { font-size: 13px; font-weight: 700; }
+      .detail { font-size: 14px; fill: #b9cce0; }
+      .section { font-size: 23px; font-weight: 700; }
+    </style>
+  </defs>
+  <rect width="960" height="590" rx="24" fill="#0b1725"/>
+  <text x="34" y="42" class="tag" fill="#65e4ad">CODYSSEY E1-1 · 개념 그림</text>
+  <text x="34" y="80" font-size="31" font-weight="700">Docker에서 웹페이지와 메모는 어디에 있을까?</text>
+  <rect x="24" y="108" width="912" height="231" rx="18" fill="#101f30" stroke="#263e56"/>
+  <text x="42" y="143" class="section">01 · 같은 이미지로 띄운 두 웹 서버</text>
+  <g transform="translate(42 158)">
+    <rect width="240" height="79" rx="13" fill="#142739" stroke="#77c4ff" stroke-opacity=".65"/>
+    <text x="15" y="22" fill="#77c4ff" class="tag">브라우저 요청</text>
+    <text x="15" y="47" class="label">내 PC :8081</text>
+    <text x="15" y="66" class="detail">HTML을 수정한 뒤 접속</text>
+  </g>
+  <path d="M292 198h51" stroke="#7994ae" stroke-width="2.5" marker-end="url(#arrow)"/>
+  <g transform="translate(360 158)">
+    <rect width="240" height="79" rx="13" fill="#142739" stroke="#77c4ff" stroke-opacity=".65"/>
+    <text x="15" y="22" fill="#77c4ff" class="tag">컨테이너 A</text>
+    <text x="15" y="47" class="label">NGINX :80</text>
+    <text x="15" y="66" class="detail">PC 폴더를 연결해서 읽음</text>
+  </g>
+  <path d="M610 198h51" stroke="#7994ae" stroke-width="2.5" marker-end="url(#arrow)"/>
+  <g transform="translate(678 158)">
+    <rect width="240" height="79" rx="13" fill="#142739" stroke="#65e4ad" stroke-opacity=".65"/>
+    <text x="15" y="22" fill="#65e4ad" class="tag">PC에 있는 HTML</text>
+    <text x="15" y="47" class="label">V2 응답</text>
+    <text x="15" y="66" class="detail">수정한 파일이 바로 반영</text>
+  </g>
+  <g transform="translate(42 246)">
+    <rect width="240" height="79" rx="13" fill="#142739" stroke="#77c4ff" stroke-opacity=".65"/>
+    <text x="15" y="22" fill="#77c4ff" class="tag">브라우저 요청</text>
+    <text x="15" y="47" class="label">내 PC :8082</text>
+    <text x="15" y="66" class="detail">같은 시점에 다시 접속</text>
+  </g>
+  <path d="M292 286h51" stroke="#7994ae" stroke-width="2.5" marker-end="url(#arrow)"/>
+  <g transform="translate(360 246)">
+    <rect width="240" height="79" rx="13" fill="#142739" stroke="#77c4ff" stroke-opacity=".65"/>
+    <text x="15" y="22" fill="#77c4ff" class="tag">컨테이너 B</text>
+    <text x="15" y="47" class="label">NGINX :80</text>
+    <text x="15" y="66" class="detail">이미지에 복사한 파일을 읽음</text>
+  </g>
+  <path d="M610 286h51" stroke="#7994ae" stroke-width="2.5" marker-end="url(#arrow)"/>
+  <g transform="translate(678 246)">
+    <rect width="240" height="79" rx="13" fill="#142739" stroke="#ffc980" stroke-opacity=".65"/>
+    <text x="15" y="22" fill="#ffc980" class="tag">빌드할 때 넣은 HTML</text>
+    <text x="15" y="47" class="label">V1 응답</text>
+    <text x="15" y="66" class="detail">빌드 시점 내용 유지</text>
+  </g>
+  <rect x="24" y="354" width="912" height="211" rx="18" fill="#101f30" stroke="#263e56"/>
+  <text x="42" y="391" class="section">02 · 컨테이너를 교체해도 볼륨은 남는다</text>
+  <g transform="translate(42 416)">
+    <rect width="240" height="79" rx="13" fill="#142739" stroke="#ffc980" stroke-opacity=".65"/>
+    <text x="15" y="22" fill="#ffc980" class="tag">기존 컨테이너</text>
+    <text x="15" y="47" class="label">메모 저장 후 삭제</text>
+    <text x="15" y="66" class="detail">/data/memo.txt에 기록</text>
+  </g>
+  <path d="M292 456h51" stroke="#7994ae" stroke-width="2.5" marker-end="url(#arrow)"/>
+  <g transform="translate(360 416)">
+    <rect width="240" height="79" rx="13" fill="#142739" stroke="#65e4ad" stroke-opacity=".65"/>
+    <text x="15" y="22" fill="#65e4ad" class="tag">Docker가 따로 보관</text>
+    <text x="15" y="47" class="label">이름 있는 볼륨</text>
+    <text x="15" y="66" class="detail">메모가 남아 있음</text>
+  </g>
+  <path d="M610 456h51" stroke="#7994ae" stroke-width="2.5" marker-end="url(#arrow)"/>
+  <g transform="translate(678 416)">
+    <rect width="240" height="79" rx="13" fill="#142739" stroke="#77c4ff" stroke-opacity=".65"/>
+    <text x="15" y="22" fill="#77c4ff" class="tag">새 컨테이너</text>
+    <text x="15" y="47" class="label">같은 볼륨 연결</text>
+    <text x="15" y="66" class="detail">기존 메모를 다시 읽음</text>
+  </g>
+  <text x="42" y="538" class="detail">삭제 전과 재연결 후에 읽은 값은 E1-1-volume-proof</text>
+</svg>
