@@ -428,9 +428,9 @@ PS> git status --short --branch
 
 **결과**
 
-![CMD에서 열어 본 기존 Compose 실습 기록](docs/evidence/17-cmd-compose.png)
+![PowerShell에서 확인한 Compose 컨테이너 상태, 8083 포트 연결, HTTP 200 응답](docs/evidence/19-compose-powershell.png)
 
-**화면에서 볼 곳** — 이 화면은 CMD에서 기존 PowerShell 로그를 열어 본 것입니다. `GET /healthz` 옆의 `200`은 정상 응답이고, `down` 뒤 `ps -a`에 표 제목만 보이는 것은 프로젝트 컨테이너가 정리됐다는 뜻입니다.
+**화면에서 볼 곳** — `docker compose ps`에서 웹 서버가 `healthy` 상태이고 PC의 `8083`번이 컨테이너의 `80`번에 연결된 것을 확인했습니다. `curl.exe` 요청은 `HTTP/1.1 200 OK`와 본문 `ok`를 반환했습니다.
 
 ```text
 PS> docker compose version
