@@ -30,6 +30,13 @@ curl.exe -i http://127.0.0.1:8083/healthz
 
 ## 3. 실습과 검증 결과
 
+| 확인하려는 내용 | 어디에서 볼 수 있나 |
+|---|---|
+| 파일을 만들고 옮겼는지, 권한이 바뀌었는지 | [3-1. 터미널과 파일 권한](#3-1-터미널과-파일-권한) |
+| Docker가 실행되고 웹 서버에 접속되는지 | [3-2. Docker 설치와 운영](#3-2-docker-설치와-운영) · [3-3. Dockerfile 빌드와 웹 접속](#3-3-dockerfile-빌드와-웹-접속) |
+| HTML 수정이 반영되고, 서버를 지워도 메모가 남는지 | [3-4. HTML 수정 반영 비교](#3-4-html-수정-반영-비교) · [3-5. 볼륨 데이터 보존](#3-5-볼륨-데이터-보존) |
+| GitHub에 변경 이력이 올라갔는지 | [3-6. Git·GitHub와 VS Code 연결](#3-6-gitgithub와-vs-code-연결) |
+
 - [x] 터미널 파일 조작과 파일·폴더 권한 변경
 - [x] Docker 설치·엔진 점검과 이미지·컨테이너 운영
 - [x] Dockerfile 빌드와 포트 매핑을 통한 웹 접속
@@ -42,6 +49,15 @@ curl.exe -i http://127.0.0.1:8083/healthz
 ### 3-1. 터미널과 파일 권한
 
 서버를 관리하려면 현재 위치와 파일을 확인하고, 누가 읽거나 쓸 수 있는지 알아야 합니다. Ubuntu 컨테이너에 들어가 폴더를 만들고 파일을 생성·복사·이동·삭제했습니다.
+
+```console
+PS> docker exec -it e1-1-ubuntu bash
+$ cd /root/e1-1/guided-practice
+$ pwd
+/root/e1-1/guided-practice
+$ cat memo.txt
+E1-1 terminal practice
+```
 
 | 작업 | 실행한 명령 | 확인한 결과 |
 |---|---|---|
@@ -83,8 +99,12 @@ HTML을 브라우저에 보내줄 서버로 NGINX를 사용했습니다. Dockerf
 
 `docker build`로 만든 **이미지**에는 서버를 시작하는 데 필요한 프로그램과 파일이 들어 있습니다. `docker run`으로 그 이미지에서 **컨테이너**를 띄우면 NGINX가 실행됩니다. `8080:80`은 PC의 `8080`번에 들어온 요청을 컨테이너 안 NGINX의 `80`번으로 전달합니다.
 
+아래는 최초 서버를 구성할 때의 실행 기록입니다. 빌드 출력의 `naming to`는 이미지에 이름이 붙었음을, HTTP `200 OK`는 실행한 서버에 요청이 도달했음을 보여줍니다.
+
 ```console
 PS> docker build --progress=plain -t codyssey-workstation:1.0 .
+#9 naming to docker.io/library/codyssey-workstation:1.0 done
+#9 DONE 1.2s
 PS> docker run -d --name codyssey-web -p 127.0.0.1:8080:80 codyssey-workstation:1.0
 PS> docker inspect codyssey-web --format '{{.State.Health.Status}}'
 healthy
@@ -112,6 +132,15 @@ PS> docker run -d --name e1-1-bind-guide -p 127.0.0.1:8081:80 --mount "type=bind
 | `8081` | 바인드 마운트로 연결한 PC의 `app/` 폴더 | V1 | **V2** |
 | `8082` | 빌드할 때 이미지에 복사한 파일 | V1 | **V1** |
 
+수정 전에는 두 주소에서 같은 V1 표시가 나왔습니다. 아래는 당시 응답에서 버전 표시가 있는 줄을 발췌한 것입니다.
+
+```console
+PS> curl.exe -s --max-time 10 http://localhost:8081/ | Select-String 'SIMPLE_PAGE'
+    <p class="version" id="mount-marker" data-version="SIMPLE_PAGE_V1">
+PS> curl.exe -s --max-time 10 http://localhost:8082/ | Select-String 'SIMPLE_PAGE'
+    <p class="version" id="mount-marker" data-version="SIMPLE_PAGE_V1">
+```
+
 ![CMD에서 확인한 8081의 V2, 8082의 V1과 볼륨 메모](docs/evidence/17-cmd-docker.png)
 
 *두 `curl.exe` 명령 아래의 `SIMPLE_PAGE_V2`와 `SIMPLE_PAGE_V1`이 수정 후 결과입니다. 맨 아래 `cat` 출력은 다음 볼륨 실습에서 다시 읽은 메모입니다.*
@@ -132,6 +161,9 @@ E1-1-volume-proof
 PS> docker stop e1-1-volume-before
 PS> docker rm e1-1-volume-before
 e1-1-volume-before
+PS> docker volume ls --filter name=e1-1-user-data
+DRIVER    VOLUME NAME
+local     e1-1-user-data
 PS> docker run -d --name e1-1-volume-after --mount $volumeMount ubuntu:24.04 sleep infinity
 PS> docker exec e1-1-volume-after cat /data/memo.txt
 E1-1-volume-proof
@@ -169,6 +201,14 @@ PS> git push
 ## 5. 보너스 1번 · Docker Compose 기초
 
 빌드 위치와 포트를 `compose.yaml`에 적어 두면, 매번 `docker run`에 같은 옵션을 입력할 필요 없이 웹 서버를 다시 띄울 수 있습니다. `services.web`은 웹 서버 하나를 정의하고, `build: .`은 현재 폴더의 Dockerfile을 사용합니다. `ports`는 PC의 `8083`번을 컨테이너의 `80`번에 연결합니다.
+
+```yaml
+services:
+  web:
+    build: .
+    ports:
+      - "127.0.0.1:8083:80"
+```
 
 ```console
 PS> docker compose -p e1-1-bonus up -d --build --wait
