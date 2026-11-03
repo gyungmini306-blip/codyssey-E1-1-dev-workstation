@@ -1,238 +1,466 @@
-# Codyssey E1-1 · 내 컴퓨터에 개발자용 작업실 꾸미기
+# E1-1 · 개발 작업실
 
-## 1. 과제 목적과 핵심 결과
+다른 사람도 같은 방법으로 웹 서버를 실행할 수 있도록 Docker로 환경을 만들고, 접속·파일 수정·데이터 보존을 직접 확인했습니다.
 
-터미널에서 파일과 권한을 다루고, Docker로 웹 서버를 띄웠습니다. 다른 사람도 같은 소스와 명령으로 실행할 수 있도록 Dockerfile, 실행 방법, 실제 검증 결과를 GitHub에 정리했습니다.
+![브라우저 접속 결과. 기존 서버 8080은 V1, PC 파일을 연결한 서버 8081은 V2](docs/evidence/15-browser-addresses.png)
 
-- **접속** — 내 PC의 `8080`번을 컨테이너의 `80`번에 연결해 브라우저에서 웹페이지를 열었습니다.
-- **수정 반영** — VS Code에서 HTML을 V2로 바꾸자 PC 파일을 연결한 `8081`은 V2를, 이미지에 복사한 파일을 읽는 `8082`는 V1을 반환했습니다.
-- **데이터 보존** — 기존 컨테이너를 삭제하고 새 컨테이너에 같은 볼륨을 연결하니 `E1-1-volume-proof` 메모를 다시 읽을 수 있었습니다.
+*주소창과 페이지 버전을 함께 보면 됩니다. 왼쪽은 기존 서버 `8080`의 V1, 오른쪽은 PC 파일을 연결한 `8081`의 V2입니다.*
 
-## 2. 실행 환경과 빠른 실행
+## 빠른 실행
 
-| 항목 | 실습 환경 |
-|---|---|
-| OS·터미널 | Windows · Windows Terminal |
-| 셸 | Docker 명령은 주로 PowerShell, 파일·권한 실습은 Ubuntu 컨테이너의 Bash, 완료 상태 재확인은 CMD |
-| Docker | Docker Desktop 4.97.0 · Docker 엔진 29.9.2 · Compose v5.6.1 |
-| Git·편집기 | Git 2.52.0.windows.1 · VS Code |
+Windows에서 Docker Desktop을 켜고 CMD에서 실행합니다. 실습 환경은 Windows 11 · Windows Terminal(CMD/PowerShell) · Ubuntu 컨테이너(Bash), Docker 29.9.2, Compose 5.6.1, Git 2.52.0입니다.
 
-Docker Desktop을 켜고 아래 명령을 실행합니다.
-
-```powershell
+```cmd
 git clone https://github.com/gyungmini306-blip/codyssey-E1-1-dev-workstation.git
 cd codyssey-E1-1-dev-workstation
 docker compose -p e1-1-bonus up -d --build --wait
-curl.exe -fsS -i http://127.0.0.1:8083/healthz
+curl.exe -i http://127.0.0.1:8083/healthz
 ```
 
-### 실제 실행 결과
+브라우저에서 `http://localhost:8083/`을 엽니다. 확인을 마치면 `docker compose -p e1-1-bonus down`으로 종료합니다.
 
-실습 당시 PowerShell 출력에서 핵심 줄만 발췌했습니다.
+## 무엇을 했고 왜 했나
 
-```console
-PS> docker compose -p e1-1-bonus up -d --build --wait
-Image e1-1-bonus-web Built
-Container e1-1-bonus-web-1 Healthy
+| 실습 | 한 일과 이유 | 확인한 결과 |
+|---|---|---|
+| 터미널과 권한 | Ubuntu 컨테이너에서 파일 생성·복사·이동·삭제를 연습하고, `chmod`로 접근 권한을 바꿨습니다. | 파일은 `600 → 644`, 폴더는 `700 → 755`로 바뀌었습니다. |
+| Docker 점검 | Docker가 실제로 컨테이너를 실행하는지 확인하려고 `hello-world`를 실행하고 상태·로그를 조회했습니다. | `Hello from Docker!`가 출력됐고 종료 코드는 `0`이었습니다. |
+| 이미지와 웹 접속 | 누구나 같은 서버를 띄울 수 있도록 Dockerfile에 NGINX와 HTML을 담는 방법을 적었습니다. 내 PC에서 접속하려고 `8080:80`으로 포트를 연결했습니다. | 브라우저에서 `localhost:8080`으로 페이지가 열렸습니다. |
+| HTML 수정 반영 | PC 파일을 수정했을 때 바로 반영되는지 보려고, 같은 이미지로 실행한 두 서버의 파일 읽는 방식만 바꿨습니다. | PC 폴더를 연결한 **8081은 V2**, 이미지에 복사한 파일을 쓰는 **8082는 V1**을 반환했습니다. |
+| 볼륨 | 서버를 교체해도 메모를 읽을 수 있도록 Docker가 따로 관리하는 저장 공간에 메모를 넣었습니다. | 기존 컨테이너를 삭제하고 같은 볼륨을 새 컨테이너에 연결하니 `E1-1-volume-proof`가 남아 있었습니다. |
+| Git과 GitHub | Git으로 HTML 변경을 기록하고, 다른 사람이 확인할 수 있도록 GitHub에 공유했습니다. | 커밋 `d580e49`를 푸시했고 VS Code에서 GitHub 계정 연결을 확인했습니다. |
+| 보너스 Compose | 빌드와 포트 옵션을 매번 입력하지 않도록 `compose.yaml`에 기록했습니다. | 웹 서버 하나를 실행해 `8083/healthz`의 HTTP 200을 확인했고, `down` 뒤 프로젝트 컨테이너 목록이 비었습니다. |
 
-PS> curl.exe -fsS -i http://127.0.0.1:8083/healthz
-HTTP/1.1 200 OK
-ok
-```
+## 수행 체크리스트
 
-`Built`는 이미지가 만들어졌고, `Healthy`는 컨테이너의 상태 확인을 통과했다는 뜻입니다. `200 OK`와 응답 본문의 `ok`는 내 PC에서 `8083`번으로 보낸 요청에 서버가 응답했음을 보여줍니다.
+- [x] 터미널 조작과 파일·폴더 권한 변경
 
-브라우저에서 `http://localhost:8083/`을 엽니다. 확인이 끝나면 `docker compose -p e1-1-bonus down`으로 종료합니다. `8083`은 빠른 실행에 쓰는 포트이고, 아래의 `8080`~`8082`는 원래 실습에 사용한 포트입니다.
+- [x] Docker 설치·점검, 이미지·컨테이너 운영, Ubuntu 셸 진입
 
-## 3. 실습과 검증 결과
+- [x] Dockerfile 빌드·실행, 포트 접속, 바인드 마운트와 볼륨 검증
 
-| 확인하려는 내용 | 어디에서 볼 수 있나 |
-|---|---|
-| 파일을 만들고 옮겼는지, 권한이 바뀌었는지 | [3-1. 터미널과 파일 권한](#3-1-터미널과-파일-권한) |
-| Docker가 실행되고 웹 서버에 접속되는지 | [3-2. Docker 설치와 운영](#3-2-docker-설치와-운영) · [3-3. Dockerfile 빌드와 웹 접속](#3-3-dockerfile-빌드와-웹-접속) |
-| HTML 수정이 반영되고, 서버를 지워도 메모가 남는지 | [3-4. HTML 수정 반영 비교](#3-4-html-수정-반영-비교) · [3-5. 볼륨 데이터 보존](#3-5-볼륨-데이터-보존) |
-| GitHub에 변경 이력이 올라갔는지 | [3-6. Git·GitHub와 VS Code 연결](#3-6-gitgithub와-vs-code-연결) |
+- [x] Git 설정·푸시 및 VS Code GitHub 연결
 
-- [x] 터미널 파일 조작과 파일·폴더 권한 변경
-- [x] Docker 설치·엔진 점검과 이미지·컨테이너 운영
-- [x] Dockerfile 빌드와 포트 매핑을 통한 웹 접속
-- [x] 바인드 마운트와 이미지에 복사한 파일의 수정 반영 비교
-- [x] 컨테이너 삭제 후 같은 볼륨의 데이터 확인
-- [x] Git 설정·커밋·푸시와 VS Code GitHub 연결
+- [x] 보너스 Compose 단일 서비스 실행·종료
 
-아래 기록은 실습 당시 명령과 출력에서 판단에 필요한 부분만 발췌한 것입니다.
+## 실제 명령과 결과
 
-### 3-1. 터미널과 파일 권한
+아래 코드 블록은 실습 당시 출력의 발췌입니다. 빠른 실행은 새 환경에서 재현할 때 사용하는 명령입니다.
 
-서버를 관리하려면 현재 위치와 파일을 확인하고, 누가 읽거나 쓸 수 있는지 알아야 합니다. Ubuntu 컨테이너에 들어가 폴더를 만들고 파일을 생성·복사·이동·삭제했습니다.
+### 터미널과 권한
+
+![CMD에서 ls와 cat을 실행한 화면](docs/evidence/17-cmd-terminal.png)
+
+**화면에서 볼 곳** — `ls -la` 아래의 `memo.txt`는 `-rw-r--r--`(644), `permissions-dir`은 `drwxr-xr-x`(755)입니다. 마지막 `cat` 아래에는 파일에 적은 내용이 나옵니다. 이 화면은 최종 상태이고, 변경 전후의 명령과 출력은 아래에 있습니다.
+
+절대 경로 `/root/e1-1/guided-practice`는 현재 위치와 관계없이 같은 폴더를 가리킵니다. 상대 경로 `archive/memo-renamed.txt`는 현재 폴더를 기준으로 찾습니다. 권한 숫자는 읽기(4), 쓰기(2), 실행 또는 디렉토리 진입(1)을 더한 값입니다. `644`는 소유자가 읽고 쓸 수 있고, `755`는 다른 사용자도 읽고 진입할 수 있습니다.
 
 ```console
 PS> docker exec -it e1-1-ubuntu bash
-$ cd /root/e1-1/guided-practice
-$ pwd
+root@9e28c1505a09:/# mkdir -p /root/e1-1/guided-practice
+root@9e28c1505a09:/# cd /root/e1-1/guided-practice
+root@9e28c1505a09:~/e1-1/guided-practice# pwd
 /root/e1-1/guided-practice
-$ cat memo.txt
+root@9e28c1505a09:~/e1-1/guided-practice# touch empty.txt .hidden-note
+root@9e28c1505a09:~/e1-1/guided-practice# echo "E1-1 terminal practice" > memo.txt
+root@9e28c1505a09:~/e1-1/guided-practice# ls -la
+total 12
+drwxr-xr-x 2 root root 4096 Nov  3 00:05 .
+drwxr-xr-x 3 root root 4096 Nov  3 00:05 ..
+-rw-r--r-- 1 root root    0 Nov  3 00:05 .hidden-note
+-rw-r--r-- 1 root root    0 Nov  3 00:05 empty.txt
+-rw-r--r-- 1 root root   23 Nov  3 00:05 memo.txt
+root@9e28c1505a09:~/e1-1/guided-practice# cat memo.txt
 E1-1 terminal practice
 ```
 
-| 작업 | 실행한 명령 | 확인한 결과 |
-|---|---|---|
-| 폴더 생성과 이동 | `mkdir -p /root/e1-1/guided-practice`, `cd /root/e1-1/guided-practice`, `pwd` | 현재 위치가 `/root/e1-1/guided-practice`로 표시됐습니다. |
-| 파일 생성과 조회 | `touch empty.txt .hidden-note`, `echo "E1-1 terminal practice" > memo.txt`, `ls -la`, `cat memo.txt` | 빈 파일과 숨김 파일이 목록에 보였고, 메모에는 `E1-1 terminal practice`가 들어 있었습니다. |
-| 복사와 이름 변경 | `cp memo.txt memo-copy.txt`, `mkdir -p archive`, `mv memo-copy.txt archive/memo-renamed.txt` | `ls -la archive`에 `memo-renamed.txt`가 표시됐습니다. |
-| 삭제 | `rm archive/memo-renamed.txt`, `rmdir archive` | 마지막 `ls -la`에서 `archive`가 사라졌고 원본 `memo.txt`는 남았습니다. |
-
-`/root/e1-1/guided-practice`는 루트부터 시작하는 **절대 경로**입니다. `archive/memo-renamed.txt`는 현재 폴더를 기준으로 찾는 **상대 경로**입니다.
-
-권한은 `chmod`로 바꾸고 `ls -l memo.txt`와 `ls -ld permissions-dir`로 확인했습니다. 아래는 출력의 권한 부분만 발췌한 것입니다.
-
-| 대상 | 첫 설정과 출력 | 변경 후 설정과 출력 |
-|---|---|---|
-| 파일 | `chmod 600 memo.txt` → `-rw-------` | `chmod 644 memo.txt` → `-rw-r--r--` |
-| 폴더 | `chmod 700 permissions-dir` → `drwx------` | `chmod 755 permissions-dir` → `drwxr-xr-x` |
-
-`r`은 읽기(4), `w`는 쓰기(2), `x`는 실행 또는 폴더 진입(1)입니다. `644`는 소유자에게 읽기·쓰기, 나머지에게 읽기 권한을 줍니다. 폴더의 `755`는 소유자에게 읽기·쓰기·진입, 나머지에게 읽기·진입 권한을 줍니다.
-
-![CMD에서 확인한 Ubuntu 파일 목록과 최종 권한](docs/evidence/17-cmd-terminal.png)
-
-*`ls -la` 아래에서 `memo.txt`와 `permissions-dir`의 최종 권한을, `cat` 아래에서 메모 내용을 확인할 수 있습니다.*
-
-### 3-2. Docker 설치와 운영
-
-Docker가 실제로 컨테이너를 실행하는지 확인하기 위해 엔진 정보를 조회하고 `hello-world`를 실행했습니다. Ubuntu 컨테이너에서는 셸 명령을 실행하고, 추가로 연 Bash와 컨테이너의 주 Bash를 종료했을 때 상태가 어떻게 달라지는지 확인했습니다.
-
-| 확인 항목 | 실행한 명령 | 실제 결과 |
-|---|---|---|
-| CLI와 엔진 | `docker --version`, `docker info --format 'ServerVersion={{.ServerVersion}} OSType={{.OSType}}'` | CLI `29.9.2`, 엔진 `ServerVersion=29.9.2 OSType=linux` |
-| 첫 컨테이너 | `docker run --name e1-1-hello hello-world`, `docker ps -a` | `Hello from Docker!` 출력 후 `Exited (0)` |
-| 이미지 목록 | `docker images codyssey-workstation` | 실습용 이미지 `codyssey-workstation:student-1` 확인 |
-| 서버 운영 | `docker logs --tail 10 e1-1-bind-guide`, `docker stats --no-stream e1-1-bind-guide` | `/healthz` 요청이 `200`으로 처리됐고 메모리 사용량은 조회 당시 `8.945MiB` |
-| 셸 종료 | `docker exec -it e1-1-shell-guide bash`, `docker attach e1-1-shell-guide` | `exec`로 연 Bash를 종료한 뒤에는 `true`, `attach`로 연결한 주 Bash를 종료한 뒤에는 `exited` |
-
-### 3-3. Dockerfile 빌드와 웹 접속
-
-HTML을 브라우저에 보내줄 서버로 NGINX를 사용했습니다. Dockerfile은 `nginx:stable-alpine`에서 시작해 `app/`의 웹 파일과 `nginx.conf`를 복사합니다. `HEALTHCHECK`는 `/healthz`가 응답하는지 확인합니다.
-
-`docker build`로 만든 **이미지**에는 서버를 시작하는 데 필요한 프로그램과 파일이 들어 있습니다. `docker run`으로 그 이미지에서 **컨테이너**를 띄우면 NGINX가 실행됩니다. `8080:80`은 PC의 `8080`번에 들어온 요청을 컨테이너 안 NGINX의 `80`번으로 전달합니다.
-
-아래는 최초 서버를 구성할 때의 실행 기록입니다. 빌드 출력의 `naming to`는 이미지에 이름이 붙었음을, HTTP `200 OK`는 실행한 서버에 요청이 도달했음을 보여줍니다.
+```console
+$ cp memo.txt memo-copy.txt
+$ ls -la
+total 16
+drwxr-xr-x 2 root root 4096 Nov  3 00:08 .
+drwxr-xr-x 3 root root 4096 Nov  3 00:05 ..
+-rw-r--r-- 1 root root    0 Nov  3 00:05 .hidden-note
+-rw-r--r-- 1 root root    0 Nov  3 00:05 empty.txt
+-rw-r--r-- 1 root root   23 Nov  3 00:08 memo-copy.txt
+-rw-r--r-- 1 root root   23 Nov  3 00:05 memo.txt
+$ mkdir -p archive
+$ ls- la
+bash: ls-: command not found
+$ ls -la
+total 20
+drwxr-xr-x 3 root root 4096 Nov  3 00:08 .
+drwxr-xr-x 3 root root 4096 Nov  3 00:05 ..
+-rw-r--r-- 1 root root    0 Nov  3 00:05 .hidden-note
+drwxr-xr-x 2 root root 4096 Nov  3 00:08 archive
+-rw-r--r-- 1 root root    0 Nov  3 00:05 empty.txt
+-rw-r--r-- 1 root root   23 Nov  3 00:08 memo-copy.txt
+-rw-r--r-- 1 root root   23 Nov  3 00:05 memo.txt
+$ mv memo-copy.txt archive/memo-renamed.txt
+$ ls -la
+total 16
+drwxr-xr-x 3 root root 4096 Nov  3 00:09 .
+drwxr-xr-x 3 root root 4096 Nov  3 00:05 ..
+-rw-r--r-- 1 root root    0 Nov  3 00:05 .hidden-note
+drwxr-xr-x 2 root root 4096 Nov  3 00:09 archive
+-rw-r--r-- 1 root root    0 Nov  3 00:05 empty.txt
+-rw-r--r-- 1 root root   23 Nov  3 00:05 memo.txt
+$ cd archive
+$ ls -la
+total 12
+drwxr-xr-x 2 root root 4096 Nov  3 00:09 .
+drwxr-xr-x 3 root root 4096 Nov  3 00:09 ..
+-rw-r--r-- 1 root root   23 Nov  3 00:08 memo-renamed.txt
+$ cd ..
+$ ls -la archive
+total 12
+drwxr-xr-x 2 root root 4096 Nov  3 00:09 .
+drwxr-xr-x 3 root root 4096 Nov  3 00:09 ..
+-rw-r--r-- 1 root root   23 Nov  3 00:08 memo-renamed.txt
+$ rm archive/memo-renamed.txt
+$ ls -la archive
+total 8
+drwxr-xr-x 2 root root 4096 Nov  3 00:09 .
+drwxr-xr-x 3 root root 4096 Nov  3 00:09 ..
+$ rmdir archive
+$ ls -la
+total 12
+drwxr-xr-x 2 root root 4096 Nov  3 00:09 .
+drwxr-xr-x 3 root root 4096 Nov  3 00:05 ..
+-rw-r--r-- 1 root root    0 Nov  3 00:05 .hidden-note
+-rw-r--r-- 1 root root    0 Nov  3 00:05 empty.txt
+-rw-r--r-- 1 root root   23 Nov  3 00:05 memo.txt
+```
 
 ```console
+$ mkdir -p permissions-dir
+$ chmod 600 memo.txt
+$ chmod 700 permissions-dir
+$ ls -l memo.txt
+-rw------- 1 root root 23 Nov  3 00:05 memo.txt
+$ ls -ld permissions-dir
+drwx------ 2 root root 4096 Nov  3 00:12 permissions-dir
+$ chmod 644 memo.txt
+$ chmod 755 permissions-dir
+$ ls -l memo.txt
+-rw-r--r-- 1 root root 23 Nov  3 00:05 memo.txt
+$ ls -ld permissions-dir
+drwxr-xr-x 2 root root 4096 Nov  3 00:12 permissions-dir
+```
+
+### Docker 설치·운영과 셸
+
+서버 로그에서 상태 확인 요청이 HTTP 200으로 처리된 것을 확인했습니다. 아래는 처음 한 줄을 발췌한 결과입니다.
+
+```console
+PS> docker logs --tail 10 e1-1-bind-guide
+127.0.0.1 - - [03/Nov/2026:00:37:26 +0000] "GET /healthz HTTP/1.1" 200 3 "-" "Wget" "-"
+```
+
+```powershell
+PS> docker run --name e1-1-hello hello-world
+Unable to find image 'hello-world:latest' locally
+latest: Pulling from library/hello-world
+4f55086f7dd0: Pull complete
+d5e71e642bf5: Download complete
+Digest: sha256:c567b231f65614688711a75f31518a064258a51d442117a3e771a3a8fdba78ef
+Status: Downloaded newer image for hello-world:latest
+
+Hello from Docker!
+This message shows that your installation appears to be working correctly.
+[이후 안내문 생략]
+
+PS> docker ps
+CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES
+
+PS> docker ps -a
+CONTAINER ID   IMAGE         COMMAND    CREATED          STATUS                      PORTS     NAMES
+30df56aa1c4b   hello-world   "/hello"   11 seconds ago   Exited (0) 10 seconds ago             e1-1-hello
+```
+
+```powershell
+PS> docker info --format 'ServerVersion={{.ServerVersion}} OSType={{.OSType}}'
+ServerVersion=29.9.2 OSType=linux
+
+PS> docker images --digests hello-world
+REPOSITORY    TAG       DIGEST                                                                    IMAGE ID       CREATED        SIZE
+hello-world   latest    sha256:c567b231f65614688711a75f31518a064258a51d442117a3e771a3a8fdba78ef   c567b231f656   7 months ago   25.9kB
+
+PS> docker inspect e1-1-hello --format '{{.Id}} {{.Config.Image}} {{.State.Status}} exit={{.State.ExitCode}}'
+30df56aa1c4ba9ddcb044cafdd8542b172a1b4b9a1ffefaf6277678ba2db12d4 hello-world exited exit=0
+```
+
+```powershell
+PS> docker images codyssey-workstation
+                                                    i Info →   U  In Use
+IMAGE                   ID             DISK USAGE   CONTENT SIZE   EXTRA
+codyssey-workstation:1.0
+                        47411e29e641       92.7MB         26.1MB    U
+codyssey-workstation:2.0
+                        8c59d743332c       92.8MB         26.1MB
+codyssey-workstation:3.0
+                        7ec0b8a7ebd6       92.8MB         26.1MB    U
+codyssey-workstation:student-1
+                        03847c26e8e8       92.8MB         26.1MB    U
+```
+
+```powershell
+PS> docker ps -a
+CONTAINER ID   IMAGE                            COMMAND                  CREATED          STATUS                    PORTS                    NAMES
+91ff958c97f5   ubuntu:24.04                     "sleep infinity"         2 minutes ago    Up 2 minutes                                       e1-1-volume-after
+9fdf6ee013be   codyssey-workstation:student-1   "/docker-entrypoint.…"   15 minutes ago   Up 15 minutes (healthy)   127.0.0.1:8081->80/tcp   e1-1-bind-guide
+5e144b9a442f   codyssey-workstation:student-1   "/docker-entrypoint.…"   16 minutes ago   Up 16 minutes (healthy)   127.0.0.1:8082->80/tcp   e1-1-copy-guide
+998efe0a81d8   codyssey-workstation:3.0         "/docker-entrypoint.…"   19 hours ago     Up 19 hours (healthy)     127.0.0.1:8080->80/tcp   codyssey-web
+eed7564ae9ed   codyssey-workstation:1.0         "/docker-entrypoint.…"   21 hours ago     Exited (0) 20 hours ago                            codyssey-web-v1
+9e28c1505a09   ubuntu:24.04                     "bash"                   21 hours ago     Up 21 hours                                        e1-1-ubuntu
+30df56aa1c4b   hello-world                      "/hello"                 21 hours ago     Exited (0) 21 hours ago                            e1-1-hello
+```
+
+```powershell
+PS> docker stats --no-stream e1-1-bind-guide
+CONTAINER ID   NAME              CPU %     MEM USAGE / LIMIT     MEM %     NET I/O           BLOCK I/O        PIDS
+9fdf6ee013be   e1-1-bind-guide   0.00%     8.945MiB / 7.527GiB   0.12%     16.7kB / 72.2kB   868kB / 8.19kB   9
+```
+
+```console
+PS> docker run -dit --name e1-1-shell-guide ubuntu:24.04 bash
+be12c0450ba9f86acf1ba8fc5634f202f9d306755471fb446ef1dbd156c2e05c
+PS> docker exec -it e1-1-shell-guide bash
+root@be12c0450ba9:/# echo "additional shell opened by exec"
+exit
+additional shell opened by exec
+exit
+PS> docker inspect e1-1-shell-guide --format '{{.State.Running}}'
+true
+```
+
+```console
+PS> docker attach e1-1-shell-guide
+root@be12c0450ba9:/# exit
+exit
+PS> docker inspect e1-1-shell-guide --format '{{.State.Status}}'
+exited
+```
+
+추가 Bash를 `exec`로 열었다가 종료해도 컨테이너는 유지됐습니다. `attach`로 연결한 주 Bash를 종료하자 컨테이너 상태가 `exited`로 바뀌었습니다.
+
+### 이미지 빌드와 웹 접속
+
+기본 서버로 `nginx:stable-alpine`을 선택했습니다. Dockerfile은 `app/`의 HTML을 NGINX가 읽는 위치에 담고, `nginx.conf`로 문서 위치와 상태 확인 경로를 지정합니다. `HEALTHCHECK`는 서버가 응답하는지 확인합니다.
+
+```powershell
 PS> docker build --progress=plain -t codyssey-workstation:1.0 .
+[다운로드 진행 표시 등 중간 출력 생략]
+#7 [2/3] COPY nginx.conf /etc/nginx/conf.d/default.conf
+#7 DONE 0.1s
+#8 [3/3] COPY app/ /usr/share/nginx/html/
+#8 DONE 0.0s
 #9 naming to docker.io/library/codyssey-workstation:1.0 done
 #9 DONE 1.2s
+```
+
+```powershell
 PS> docker run -d --name codyssey-web -p 127.0.0.1:8080:80 codyssey-workstation:1.0
+eed7564ae9ed46f40f1881785db85794623b222c3935d314769f93532e5097ef
+
+PS> docker ps --filter name=codyssey-web
+CONTAINER ID   IMAGE                      COMMAND                  CREATED          STATUS                    PORTS                    NAMES
+eed7564ae9ed   codyssey-workstation:1.0   "/docker-entrypoint.…"   34 seconds ago   Up 33 seconds (healthy)   127.0.0.1:8080->80/tcp   codyssey-web
+
 PS> docker inspect codyssey-web --format '{{.State.Health.Status}}'
 healthy
+```
+
+```powershell
+PS> curl.exe -i --max-time 15 http://localhost:8080/
+HTTP/1.1 200 OK
+Server: nginx/1.30.6
+Date: Mon, 02 Nov 2026 03:59:14 GMT
+Content-Type: text/html
+Content-Length: 2229
+[나머지 헤더 및 HTML 중간 부분 생략]
+  <title>Codyssey E1-1 · Dev Workstation Lab</title>
+    <h1>나의 개발 작업실</h1>
+    <p class="marker" id="mount-marker">콘텐츠 버전: WORKSTATION_V1</p>
+
 PS> curl.exe -i --max-time 15 http://localhost:8080/healthz
 HTTP/1.1 200 OK
+Server: nginx/1.30.6
+Date: Mon, 02 Nov 2026 03:59:15 GMT
+Content-Type: text/plain
+Content-Length: 3
+Connection: keep-alive
+
 ok
 ```
 
-![브라우저에서 열린 8080의 V1과 8081의 V2](docs/evidence/15-browser-addresses.png)
+### 바인드 마운트와 COPY 비교
 
-*주소창과 페이지 버전을 함께 보면 왼쪽은 기존 서버 `8080`의 V1, 오른쪽은 PC 파일을 연결한 `8081`의 V2입니다.*
+![CMD에서 확인한 두 서버의 버전과 볼륨 메모](docs/evidence/17-cmd-docker.png)
 
-### 3-4. HTML 수정 반영 비교
-
-PC의 HTML을 고쳤을 때 서버에 바로 반영되는지 확인하려고, **같은 이미지**에서 두 서버를 띄우고 파일을 읽는 방식만 다르게 했습니다. 두 서버 모두 컨테이너 안에서는 `80`번으로 요청을 받습니다.
+**화면에서 볼 곳** — `docker ps`에는 두 서버가 각각 `8081 → 80`, `8082 → 80`으로 연결돼 있습니다. 바로 아래 `curl` 결과에서 **8081은 V2, 8082는 V1**입니다. 맨 아래 `cat /data/memo.txt` 결과는 새 컨테이너에서 다시 읽은 볼륨 메모입니다.
 
 ```powershell
 PS> docker run -d --name e1-1-copy-guide -p 127.0.0.1:8082:80 codyssey-workstation:student-1
+5e144b9a442f062a6bc7e4a0130863bb85866f327bc17a38ea88642c5c038665
+
+PS> $appPath = (Resolve-Path .\app).Path
+PS> docker run -d --name e1-1-bind-guide -p 127.0.0.1:8081:80 ==mount
+docker: invalid reference format
+
+PS> docker run -d --name e1-1-bind-guide -p 127.0.0.1:8081:80 --mount
+flag needs an argument: --mount
+
+PS> "type=bind,source=$appPath,target=/usr/share/nginx/html,readonly" codyssey-workstation:student-1
+식 또는 문에서 예기치 않은 'codyssey-workstation:student-1' 토큰입니다.
+[ParserError / UnexpectedToken: 위치 표시 등 중간 출력 생략]
+
 PS> $appPath = (Resolve-Path .\app).Path
 PS> docker run -d --name e1-1-bind-guide -p 127.0.0.1:8081:80 --mount "type=bind,source=$appPath,target=/usr/share/nginx/html,readonly" codyssey-workstation:student-1
+9fdf6ee013be8740e6d2e557f52e9ece75de503524217568cef9416bb83ff45d
+
+PS> docker ps --filter name=guide
+CONTAINER ID   IMAGE                            COMMAND                   CREATED              STATUS                        PORTS                    NAMES
+9fdf6ee013be   codyssey-workstation:student-1   "/docker-entrypoint.…"   15 seconds ago       Up 14 seconds (healthy)       127.0.0.1:8081->80/tcp   e1-1-bind-guide
+5e144b9a442f   codyssey-workstation:student-1   "/docker-entrypoint.…"   About a minute ago   Up About a minute (healthy)   127.0.0.1:8082->80/tcp   e1-1-copy-guide
 ```
 
-| 서버 | HTML을 읽는 곳 | 수정 전 | VS Code에서 V2로 수정한 뒤 |
-|---|---|---|---|
-| `8081` | 바인드 마운트로 연결한 PC의 `app/` 폴더 | V1 | **V2** |
-| `8082` | 빌드할 때 이미지에 복사한 파일 | V1 | **V1** |
+수정 전에는 두 서버가 V1을 반환했습니다. HTML만 바꾼 뒤 `8081`은 V2, `8082`는 V1이었습니다.
 
-수정 전에는 두 주소에서 같은 V1 표시가 나왔습니다. 아래는 당시 응답에서 버전 표시가 있는 줄을 발췌한 것입니다.
+### 볼륨 생성·삭제·재연결
 
-```console
-PS> curl.exe -s --max-time 10 http://localhost:8081/ | Select-String 'SIMPLE_PAGE'
-    <p class="version" id="mount-marker" data-version="SIMPLE_PAGE_V1">
-PS> curl.exe -s --max-time 10 http://localhost:8082/ | Select-String 'SIMPLE_PAGE'
-    <p class="version" id="mount-marker" data-version="SIMPLE_PAGE_V1">
-```
-
-![CMD에서 확인한 8081의 V2, 8082의 V1과 볼륨 메모](docs/evidence/17-cmd-docker.png)
-
-*두 `curl.exe` 명령 아래의 `SIMPLE_PAGE_V2`와 `SIMPLE_PAGE_V1`이 수정 후 결과입니다. 맨 아래 `cat` 출력은 다음 볼륨 실습에서 다시 읽은 메모입니다.*
-
-### 3-5. 볼륨 데이터 보존
-
-기존 컨테이너에서 저장한 메모를 새 컨테이너에서도 읽을 수 있는지 확인했습니다. **볼륨**은 게임의 세이브 폴더처럼 컨테이너와 별도로 데이터를 보관하는 공간입니다.
-
-```console
+```powershell
 PS> docker volume create e1-1-user-data
 e1-1-user-data
+
 PS> $volumeMount = "type=volume,source=e1-1-user-data,target=/data"
 PS> docker run -d --name e1-1-volume-before --mount $volumeMount ubuntu:24.04 sleep infinity
+77d4a42449559c220892e446f3b117a622b57398cb5ae41cf716ccf6187ad886
+
 PS> docker exec e1-1-volume-before sh -c 'echo E1-1-volume-proof > /data/memo.txt'
 PS> docker exec e1-1-volume-before cat /data/memo.txt
 E1-1-volume-proof
+```
 
+```powershell
 PS> docker stop e1-1-volume-before
+e1-1-volume-before
 PS> docker rm e1-1-volume-before
 e1-1-volume-before
+PS> docker ps -a --filter name=e1-1-volume-before
+CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES
 PS> docker volume ls --filter name=e1-1-user-data
 DRIVER    VOLUME NAME
 local     e1-1-user-data
+```
+
+```powershell
+PS> $volumeMount = "type=volume,source=e1-1-user-data,target=/data"
 PS> docker run -d --name e1-1-volume-after --mount $volumeMount ubuntu:24.04 sleep infinity
+91ff958c97f598400a36d7de5c44b38a9b530b320cb4e7e514ea185c151ad9b4
 PS> docker exec e1-1-volume-after cat /data/memo.txt
 E1-1-volume-proof
 ```
 
-기존 컨테이너를 삭제하기 전과 새 컨테이너를 띄운 뒤에 같은 값이 나왔습니다. 새 컨테이너가 같은 볼륨을 연결해 기존 메모를 읽은 결과입니다.
+### Git 설정과 GitHub 연결
 
-### 3-6. Git·GitHub와 VS Code 연결
+![CMD에서 git log와 git ls-remote를 실행한 화면](docs/evidence/17-cmd-git.png)
 
-VS Code에서 HTML을 V2로 수정한 뒤 **Git으로 내 PC에 변경을 커밋**하고, **GitHub에 푸시해 공유**했습니다. 로컬 웹페이지가 V1과 V2로 다르게 보인 이유는 위에서 비교한 HTML 파일의 연결 방식입니다.
+**화면에서 볼 곳** — `git log` 아래에 HTML을 V2로 바꾼 실습 커밋 `d580e49`가 보입니다. `git ls-remote` 아래에는 캡처 당시 GitHub의 `main` 커밋이 표시됩니다.
 
 ```console
+CMD> git --version
+git version 2.52.0.windows.1
 CMD> git config --local --list
+core.repositoryformatversion=0
+core.filemode=false
+core.bare=false
+core.logallrefupdates=true
+core.symlinks=false
+core.ignorecase=true
+core.autocrlf=input
 remote.origin.url=https://github.com/gyungmini306-blip/codyssey-E1-1-dev-workstation.git
+remote.origin.fetch=+refs/heads/*:refs/remotes/origin/*
+branch.main.remote=origin
+branch.main.merge=refs/heads/main
 init.defaultbranch=main
+user.email=[마스킹]
 user.name=gyungmini306-blip
+credential.https://github.com.username=gyungmini306-blip
+```
 
+```powershell
+PS> git --no-pager diff -- app/index.html
+warning: in the working copy of 'app/index.html', CRLF will be replaced by LF the next time Git touches it
+[V1 → V2 한 줄 변경의 diff 본문 생략: 위 링크 참고]
+
+PS> git add app/index.html
+warning: in the working copy of 'app/index.html', CRLF will be replaced by LF the next time Git touches it
+PS> git --no-pager diff --cached --stat
+ app/index.html | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 PS> git commit -m "Update practice page to version 2"
 [main d580e49] Update practice page to version 2
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 PS> git push
+Enumerating objects: 7, done.
+Counting objects: 100% (7/7), done.
+Delta compression using up to 8 threads
+Compressing objects: 100% (4/4), done.
+Writing objects: 100% (4/4), 386 bytes | 386.00 KiB/s, done.
+Total 4 (delta 3), reused 0 (delta 0), pack-reused 0 (from 0)
+remote: Resolving deltas: 100% (3/3), completed with 3 local objects.
+To https://github.com/gyungmini306-blip/codyssey-E1-1-dev-workstation.git
    58c49d9..d580e49  main -> main
+PS> git status --short --branch
+## main...origin/main
 ```
 
-![VS Code 계정 메뉴의 GitHub 연결 화면](docs/evidence/14-vscode-github.png)
+![VS Code에 표시된 GitHub 계정](docs/evidence/14-vscode-github.png)
 
-*VS Code 계정 메뉴에서 `gyungmini306-blip (GitHub)`이 표시된 것을 확인했습니다.*
+### 보너스 Docker Compose
 
-## 4. 문제 해결
+![CMD에서 열어 본 기존 Compose 실습 기록](docs/evidence/17-cmd-compose.png)
 
-| 문제 | 원인 가설과 확인 | 해결 결과 |
-|---|---|---|
-| `ls- la`로 파일 목록을 보려다 실패 | 공백 위치가 잘못돼 셸이 `ls-`를 명령 이름으로 읽었다고 봤습니다. 출력은 `bash: ls-: command not found`였습니다. | `ls -la`로 수정하니 숨김 파일을 포함한 목록이 나왔습니다. |
-| 바인드 마운트 서버 실행 실패 | `--mount` 뒤에 연결 설정이 빠졌다고 봤습니다. Docker가 `flag needs an argument: --mount`를 출력했습니다. | 마운트 설정과 이미지 이름을 같은 명령에 넣어 다시 실행했습니다. `docker ps`에서 서버가 실행 중인 것을 확인했고 `curl`로 응답을 받았습니다. |
+**화면에서 볼 곳** — 이 화면은 CMD에서 기존 PowerShell 로그를 열어 본 것입니다. `GET /healthz` 옆의 `200`은 정상 응답이고, `down` 뒤 `ps -a`에 표 제목만 보이는 것은 프로젝트 컨테이너가 정리됐다는 뜻입니다.
 
-## 5. 보너스 1번 · Docker Compose 기초
-
-빌드 위치와 포트를 `compose.yaml`에 적어 두면, 매번 `docker run`에 같은 옵션을 입력할 필요 없이 웹 서버를 다시 띄울 수 있습니다. `services.web`은 웹 서버 하나를 정의하고, `build: .`은 현재 폴더의 Dockerfile을 사용합니다. `ports`는 PC의 `8083`번을 컨테이너의 `80`번에 연결합니다.
-
-```yaml
-services:
-  web:
-    build: .
-    ports:
-      - "127.0.0.1:8083:80"
-```
-
-```console
+```text
+PS> docker compose version
+Docker Compose version v5.6.1
 PS> docker compose -p e1-1-bonus up -d --build --wait
+Image e1-1-bonus-web Built
 Container e1-1-bonus-web-1 Healthy
+PS> docker compose -p e1-1-bonus ps
+NAME               IMAGE            COMMAND                  SERVICE   CREATED         STATUS                   PORTS
+e1-1-bonus-web-1   e1-1-bonus-web   "/docker-entrypoint.…"   web       6 seconds ago   Up 6 seconds (healthy)   127.0.0.1:8083->80/tcp
 PS> curl.exe -fsS -i http://127.0.0.1:8083/healthz
 HTTP/1.1 200 OK
+Server: nginx/1.30.6
+Date: Tue, 03 Nov 2026 03:24:48 GMT
+Content-Type: text/plain
+Content-Length: 3
+Connection: keep-alive
+
+ok
+PS> docker compose -p e1-1-bonus logs --tail 6 web
+web-1  | 2026/11/03 03:24:42 [notice] 1#1: start worker process 33
+web-1  | 2026/11/03 03:24:42 [notice] 1#1: start worker process 34
+web-1  | 2026/11/03 03:24:42 [notice] 1#1: start worker process 35
+web-1  | 2026/11/03 03:24:42 [notice] 1#1: start worker process 36
+web-1  | 127.0.0.1 - - [03/Nov/2026:03:24:47 +0000] "GET /healthz HTTP/1.1" 200 3 "-" "Wget" "-"
+web-1  | 172.18.0.1 - - [03/Nov/2026:03:24:48 +0000] "GET /healthz HTTP/1.1" 200 3 "-" "curl/8.21.0" "-"
 PS> docker compose -p e1-1-bonus down
-Container e1-1-bonus-web-1 Removed
+ Container e1-1-bonus-web-1 Stopping
+ Container e1-1-bonus-web-1 Stopped
+ Container e1-1-bonus-web-1 Removing
+ Container e1-1-bonus-web-1 Removed
+ Network e1-1-bonus_default Removing
+ Network e1-1-bonus_default Removed
+PS> docker compose -p e1-1-bonus ps -a
+NAME      IMAGE     COMMAND   SERVICE   CREATED   STATUS    PORTS
 ```
 
-`200 OK`로 PC에서 서버에 접속할 수 있음을 확인했습니다. 종료 후 `docker compose -p e1-1-bonus ps -a`에는 표 제목만 남아 프로젝트의 컨테이너가 정리된 것을 확인했습니다.
+## 문제 해결
+
+- `ls- la`를 입력했을 때 셸이 `ls-`를 명령으로 읽었습니다. `ls -la`로 고쳐 숨김 파일을 포함한 목록을 확인했습니다.
+- `--mount`에 인수가 빠져 컨테이너 실행이 실패했습니다. 마운트 설정과 이미지 이름을 한 줄에 적어 다시 실행했고, `docker ps`와 HTTP 응답으로 확인했습니다.
