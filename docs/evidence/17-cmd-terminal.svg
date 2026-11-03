@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 980 420" width="980" height="420" role="img" aria-label="Linux files and permissions">
+  <rect width="980" height="420" rx="14" fill="#0e1822"/>
+  <text x="22" y="33" fill="#eef5fb" font-family="monospace" font-size="20" font-weight="bold">Linux files and permissions</text>
+  <text x="22" y="59" fill="#aebdcc" font-family="monospace" font-size="14">E1-1 / CMD verification output / 2026-11-03</text>
+  <text x="22" y="88" fill="#83e7c6" font-family="Consolas, D2Coding, monospace" font-size="16" xml:space="preserve">CMD&gt; docker exec e1-1-ubuntu ls -la /root/e1-1/guided-practice</text>
+  <text x="22" y="111" fill="#eef5fb" font-family="Consolas, D2Coding, monospace" font-size="16" xml:space="preserve">total 16</text>
+  <text x="22" y="134" fill="#eef5fb" font-family="Consolas, D2Coding, monospace" font-size="16" xml:space="preserve">drwxr-xr-x 3 root root 4096 Nov  3 00:12 .</text>
+  <text x="22" y="157" fill="#eef5fb" font-family="Consolas, D2Coding, monospace" font-size="16" xml:space="preserve">drwxr-xr-x 3 root root 4096 Nov  3 00:05 ..</text>
+  <text x="22" y="180" fill="#eef5fb" font-family="Consolas, D2Coding, monospace" font-size="16" xml:space="preserve">-rw-r--r-- 1 root root    0 Nov  3 00:05 .hidden-note</text>
+  <text x="22" y="203" fill="#eef5fb" font-family="Consolas, D2Coding, monospace" font-size="16" xml:space="preserve">-rw-r--r-- 1 root root    0 Nov  3 00:05 empty.txt</text>
+  <text x="22" y="226" fill="#eef5fb" font-family="Consolas, D2Coding, monospace" font-size="16" xml:space="preserve">-rw-r--r-- 1 root root   23 Nov  3 00:05 memo.txt</text>
+  <text x="22" y="249" fill="#eef5fb" font-family="Consolas, D2Coding, monospace" font-size="16" xml:space="preserve">drwxr-xr-x 2 root root 4096 Nov  3 00:12 permissions-dir</text>
+  <text x="22" y="272" fill="#eef5fb" font-family="Consolas, D2Coding, monospace" font-size="16" xml:space="preserve"></text>
+  <text x="22" y="295" fill="#83e7c6" font-family="Consolas, D2Coding, monospace" font-size="16" xml:space="preserve">CMD&gt; docker exec e1-1-ubuntu ls -ld /root/e1-1/guided-practice/permissions-dir</text>
+  <text x="22" y="318" fill="#eef5fb" font-family="Consolas, D2Coding, monospace" font-size="16" xml:space="preserve">drwxr-xr-x 2 root root 4096 Nov  3 00:12 /root/e1-1/guided-practice/permissions-dir</text>
+  <text x="22" y="341" fill="#eef5fb" font-family="Consolas, D2Coding, monospace" font-size="16" xml:space="preserve"></text>
+  <text x="22" y="364" fill="#83e7c6" font-family="Consolas, D2Coding, monospace" font-size="16" xml:space="preserve">CMD&gt; docker exec e1-1-ubuntu cat /root/e1-1/guided-practice/memo.txt</text>
+  <text x="22" y="387" fill="#eef5fb" font-family="Consolas, D2Coding, monospace" font-size="16" xml:space="preserve">E1-1 terminal practice</text>
+</svg>

@@ -21,21 +21,21 @@
 
 권한 실습은 Ubuntu 컨테이너의 root 셸에서 권한 비트가 바뀐 결과를 확인했다. 다른 사용자로 접근이 거부되는지는 별도 실험이 필요하다. 웹 접속은 로컬 주소에서 검증했다. 상세 설명 페이지의 버튼은 원리를 익히는 모형이며, 실습 결과는 위 터미널 출력과 캡처를 근거로 삼았다.
 
-## PowerShell에서 재확인한 완료 상태
+## CMD에서 재확인한 완료 상태
 
-아래 이미지는 실습을 마친 뒤 PowerShell에서 보조 실행한 실제 출력을 옮긴 것이다. HTTP 응답에서는 HTML 버전 표식만 추출했다. 원래 실습의 명령과 전후 비교는 위 표의 로그에서 확인할 수 있다.
+아래 이미지는 실습을 마친 뒤 Windows 명령 프롬프트(CMD)에서 보조 실행한 실제 출력을 옮긴 것이다. HTTP 응답은 `findstr`로 HTML 버전 표식이 있는 줄을 확인했다. 원래 실습의 명령과 전후 비교는 위 표의 로그에서 확인할 수 있다.
 
 **터미널과 권한.** 남아 있는 실습 파일과 폴더, 파일의 `644` 및 디렉토리의 `755` 권한, 메모 내용을 다시 확인했다.
 
-![PowerShell 재확인 출력: 파일 목록, 권한 및 메모 내용](docs/evidence/17-powershell-terminal.svg)
+![CMD 재확인 출력: 파일 목록, 권한 및 메모 내용](docs/evidence/17-cmd-terminal.svg)
 
 **Docker와 데이터 보존.** 바인드 서버 8081은 V2, COPY 서버 8082는 V1을 반환했다. 교체한 컨테이너에서 볼륨의 기존 메모를 읽었다.
 
-![PowerShell 재확인 출력: 두 서버의 버전과 볼륨 메모](docs/evidence/17-powershell-docker.svg)
+![CMD 재확인 출력: 두 서버의 버전과 볼륨 메모](docs/evidence/17-cmd-docker.svg)
 
 **Git과 GitHub.** 사용자가 만든 커밋과 로컬 브랜치, 재확인 당시 원격 `main`의 커밋을 조회했다.
 
-![PowerShell 재확인 출력: 실습 커밋과 GitHub 원격 브랜치](docs/evidence/17-powershell-git.svg)
+![CMD 재확인 출력: 실습 커밋과 GitHub 원격 브랜치](docs/evidence/17-cmd-git.svg)
 
 ## 직접 실습 가이드
 
