@@ -1,6 +1,6 @@
 # E1-1 · 개발 작업실
 
-다른 사람도 같은 방법으로 웹 서버를 실행할 수 있도록 Docker로 환경을 만들고, 접속·파일 수정·데이터 보존을 직접 확인했습니다.
+다른 사람도 같은 소스와 명령으로 웹 서버를 실행할 수 있도록 개발 환경을 구성했습니다. Ubuntu 컨테이너에서 터미널과 권한을 연습하고, 별도의 NGINX 컨테이너에서 접속·파일 수정·데이터 보존을 검증했습니다. 실행 방법과 실제 결과는 이 저장소에 기록했습니다.
 
 ## 과제가 요구한 일
 
@@ -11,6 +11,14 @@
 ![브라우저 접속 결과. 기존 서버 8080은 V1, PC 파일을 연결한 서버 8081은 V2](docs/evidence/15-browser-addresses.png)
 
 *주소창과 페이지 버전을 함께 보면 됩니다. 왼쪽은 기존 서버 `8080`의 V1, 오른쪽은 PC 파일을 연결한 `8081`의 V2입니다.*
+
+| 내 PC에서 접속한 포트 | 연결된 NGINX와 HTML | 수정 후 결과 |
+|---|---|---|
+| `8080` | 기존 컨테이너의 `80`번 · 이미지에 복사한 HTML | V1 |
+| `8081` | 바인드 마운트 컨테이너의 `80`번 · PC에서 연결한 HTML | V2 |
+| `8082` | 비교용 COPY 컨테이너의 `80`번 · 이미지에 복사한 HTML | V1 |
+
+각 NGINX는 별도 컨테이너에서 `80`번으로 요청을 받습니다. V1과 V2는 HTML에 적은 버전 표시입니다. `8081`과 `8082`는 같은 이미지로 시작해, PC 파일을 수정했을 때 연결 방식에 따라 결과가 달라지는지 비교했습니다.
 
 ## 빠른 실행
 
@@ -160,6 +168,8 @@ PS> docker ps -a
 ```
 
 ```powershell
+PS> docker --version
+Docker version 29.9.2, build a82e528
 PS> docker info --format 'ServerVersion={{.ServerVersion}} OSType={{.OSType}}'
 ServerVersion=29.9.2 OSType=linux
 PS> docker images --digests hello-world
@@ -326,7 +336,6 @@ PS> git commit -m "Update practice page to version 2"
 PS> git push
 To https://github.com/gyungmini306-blip/codyssey-E1-1-dev-workstation.git
    58c49d9..d580e49  main -> main
-PS> git status --short --branch
 ```
 
 ![VS Code에 표시된 GitHub 계정](docs/evidence/14-vscode-github.png)
