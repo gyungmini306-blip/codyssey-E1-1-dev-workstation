@@ -14,6 +14,27 @@ Docker로 웹 서버를 띄우고, 다른 사람도 같은 절차로 실행할 �
 
 *캡처는 기존 8080 서버와 8081 서버를 나란히 보여줍니다. 같은 이미지로 비교한 8081/8082의 결과는 [실제 응답 로그](docs/evidence/11-user-bind.md)에 있습니다.*
 
+## CMD 실습 결과
+
+![CMD에서 확인한 Docker 상태, 8081의 V2와 8082의 V1, 볼륨 메모](docs/evidence/17-cmd-docker.png)
+
+<details>
+<summary>파일·권한, Git, Compose 캡처 보기</summary>
+
+**파일·권한** — 파일 목록과 최종 권한을 확인했습니다.
+
+![CMD에서 확인한 파일 목록과 권한](docs/evidence/17-cmd-terminal.png)
+
+**Git** — 실습 커밋과 캡처 당시 원격 브랜치를 조회했습니다.
+
+![CMD에서 확인한 Git 커밋과 원격 브랜치](docs/evidence/17-cmd-git.png)
+
+**Compose** — 이전 PowerShell 실습 로그를 CMD에서 열어 본 화면입니다. HTTP 200 요청과 종료 후 빈 컨테이너 목록을 확인할 수 있습니다.
+
+![CMD에서 열어 본 Compose 실습 로그](docs/evidence/17-cmd-compose.png)
+
+</details>
+
 ## 실행해 보기
 
 Docker가 실행 중인 상태에서 저장소 루트의 CMD를 열어 아래 명령을 실행합니다. Compose 설정은 Dockerfile과 포트 연결을 한 파일에 기록한 보너스 과제입니다.

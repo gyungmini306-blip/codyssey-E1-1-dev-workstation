@@ -23,19 +23,19 @@
 
 ## CMD에서 재확인한 완료 상태
 
-아래 이미지는 실습을 마친 뒤 Windows 명령 프롬프트(CMD)에서 보조 실행한 실제 출력을 옮긴 것이다. HTTP 응답은 `findstr`로 HTML 버전 표식이 있는 줄을 확인했다. 원래 실습의 명령과 전후 비교는 위 표의 로그에서 확인할 수 있다.
+아래 이미지는 실습을 마친 뒤 Windows 명령 프롬프트(CMD)에서 완료 상태를 다시 조회한 화면이다. HTTP 응답은 `findstr`로 HTML 버전 표식이 있는 줄을 확인했다. 원래 실습의 명령과 전후 비교는 위 표의 로그에서 확인할 수 있다.
 
 **터미널과 권한.** 남아 있는 실습 파일과 폴더, 파일의 `644` 및 디렉토리의 `755` 권한, 메모 내용을 다시 확인했다.
 
-![CMD 재확인 출력: 파일 목록, 권한 및 메모 내용](docs/evidence/17-cmd-terminal.svg)
+![CMD 캡처: 파일 목록, 권한 및 메모 내용](docs/evidence/17-cmd-terminal.png)
 
 **Docker와 데이터 보존.** 바인드 서버 8081은 V2, COPY 서버 8082는 V1을 반환했다. 교체한 컨테이너에서 볼륨의 기존 메모를 읽었다.
 
-![CMD 재확인 출력: 두 서버의 버전과 볼륨 메모](docs/evidence/17-cmd-docker.svg)
+![CMD 캡처: 두 서버의 버전과 볼륨 메모](docs/evidence/17-cmd-docker.png)
 
 **Git과 GitHub.** 사용자가 만든 커밋과 로컬 브랜치, 재확인 당시 원격 `main`의 커밋을 조회했다.
 
-![CMD 재확인 출력: 실습 커밋과 GitHub 원격 브랜치](docs/evidence/17-cmd-git.svg)
+![CMD 캡처: 실습 커밋과 GitHub 원격 브랜치](docs/evidence/17-cmd-git.png)
 
 ## 직접 실습 가이드
 
