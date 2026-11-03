@@ -115,13 +115,15 @@ docker ps -a --filter name=e1-1-shell-guide
 git config user.name gyungmini306-blip
 git config user.email gyungmini306-blip@users.noreply.github.com
 git config init.defaultBranch main
-git config --local --list
-git branch --show-current
-git remote -v
-git status --short
+git --no-pager config --local --list
+git --no-pager branch --show-current
+git --no-pager remote -v
+git --no-pager status --short
 ```
 
 예상: 현재 브랜치 main, 원격은 `https://github.com/gyungmini306-blip/codyssey-E1-1-dev-workstation.git`. init.defaultBranch는 앞으로 새 저장소를 만들 때의 기본값이며 기존 브랜치 이름을 바꾸는 명령은 아니다. 현재 브랜치도 별도로 확인한다.
+
+--no-pager는 출력이 less 보기 화면으로 들어가지 않게 한다. SUMMARY OF LESS COMMANDS나 (END)가 보이면 셸 명령을 계속 입력하지 말고 q로 보기 화면을 닫는다. log file 입력 중이라면 Ctrl+C로 먼저 취소한다. C:\...>는 CMD, PS C:\...>는 PowerShell이며, CMD에서는 powershell -NoProfile로 전환하면 같은 폴더에서 PowerShell 명령을 사용할 수 있다.
 
 설정 출력에 토큰·비밀번호·토큰이 들어 있는 URL 등이 없는지 확인한다. 로그인 정보나 인증 코드를 문서·캡처·채팅에 넣지 않는다.
 
