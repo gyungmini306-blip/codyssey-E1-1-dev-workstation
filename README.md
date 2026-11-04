@@ -259,8 +259,7 @@ PS> git push
 
 | 문제 | 원인 가설 | 확인 방법과 결과 | 해결 또는 대안 |
 |---|---|---|---|
-| 숨김 파일 목록 조회 실패 | 공백 위치 때문에 셸이 `ls-`를 명령 이름으로 읽었을 수 있음 | `ls- la`에서 `bash: ls-: command not found` 출력 | `ls -la`로 수정해 목록을 확인함. [기록](docs/evidence/10-user-terminal.md) |
-| 바인드 서버 실행 실패 | 마운트 설정값이 빠졌을 수 있음 | `--mount`만 넣자 `flag needs an argument: --mount` 출력 | 마운트 설정과 이미지 이름까지 한 줄로 입력해 실행 및 응답을 확인함. [기록](docs/evidence/11-user-bind.md) |
+| Docker 명령은 실행됐지만 엔진에 연결할 수 없음 | Docker Desktop 엔진이 아직 시작되지 않았거나 Windows 기능 변경 후 재시작이 필요했을 수 있음 | `docker --version`은 출력됐지만 `docker info`는 `docker_engine` 파이프에 연결하지 못했습니다. Windows의 `RebootPending`도 `True`였습니다. [설치·오류 기록](docs/evidence/02-installation.md) | Windows 재시작 후 `docker info`에서 `ServerVersion=29.9.2 OSType=linux`를 확인했습니다. `hello-world`도 `Exited (0)`으로 정상 종료했습니다. [재시작 후 확인](docs/evidence/05-hello-world.md) |
 | 새 컨테이너가 호스트 포트 8083을 사용하지 못함 | 기존 서비스가 같은 포트를 점유했을 수 있음 | `docker ps`와 `netstat -ano`에서 점유를 확인했고, 같은 포트에 실행하자 `port is already allocated` 출력 | 빈 포트 18085로 실행해 HTTP 200과 `ok`를 확인함. [기록](docs/evidence/18-port-conflict.md) |
 
 **제출 전 보완**
