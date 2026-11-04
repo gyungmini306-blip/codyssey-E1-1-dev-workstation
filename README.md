@@ -39,7 +39,19 @@ Docker 명령은 Docker Desktop을 실행한 뒤 PowerShell에서 입력합니�
 
 Ubuntu 컨테이너에서 작업 폴더와 메모를 만들었습니다. 원본을 남겨 둔 채 복사본만 옮기고 삭제하기 위해 `cp`로 복사하고, `mv`로 위치와 이름을 바꾼 뒤 `rm`으로 지웠습니다. 기존 `e1-1-ubuntu`가 실행 중이면 PowerShell에서 `docker exec -it e1-1-ubuntu bash`로 들어갑니다. 새 환경에서는 `docker run --rm -it ubuntu:24.04 bash`로 시작할 수 있습니다.
 
-**실행 명령과 실제 출력**
+### 작업 위치와 파일 목록
+
+`pwd`에 작업 경로가 표시되고, `ls -la`에는 숨김 파일인 `.hidden-note`와 빈 파일인 `empty.txt`가 보입니다. `cat memo.txt`로 저장한 문구를 확인했습니다.
+
+![작업 위치, 숨김 파일 목록, 메모 내용 확인](docs/evidence/23-terminal-location-list.png)
+
+### 복사본 이동과 삭제
+
+`mv` 뒤에는 `archive` 안에 `memo-renamed.txt`가 보입니다. 복사본과 빈 폴더를 지운 뒤 마지막 목록에서 원본 `memo.txt`가 남은 것을 확인했습니다.
+
+![메모 복사본을 옮기고 지운 뒤 원본이 남은 화면](docs/evidence/21-terminal-copy-move-delete.png)
+
+**파일 조작 명령과 실제 출력**
 
 ```console
 $ mkdir -p /root/e1-1/guided-practice
@@ -71,15 +83,13 @@ $ rmdir archive
 
 `/root/e1-1/guided-practice`는 루트부터 찾는 절대 경로이고, `archive/memo-renamed.txt`는 현재 폴더를 기준으로 찾는 상대 경로입니다. 목록에서 빈 파일 두 개의 크기가 0이고, 복사본을 지운 뒤 `archive`에 파일이 남지 않은 것을 확인했습니다.
 
-![Ubuntu에서 폴더와 파일을 만들고 메모를 조회한 실제 화면](docs/evidence/21-terminal-create-read.png)
+### 파일과 디렉터리 권한 변경 전후
 
-재실습 화면입니다. `pwd`로 작업 위치를 확인했고, `ls -la`에서 두 빈 파일을, `cat memo.txt`에서 저장한 문구를 확인했습니다.
+재실습 화면의 `chmod` 실행 뒤, 파일은 `644 → 600`, 폴더는 `755 → 700`이 되어 그룹과 기타 사용자의 권한이 사라졌습니다.
 
-![Ubuntu에서 메모 복사본을 이동하고 삭제한 실제 화면](docs/evidence/21-terminal-copy-move-delete.png)
+![chmod 전후의 파일과 폴더 권한을 확인한 실제 화면](docs/evidence/23-terminal-permissions.png)
 
-재실습 화면입니다. 이동 뒤에는 `archive`에 `memo-renamed.txt`가 보이고, 삭제 뒤에는 `.`과 `..`만 남았습니다. 마지막 목록에는 원본 `memo.txt`가 남아 있습니다.
-
-**권한 변경과 실제 출력.** 소유자만 사용할 수 있게 설정한 뒤 그룹과 다른 사용자에게 어떤 권한이 추가되는지 확인했습니다. 같은 작업 폴더에서 `chmod`로 권한을 바꾸고, 파일은 `ls -l`, 디렉터리 자체는 `ls -ld`로 조회했습니다.
+**최초 권한 실습과 실제 출력.** 아래 로그에서는 반대로 파일을 `600 → 644`, 폴더를 `700 → 755`로 변경했습니다. 소유자만 사용할 수 있게 설정한 뒤 그룹과 다른 사용자에게 어떤 권한이 추가되는지 확인했습니다. 같은 작업 폴더에서 `chmod`로 권한을 바꾸고, 파일은 `ls -l`, 디렉터리 자체는 `ls -ld`로 조회했습니다.
 
 ```console
 $ mkdir -p permissions-dir
@@ -104,10 +114,6 @@ drwxr-xr-x 2 root root 4096 Nov  3 00:12 permissions-dir
 | `x` = 1 | 프로그램으로 실행 | 디렉터리 진입과 경로 탐색 |
 
 숫자는 소유자·그룹·기타 사용자 순서입니다. `644`는 `rw-r--r--`, `755`는 `rwxr-xr-x`입니다. 위 실습에서는 권한 비트 변경을 확인했습니다. [터미널 전체 기록](docs/evidence/10-user-terminal.md)
-
-![실습 파일 목록과 최종 권한](docs/evidence/17-cmd-terminal.png)
-
-CMD에서 Ubuntu 컨테이너의 숨김 파일과 최종 권한, 메모 내용을 다시 확인한 화면입니다.
 
 ## 5. Docker 점검과 운영
 
