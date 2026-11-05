@@ -115,6 +115,8 @@ drwxr-xr-x 2 root root 4096 Nov  3 00:12 permissions-dir
 
 숫자는 소유자·그룹·기타 사용자 순서입니다. `644`는 `rw-r--r--`, `755`는 `rwxr-xr-x`입니다. 위 실습에서는 권한 비트 변경을 확인했습니다. [터미널 전체 기록](docs/evidence/10-user-terminal.md)
 
+재실습에서도 복사본을 삭제한 뒤 원본 `memo.txt`가 남았고, 파일은 `644 → 600`, 폴더는 `755 → 700`으로 바뀌는 것을 확인했습니다.
+
 ## 5. Docker 점검과 운영
 
 웹 서버를 만들기 전에 Docker가 컨테이너를 실행할 수 있는지 확인했습니다. PowerShell에서 `docker info`로 엔진 응답을 확인하고 `hello-world`를 실행했습니다. 이후 목록으로 실행·종료 상태를, 로그로 서버 응답을, `docker stats`로 리소스 사용량을 확인했습니다. 운영 명령에 사용한 컨테이너는 해당 실습에서 미리 실행했습니다.
@@ -157,90 +159,92 @@ exited
 
 추가 Bash를 종료한 뒤에는 실행 상태가 `true`였고, 주 Bash를 종료하자 `exited`로 바뀌었습니다. `attach` 연결만 분리했을 때는 주 Bash가 계속 실행됐습니다. [셸 실습 원본](docs/evidence/13-user-operations.md)
 
+재실습에서도 `hello-world`는 `Exited (0)`으로 종료됐습니다. 웹 서버의 `docker logs`에서 상태 점검 요청의 `200` 응답을, `docker stats --no-stream`에서 조회 시점의 메모리 사용량 `13.41 MiB`를 확인했습니다.
+
 ## 6. 커스텀 웹 서버 이미지와 포트 매핑
 
-웹페이지를 컨테이너로 제공하기 위해 `nginx:stable-alpine`을 바탕으로 이미지를 만들었습니다. 이 이미지에 NGINX가 들어 있어 실습용 HTML과 서버 설정을 추가할 수 있었습니다. [Dockerfile](Dockerfile)의 `COPY`로 페이지와 서버 설정을 넣고, `LABEL`로 이미지 용도를 기록했습니다. `EXPOSE 80`은 이미지가 사용하는 포트를 명시하고, `HEALTHCHECK`는 내부에서 `/healthz` 응답을 점검합니다. 실제 수신 포트는 [nginx.conf](nginx.conf)의 `listen 80`으로 설정합니다.
+NGINX로 제 HTML을 제공하기 위해 [Dockerfile](Dockerfile)에 베이스 이미지 `nginx:stable-alpine`을 지정했습니다. `COPY`로 HTML과 서버 설정을 이미지에 넣고, `LABEL`로 이미지 용도를 기록했습니다. `EXPOSE 80`은 컨테이너가 사용할 포트를 표시하고, 실제 수신 포트는 [nginx.conf](nginx.conf)의 `listen 80`에서 정합니다. `HEALTHCHECK`는 컨테이너 내부에서 `/healthz`에 요청을 보내 NGINX 응답을 점검합니다.
 
-**재현 명령.** 저장소를 내려받고 `Dockerfile`이 있는 루트에서 PowerShell로 실행합니다.
+Docker Desktop을 켜고 PowerShell에서 저장소를 내려받습니다. 이미 내려받았다면 처음 두 줄 대신 해당 저장소 폴더로 이동한 뒤 빌드부터 실행합니다.
 
 ```powershell
-git clone https://github.com/gyungmini306-blip/codyssey-E1-1-dev-workstation.git
-cd codyssey-E1-1-dev-workstation
-docker build -t e1-1-quickstart .
-docker run -d --rm --name e1-1-quickstart -p 127.0.0.1:18086:80 e1-1-quickstart
-curl.exe -fsS -i --retry 5 --retry-connrefused http://127.0.0.1:18086/healthz
+git clone https://github.com/gyungmini306-blip/codyssey-E1-1-dev-workstation.git e1-1
+cd e1-1
+docker build -t e1-1-web:v1 .
+docker run -d --name e1-1-web -p 127.0.0.1:8080:80 e1-1-web:v1
+curl.exe -i http://127.0.0.1:8080/healthz
 ```
 
-PC의 `18086`을 컨테이너의 `80`에 연결합니다. 브라우저에서는 `http://localhost:18086/`을 엽니다. 호스트 포트가 사용 중이면 실행 명령과 접속 주소를 같은 빈 포트로 바꿉니다. 끝나면 `docker stop e1-1-quickstart`로 종료합니다.
-
-**실제 확인 결과.** 빠른 실행 검증에서 `18086`의 `/healthz`는 HTTP 200과 `ok`를 반환했고, 루트 페이지의 V2 표식도 확인했습니다. 최초 실습에서는 아래와 같이 PC의 `8080`으로 같은 내부 포트에 접속했습니다.
+**재실습 결과 · PC 8080 → 컨테이너 80.** `docker build`로 만든 이미지에서 컨테이너를 실행했고, PC에서 보낸 요청에 NGINX가 아래와 같이 응답했습니다. 브라우저에서 `http://localhost:8080/`을 열어 웹페이지도 확인했습니다. 주소창과 페이지는 [7절 수정 전 캡처](#html-수정-반영)에 함께 보입니다.
 
 ```console
-PS> docker build --progress=plain -t codyssey-workstation:1.0 .
-#9 naming to docker.io/library/codyssey-workstation:1.0 done
-PS> docker run -d --name codyssey-web -p 127.0.0.1:8080:80 codyssey-workstation:1.0
-PS> curl.exe -i --max-time 15 http://localhost:8080/healthz
+=> => naming to docker.io/library/e1-1-web:v1
 HTTP/1.1 200 OK
+Server: nginx/1.30.6
+
 ok
 ```
 
-[최초 빌드·실행·HTTP 기록](docs/evidence/07-web-server.md) · [사용자 직접 빌드 기록](docs/evidence/11-user-bind.md). 주소창과 응답이 보이는 기존 캡처는 확인했으며, 공개 제출용 마스킹은 [보완 항목](#9-트러블슈팅과-제출-전-보완-항목)에 적었습니다.
-
-**웹 화면 참고.** 이후 별도로 촬영한 V1과 V2의 디자인입니다. 실제 바인드 마운트 비교는 7절의 8081·8082 응답 기록에 있습니다.
-
-| V1 · 어두운 화면 | V2 · 밝은 화면 |
-|---|---|
-| ![어두운 V1 화면](docs/evidence/20-web-preview-v1.png) | ![밝은 V2 화면](docs/evidence/20-web-preview-v2.png) |
+`v1`은 이미지에 붙인 태그입니다. 브라우저의 페이지 버전은 HTML 안의 문구로 결정됩니다. `8080`이 이미 사용 중이면 실행 명령과 접속 주소에 같은 빈 포트를 지정합니다. [최초 빌드·실행 기록](docs/evidence/07-web-server.md)
 
 ## 7. 바인드 마운트와 볼륨 영속성
 
 ### HTML 수정 반영
 
-PC에서 HTML을 수정하면 서버 응답이 바뀌는지 확인했습니다. 연결 방식의 차이를 비교하기 위해 저장소 루트에서 같은 이미지로 서버를 두 개 실행하고, `8081`에만 PC의 `app/` 폴더를 읽기 전용으로 연결했습니다.
+PC에서 수정한 파일이 어느 서버에 반영되는지 비교했습니다. `8080` 서버를 그대로 둔 상태에서, 저장소 루트의 PowerShell로 **같은 이미지**를 쓰는 두 번째 서버를 실행했습니다. `8081`에만 PC의 `app/` 폴더를 NGINX의 웹 폴더에 읽기 전용으로 연결했습니다.
 
 ```powershell
-docker build --progress=plain -t codyssey-workstation:student-1 .
-docker run -d --name e1-1-copy-guide -p 127.0.0.1:8082:80 codyssey-workstation:student-1
 $appPath = (Resolve-Path .\app).Path
-docker run -d --name e1-1-bind-guide -p 127.0.0.1:8081:80 --mount "type=bind,source=$appPath,target=/usr/share/nginx/html,readonly" codyssey-workstation:student-1
-curl.exe -s --max-time 10 http://localhost:8081/ | Select-String 'SIMPLE_PAGE'
-curl.exe -s --max-time 10 http://localhost:8082/ | Select-String 'SIMPLE_PAGE'
+$mountSpec = "type=bind,source=$appPath,target=/usr/share/nginx/html,readonly"
+docker run -d --name e1-1-web-bind -p 127.0.0.1:8081:80 --mount $mountSpec e1-1-web:v1
 ```
 
-**실제 결과.** 위 명령은 당시 실행 순서입니다. 당시 두 서버는 V1에서 시작했습니다. PC의 `app/index.html`을 V2로 저장하고 같은 두 요청을 다시 보냈습니다. 현재 저장소로 재현하면 두 서버가 V2로 시작하므로, 파일의 버전 표식과 문구를 다른 값으로 바꿔 비교하면 됩니다.
+두 페이지가 버전 2인 것을 확인한 뒤, PC의 `app/index.html`을 열고 화면에 표시되는 `페이지 버전: 2` 문구를 `페이지 버전: 3 (바인드 입니다.)`로 바꾼 뒤 저장했습니다. 이미지를 다시 빌드하거나 컨테이너를 다시 시작하지 않고, 두 페이지를 새로고침했습니다.
 
-```text
-                수정 전             수정 후
-8081 (연결)     SIMPLE_PAGE_V1      SIMPLE_PAGE_V2
-8082 (복사)     SIMPLE_PAGE_V1      SIMPLE_PAGE_V1
-```
+| 서버 | 읽는 파일 | 수정 전 | 수정 후 |
+|---|---|---|---|
+| `8080` | 빌드할 때 이미지에 복사해 둔 HTML | 버전 2 | **버전 2 유지** |
+| `8081` | 바인드 마운트로 연결한 PC의 HTML | 버전 2 | **버전 3으로 변경** |
 
-![8081과 8082의 실제 HTTP 응답 및 볼륨 조회](docs/evidence/17-cmd-docker.png)
+**수정 전.** 왼쪽 주소창은 `8080`, 오른쪽은 `8081`이고, 둘 다 버전 2가 보입니다.
 
-[HTML 변경과 두 서버의 HTTP 응답 원본](docs/evidence/11-user-bind.md#11-f-재빌드컨테이너-재생성-없이-수정-후-비교-성공)
+![수정 전 8080과 8081 모두 페이지 버전 2](docs/evidence/24-replay-bind-before.png)
+
+**수정 후.** 같은 순서로, 왼쪽 `8080`은 버전 2를 유지했고 오른쪽 `8081`에만 버전 3이 표시됐습니다.
+
+![수정 후 왼쪽은 버전 2를 유지하고 오른쪽은 버전 3으로 변경](docs/evidence/24-replay-bind-after.png)
+
+[최초 실습의 바인드 마운트 명령과 HTTP 출력](docs/evidence/11-user-bind.md)
 
 ### 컨테이너 교체 후 데이터 확인
 
-컨테이너를 교체한 뒤에도 같은 메모를 읽을 수 있는지 확인했습니다. 이를 위해 PowerShell에서 이름 있는 볼륨을 만들었습니다. 첫 Ubuntu 컨테이너에 연결해 메모를 쓴 뒤, 컨테이너만 삭제하고 같은 볼륨을 새 Ubuntu 컨테이너에 연결했습니다. 재현 시 기존 데이터를 건드리지 않도록 새 실습용 볼륨과 컨테이너 이름을 정해 아래 명령에 일관되게 적용합니다.
+메모가 컨테이너를 교체한 뒤에도 남는지 확인하기 위해, PowerShell에서 `e1-1-replay-data` 볼륨을 만들고 첫 컨테이너의 `/data`에 연결했습니다. 메모를 읽은 뒤 컨테이너를 삭제했고, 새 컨테이너에 같은 볼륨을 연결해 다시 읽었습니다.
 
 ```console
-PS> docker volume create e1-1-user-data
-e1-1-user-data
-PS> $volumeMount = "type=volume,source=e1-1-user-data,target=/data"
-PS> docker run -d --name e1-1-volume-before --mount $volumeMount ubuntu:24.04 sleep infinity
-PS> docker exec e1-1-volume-before sh -c 'echo E1-1-volume-proof > /data/memo.txt'
+PS> docker volume create e1-1-replay-data
+e1-1-replay-data
+PS> docker run -d --name e1-1-volume-before --mount "type=volume,source=e1-1-replay-data,target=/data" ubuntu:24.04 sleep infinity
 PS> docker exec e1-1-volume-before cat /data/memo.txt
 E1-1-volume-proof
 PS> docker stop e1-1-volume-before
 e1-1-volume-before
 PS> docker rm e1-1-volume-before
 e1-1-volume-before
-PS> docker run -d --name e1-1-volume-after --mount $volumeMount ubuntu:24.04 sleep infinity
+PS> docker volume ls --filter "name=e1-1-replay-data"
+DRIVER    VOLUME NAME
+local     e1-1-replay-data
+PS> docker run -d --name e1-1-volume-after --mount "type=volume,source=e1-1-replay-data,target=/data" ubuntu:24.04 sleep infinity
 PS> docker exec e1-1-volume-after cat /data/memo.txt
 E1-1-volume-proof
 ```
 
-새 컨테이너에서 메모를 다시 쓰지 않고도 같은 `E1-1-volume-proof`를 읽었습니다. [볼륨 생성·중지·삭제·재연결 전체 기록](docs/evidence/12-user-volume.md)
+첫 컨테이너에서 메모를 작성했고, 새 컨테이너에서는 읽기만 했습니다. **삭제 전후에 같은 `E1-1-volume-proof`가 출력**됐고, 삭제 직후에도 볼륨이 남아 있었습니다. 처음부터 재현할 때는 첫 조회 전에 아래 명령으로 메모를 작성합니다. 이름이 이미 사용 중이면 새 실습용 이름으로 바꿉니다.
+
+```powershell
+docker exec e1-1-volume-before sh -c 'echo E1-1-volume-proof > /data/memo.txt'
+```
+
+[최초 실습의 볼륨 생성·기록·삭제·재연결 전체 출력](docs/evidence/12-user-volume.md)
 
 ## 8. Git 설정과 GitHub 연동
 
@@ -261,6 +265,8 @@ PS> git push
 
 ![VS Code에서 확인한 GitHub 로그인](docs/evidence/14-vscode-github.png)
 
+재실습에서 바꾼 화면 문구는 `457f88c`로 로컬에 커밋했습니다. `git status -sb`의 `[ahead 1]`로 로컬 커밋이 하나 앞선 것을 확인했습니다.
+
 ## 9. 트러블슈팅과 제출 전 보완 항목
 
 | 문제 | 원인 가설 | 확인 방법과 결과 | 해결 또는 대안 |
@@ -270,25 +276,23 @@ PS> git push
 
 **제출 전 보완**
 
-- **공개용 브라우저 캡처.** 기존 화면에서 주소창의 `8080`, `8081`과 페이지 응답을 확인했습니다. 개인 이름과 북마크가 보이는 원본은 이 README의 첨부에서 제외했습니다. 주소와 응답을 남기고 개인 표시를 가린 캡처로 교체할 수 있습니다.
 - **VS Code 저장소 연결 화면 · 증거 미확인.** GitHub 로그인 캡처와 터미널 푸시 기록은 확보했습니다. VS Code에서 과제 폴더를 연 뒤 Source Control과 GitHub Pull Requests 뷰에 이 저장소가 표시되는 화면이 있으면, VS Code 안에서의 저장소 연결도 직접 확인할 수 있습니다.
 
 ## 10. 보너스 1번 · Docker Compose 기초
 
-웹 서버 한 개를 같은 설정으로 다시 띄울 수 있도록 Docker Compose로 실행했습니다. 빌드와 포트 옵션을 함께 공유하기 위해 [compose.yaml](compose.yaml)에 단일 `web` 서비스의 빌드 위치와 `127.0.0.1:8083:80` 포트 매핑을 기록했습니다. Docker Desktop이 켜진 상태에서 저장소 루트의 PowerShell로 실행했습니다.
+빌드와 실행 옵션을 한 파일로 공유하려고 [compose.yaml](compose.yaml)에 웹 서비스 하나와 포트 연결 `8083:80`을 기록했습니다. Docker Desktop을 켠 상태에서 저장소 루트의 PowerShell로 실행했습니다.
 
 ```console
-PS> docker compose -p e1-1-bonus up -d --build --wait
-Container e1-1-bonus-web-1 Healthy
-PS> curl.exe -fsS -i http://127.0.0.1:8083/healthz
+PS> docker compose -p e1-1-replay up -d --build --wait
+Image e1-1-replay-web Built
+Container e1-1-replay-web-1 Healthy
+PS> curl.exe -i http://127.0.0.1:8083/healthz
 HTTP/1.1 200 OK
+
 ok
-PS> docker compose -p e1-1-bonus down
-Container e1-1-bonus-web-1 Removed
+PS> docker compose -p e1-1-replay down
+Container e1-1-replay-web-1 Removed
+Network e1-1-replay_default Removed
 ```
 
-설정 파일로 빌드와 실행이 재현됐고, `down` 이후에는 프로젝트 컨테이너가 목록에 남지 않았습니다. [Compose 실행·응답·종료 전체 기록](docs/evidence/16-compose-bonus.md)
-
-![Compose 웹 서버의 상태 점검 로그와 종료 후 컨테이너 목록](docs/evidence/17-cmd-compose.png)
-
-CMD에서 기존 PowerShell 실습 로그를 연 화면입니다. `GET /healthz`의 200 응답과 종료 후 비어 있는 컨테이너 목록을 확인할 수 있습니다.
+**실행 → 접속 → 정리**를 확인했습니다. `up`으로 설정을 적용하니 상태 점검을 통과했고, PC의 `8083`에서 정상 응답을 받았습니다. `down` 후에는 Compose가 만든 컨테이너와 네트워크가 제거됐습니다. [최초 Compose 실습 전체 기록](docs/evidence/16-compose-bonus.md)
