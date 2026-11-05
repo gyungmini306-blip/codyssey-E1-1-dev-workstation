@@ -206,9 +206,17 @@ docker run -d --name e1-1-web-bind -p 127.0.0.1:8081:80 --mount $mountSpec e1-1-
 | `8080` | 빌드할 때 이미지에 복사해 둔 HTML | 버전 2 | **버전 2 유지** |
 | `8081` | 바인드 마운트로 연결한 PC의 HTML | 버전 2 | **버전 3으로 변경** |
 
-**수정 전.** 왼쪽 주소창은 `8080`, 오른쪽은 `8081`이고, 둘 다 버전 2가 보입니다.
+**수정 전.** 두 서버 모두 페이지 버전 2를 반환했습니다.
 
-![수정 전 8080과 8081 모두 페이지 버전 2](docs/evidence/24-replay-bind-before.png)
+**8080 · 이미지에 복사된 HTML**
+
+![주소창 localhost:8080과 페이지 버전 2](docs/evidence/24-replay-before-8080.png)
+
+**8081 · PC 폴더를 연결한 HTML**
+
+![주소창 localhost:8081과 페이지 버전 2](docs/evidence/24-replay-before-8081.png)
+
+[수정 전 두 서버를 나란히 찍은 원본](docs/evidence/24-replay-bind-before.png)
 
 **수정 후.** 같은 순서로, 왼쪽 `8080`은 버전 2를 유지했고 오른쪽 `8081`에만 버전 3이 표시됐습니다.
 
