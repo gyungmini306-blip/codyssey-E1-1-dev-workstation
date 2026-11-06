@@ -223,7 +223,7 @@ exit
 
 ## 5. Docker 점검과 운영
 
-![사용자가 촬영한 Docker 버전과 컨테이너 상태 및 HTTP 응답](docs/evidence/17-cmd-docker.png)
+![사용자가 확인한 Docker 버전, 엔진 응답과 전체 컨테이너 상태](docs/evidence/27-docker-engine-after.png)
 
 웹 서버를 만들기 전에 Docker가 컨테이너를 실행할 수 있는지 확인했습니다. PowerShell에서 `docker info`로 엔진 응답을 확인하고 `hello-world`를 실행했습니다. 이후 목록으로 실행·종료 상태를, 로그로 서버 응답을, `docker stats`로 리소스 사용량을 확인했습니다. 상태와 응답은 사용자가 촬영한 실제 화면과 원본 로그에서 확인할 수 있습니다.
 
@@ -269,7 +269,7 @@ docker logs --tail 15 e1-1-web
 docker stats --no-stream e1-1-web
 ```
 
-화면에서 Docker 버전, 컨테이너의 `healthy` 상태와 포트 연결, 두 HTTP 응답을 확인할 수 있습니다.
+화면의 `ServerVersion=29.9.2 OSType=linux`에서 엔진 연결 성공을 확인했습니다. 목록의 웹 서버들은 캡처 시점에 `Exited` 상태이며, `hello-world`의 `Exited (0)`은 정상 종료 결과입니다.
 
 이미지 자동 다운로드 및 실행 기록은 [hello-world 로그](docs/evidence/05-hello-world.md), 전체 운영 출력은 [Docker 운영 로그](docs/evidence/13-user-operations.md), 중지와 삭제 확인은 [볼륨 실습 로그](docs/evidence/12-user-volume.md)에 있습니다.
 
@@ -495,8 +495,12 @@ git push
 
 | 문제 | 원인 가설 | 확인 방법과 결과 | 해결 또는 대안 |
 |---|---|---|---|
-| Docker 명령은 실행됐지만 엔진에 연결할 수 없음 | Docker Desktop 엔진이 아직 시작되지 않았거나 Windows 기능 변경 후 재시작이 필요했을 수 있음 | `docker --version`은 출력됐지만 `docker info`는 `docker_engine` 파이프에 연결하지 못했습니다. Windows의 `RebootPending`도 `True`였습니다. [설치·오류 기록](docs/evidence/02-installation.md) | Windows 재시작 후 `docker info`에서 `ServerVersion=29.9.2 OSType=linux`를 확인했습니다. `hello-world`도 `Exited (0)`으로 정상 종료했습니다. [재시작 후 확인](docs/evidence/05-hello-world.md) |
+| Docker 명령은 실행됐지만 엔진에 연결할 수 없음 | Docker Desktop 엔진이 시작되지 않았을 수 있음 | 사용자 화면에서 `docker --version`은 출력됐지만 `docker info`와 `docker ps`는 `dockerDesktopLinuxEngine` 파이프에 연결하지 못했습니다. | Docker Desktop을 시작한 뒤 사용자가 같은 명령을 다시 실행하자 서버 버전과 컨테이너 목록이 출력됐습니다. [사용자 전후 캡처와 출력](docs/evidence/27-docker-engine.md) |
 | 새 컨테이너가 호스트 포트 8083을 사용하지 못함 | 기존 서비스가 같은 포트를 점유했을 수 있음 | `docker ps`와 `netstat -ano`에서 점유를 확인했고, 같은 포트에 실행하자 `port is already allocated` 출력 | 빈 포트 18085로 실행해 HTTP 200과 `ok`를 확인함. [기록](docs/evidence/18-port-conflict.md) |
+
+**엔진 연결 실패 화면.** Docker 버전은 조회됐지만 엔진을 사용하는 두 명령은 실패했습니다. 해결 후 화면은 5절 첫 캡처에서 확인할 수 있습니다.
+
+![Docker Desktop 시작 전 엔진 연결에 실패한 사용자 화면](docs/evidence/27-docker-engine-before.png)
 
 ## 10. 보너스 1번 · Docker Compose 기초
 
