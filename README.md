@@ -20,7 +20,7 @@
 | [docs/evidence/](docs/evidence/) | 실습 로그와 캡처. 각 항목에서 해당 기록을 연결합니다. |
 | [compose.yaml](compose.yaml) | 보너스 과제의 단일 웹 서비스 설정 |
 
-Docker 명령은 Docker Desktop을 실행한 뒤 PowerShell에서 입력합니다. 파일과 권한 명령은 Ubuntu 컨테이너의 Bash에서 실행합니다. 명령과 출력은 확인에 필요한 부분을 발췌했습니다.
+Docker 명령은 Docker Desktop을 실행한 뒤 PowerShell에서 입력합니다. 파일과 권한 명령은 Ubuntu 컨테이너의 Bash에서 실행합니다. 아래 명령은 한 줄씩 복사해 실행할 수 있습니다. PowerShell과 Ubuntu Bash 표시를 구분해서 사용합니다. 명령 실행 결과는 캡처와 원본 로그에서 확인합니다.
 
 ## 3. 수행 체크리스트
 
@@ -39,15 +39,113 @@ Docker 명령은 Docker Desktop을 실행한 뒤 PowerShell에서 입력합니�
 
 Ubuntu 컨테이너에서 작업 폴더와 메모를 만들었습니다. 원본을 남겨 둔 채 복사본만 옮기고 삭제하기 위해 `cp`로 복사하고, `mv`로 위치와 이름을 바꾼 뒤 `rm`으로 지웠습니다. 기존 `e1-1-ubuntu`가 실행 중이면 PowerShell에서 `docker exec -it e1-1-ubuntu bash`로 들어갑니다. 새 환경에서는 `docker run --rm -it ubuntu:24.04 bash`로 시작할 수 있습니다.
 
+Ubuntu 컨테이너가 실행 중일 때 PowerShell에서 들어갑니다.
+
+```powershell
+docker exec -it e1-1-ubuntu bash
+```
+
+이후 4절의 명령은 Ubuntu Bash에서 순서대로 실행합니다.
+
 ### 작업 위치와 파일 목록
 
 `pwd`에 작업 경로가 표시되고, `ls -la`에는 숨김 파일인 `.hidden-note`와 빈 파일인 `empty.txt`가 보입니다. `cat memo.txt`로 저장한 문구를 확인했습니다.
+
+실습 폴더를 만듭니다.
+
+```bash
+mkdir -p /root/e1-1/guided-practice
+```
+
+만든 폴더로 이동합니다.
+
+```bash
+cd /root/e1-1/guided-practice
+```
+
+현재 위치를 확인합니다.
+
+```bash
+pwd
+```
+
+빈 파일과 숨김 파일을 만듭니다.
+
+```bash
+touch empty.txt .hidden-note
+```
+
+메모를 파일에 저장합니다.
+
+```bash
+echo "E1-1 terminal practice" > memo.txt
+```
+
+숨김 파일까지 상세 조회합니다.
+
+```bash
+ls -la
+```
+
+저장한 메모를 읽습니다.
+
+```bash
+cat memo.txt
+```
 
 ![작업 위치, 숨김 파일 목록, 메모 내용 확인](docs/evidence/23-terminal-location-list.png)
 
 ### 복사본 이동과 삭제
 
 `mv` 뒤에는 `archive` 안에 `memo-renamed.txt`가 보입니다. 복사본과 빈 폴더를 지운 뒤 마지막 목록에서 원본 `memo.txt`가 남은 것을 확인했습니다.
+
+메모를 복사합니다.
+
+```bash
+cp memo.txt memo-copy.txt
+```
+
+복사본을 둘 폴더를 만듭니다.
+
+```bash
+mkdir -p archive
+```
+
+복사본을 옮기면서 이름을 바꿉니다.
+
+```bash
+mv memo-copy.txt archive/memo-renamed.txt
+```
+
+옮긴 파일이 있는지 확인합니다.
+
+```bash
+ls -la archive
+```
+
+복사본을 삭제합니다.
+
+```bash
+rm archive/memo-renamed.txt
+```
+
+비어 있는지 확인합니다.
+
+```bash
+ls -la archive
+```
+
+빈 폴더를 삭제합니다.
+
+```bash
+rmdir archive
+```
+
+원본이 남았는지 확인합니다.
+
+```bash
+ls -la
+```
 
 ![메모 복사본을 옮기고 지운 뒤 원본이 남은 화면](docs/evidence/21-terminal-copy-move-delete.png)
 
@@ -56,6 +154,48 @@ Ubuntu 컨테이너에서 작업 폴더와 메모를 만들었습니다. 원본�
 ### 파일과 디렉터리 권한 변경 전후
 
 `chmod` 실행 뒤, 파일은 `644 → 600`, 폴더는 `755 → 700`이 되어 그룹과 기타 사용자의 권한이 사라졌습니다.
+
+파일의 현재 권한을 확인합니다.
+
+```bash
+ls -l memo.txt
+```
+
+파일을 소유자만 읽고 쓸 수 있도록 바꿉니다.
+
+```bash
+chmod 600 memo.txt
+```
+
+변경된 파일 권한을 확인합니다.
+
+```bash
+ls -l memo.txt
+```
+
+권한 실습용 폴더를 만듭니다.
+
+```bash
+mkdir -p permissions-dir
+```
+
+폴더 자체의 권한을 확인합니다.
+
+```bash
+ls -ld permissions-dir
+```
+
+폴더를 소유자만 사용할 수 있도록 바꿉니다.
+
+```bash
+chmod 700 permissions-dir
+```
+
+변경된 폴더 권한을 확인합니다.
+
+```bash
+ls -ld permissions-dir
+```
 
 ![chmod 전후의 파일과 폴더 권한을 확인한 실제 화면](docs/evidence/23-terminal-permissions.png)
 
@@ -73,6 +213,48 @@ Ubuntu 컨테이너에서 작업 폴더와 메모를 만들었습니다. 원본�
 
 웹 서버를 만들기 전에 Docker가 컨테이너를 실행할 수 있는지 확인했습니다. PowerShell에서 `docker info`로 엔진 응답을 확인하고 `hello-world`를 실행했습니다. 이후 목록으로 실행·종료 상태를, 로그로 서버 응답을, `docker stats`로 리소스 사용량을 확인했습니다. 상태와 응답은 사용자가 촬영한 실제 화면과 원본 로그에서 확인할 수 있습니다.
 
+Docker 명령 도구의 버전을 확인합니다.
+
+```powershell
+docker --version
+```
+
+Docker 엔진 응답을 확인합니다.
+
+```powershell
+docker info --format 'ServerVersion={{.ServerVersion}} OSType={{.OSType}}'
+```
+
+테스트 컨테이너를 실행합니다. 같은 이름이 이미 있으면 먼저 기존 상태를 확인합니다.
+
+```powershell
+docker run --name e1-1-hello hello-world
+```
+
+종료된 컨테이너까지 조회합니다.
+
+```powershell
+docker ps -a
+```
+
+6절에서 빌드한 이미지를 조회합니다.
+
+```powershell
+docker image ls e1-1-web
+```
+
+6절에서 실행한 웹 서버의 최근 요청 기록을 봅니다.
+
+```powershell
+docker logs --tail 15 e1-1-web
+```
+
+실행 중인 웹 서버의 자원 사용량을 한 번 조회합니다.
+
+```powershell
+docker stats --no-stream e1-1-web
+```
+
 ![사용자가 촬영한 Docker 버전과 컨테이너 상태 및 HTTP 응답](docs/evidence/17-cmd-docker.png)
 
 화면에서 Docker 버전, 컨테이너의 `healthy` 상태와 포트 연결, 두 HTTP 응답을 확인할 수 있습니다.
@@ -87,13 +269,35 @@ Ubuntu 컨테이너에서 작업 폴더와 메모를 만들었습니다. 원본�
 
 NGINX로 제 HTML을 제공하기 위해 [Dockerfile](Dockerfile)에 베이스 이미지 `nginx:stable-alpine`을 지정했습니다. `COPY`로 HTML과 서버 설정을 이미지에 넣고, `LABEL`로 이미지 용도를 기록했습니다. `EXPOSE 80`은 컨테이너가 사용할 포트를 표시하고, 실제 수신 포트는 [nginx.conf](nginx.conf)의 `listen 80`에서 정합니다. `HEALTHCHECK`는 컨테이너 내부에서 `/healthz`에 요청을 보내 NGINX 응답을 점검합니다.
 
-Docker Desktop을 켜고 PowerShell에서 저장소를 내려받습니다. 이미 내려받았다면 처음 두 줄 대신 해당 저장소 폴더로 이동한 뒤 빌드부터 실행합니다.
+Docker Desktop을 켜고 PowerShell에서 저장소를 내려받습니다. 이미 내려받았다면 기존 저장소 폴더로 이동한 뒤 빌드부터 실행합니다.
+
+저장소를 내려받습니다.
 
 ```powershell
 git clone https://github.com/gyungmini306-blip/codyssey-E1-1-dev-workstation.git e1-1
+```
+
+저장소 루트로 이동합니다.
+
+```powershell
 cd e1-1
+```
+
+NGINX와 HTML을 담은 이미지를 만듭니다.
+
+```powershell
 docker build -t e1-1-web:v1 .
+```
+
+이미지에서 웹 서버를 실행하고 PC의 8080을 컨테이너의 80에 연결합니다.
+
+```powershell
 docker run -d --name e1-1-web -p 127.0.0.1:8080:80 e1-1-web:v1
+```
+
+PC에서 웹 서버 응답을 확인합니다.
+
+```powershell
 curl.exe -i http://127.0.0.1:8080/healthz
 ```
 
@@ -107,9 +311,21 @@ curl.exe -i http://127.0.0.1:8080/healthz
 
 PC에서 수정한 파일이 어느 서버에 반영되는지 비교했습니다. `8080` 서버를 그대로 둔 상태에서, 저장소 루트의 PowerShell로 **같은 이미지**를 쓰는 두 번째 서버를 실행했습니다. `8081`에만 PC의 `app/` 폴더를 NGINX의 웹 폴더에 읽기 전용으로 연결했습니다.
 
+연결할 PC 폴더의 전체 경로를 구합니다.
+
 ```powershell
 $appPath = (Resolve-Path .\app).Path
+```
+
+폴더 연결 설정을 저장합니다.
+
+```powershell
 $mountSpec = "type=bind,source=$appPath,target=/usr/share/nginx/html,readonly"
+```
+
+같은 이미지로 바인드 마운트 서버를 실행합니다.
+
+```powershell
 docker run -d --name e1-1-web-bind -p 127.0.0.1:8081:80 --mount $mountSpec e1-1-web:v1
 ```
 
@@ -134,15 +350,57 @@ docker run -d --name e1-1-web-bind -p 127.0.0.1:8081:80 --mount $mountSpec e1-1-
 
 아래는 같은 결과를 확인하는 실행 순서입니다. 처음 컨테이너의 `cat`과 새 컨테이너의 `cat` 출력을 비교합니다. 이름이 이미 사용 중이면 새 실습용 이름으로 바꿉니다.
 
+이름 있는 볼륨을 만듭니다.
+
 ```powershell
 docker volume create e1-1-replay-data
+```
+
+첫 컨테이너에 볼륨을 연결합니다.
+
+```powershell
 docker run -d --name e1-1-volume-before --mount "type=volume,source=e1-1-replay-data,target=/data" ubuntu:24.04 sleep infinity
+```
+
+볼륨에 메모를 저장합니다.
+
+```powershell
 docker exec e1-1-volume-before sh -c 'echo E1-1-volume-proof > /data/memo.txt'
+```
+
+삭제 전 메모를 읽습니다.
+
+```powershell
 docker exec e1-1-volume-before cat /data/memo.txt
+```
+
+첫 컨테이너를 멈춥니다.
+
+```powershell
 docker stop e1-1-volume-before
+```
+
+첫 컨테이너를 삭제합니다.
+
+```powershell
 docker rm e1-1-volume-before
+```
+
+컨테이너를 삭제한 뒤에도 볼륨이 남았는지 확인합니다.
+
+```powershell
 docker volume ls --filter "name=e1-1-replay-data"
+```
+
+새 컨테이너에 같은 볼륨을 연결합니다.
+
+```powershell
 docker run -d --name e1-1-volume-after --mount "type=volume,source=e1-1-replay-data,target=/data" ubuntu:24.04 sleep infinity
+```
+
+새 컨테이너에서 같은 메모를 읽습니다.
+
+```powershell
 docker exec e1-1-volume-after cat /data/memo.txt
 ```
 
@@ -156,6 +414,54 @@ docker exec e1-1-volume-after cat /data/memo.txt
 ## 8. Git 설정과 GitHub 연동
 
 HTML 수정 이력을 남기고 공유하기 위해 Git으로 커밋한 뒤 GitHub에 푸시했습니다. 저장소 루트에서 작성자 설정과 기본 브랜치를 확인하고, 현재 브랜치는 별도 명령으로 조회했습니다. Git은 PC에서 변경 이력을 기록하고, GitHub는 푸시한 이력을 원격에서 공유합니다. 작성자 설정, 브랜치와 푸시 결과는 [사용자 원본 로그](docs/evidence/14-user-git.md)에 있습니다.
+
+저장소 루트의 PowerShell에서 로컬 Git 설정을 확인합니다. 공개할 출력에서는 개인 이메일을 가립니다.
+
+```powershell
+git config --local --list
+```
+
+현재 브랜치를 확인합니다.
+
+```powershell
+git --no-pager branch --show-current
+```
+
+원격 저장소 주소를 확인합니다.
+
+```powershell
+git --no-pager remote -v
+```
+
+7절에서 수정한 HTML의 변경 내용을 확인합니다.
+
+```powershell
+git --no-pager diff -- app/index.html
+```
+
+확인한 HTML 변경을 커밋 대상으로 고릅니다.
+
+```powershell
+git add -- app/index.html
+```
+
+변경 이력을 PC에 기록합니다.
+
+```powershell
+git commit -m "Record bind mount practice"
+```
+
+로컬과 원격 브랜치의 상태를 확인합니다.
+
+```powershell
+git status -sb
+```
+
+검토를 마친 제출용 커밋을 GitHub에 보낼 때 실행합니다.
+
+```powershell
+git push
+```
 
 ![사용자가 촬영한 커밋과 GitHub 원격 주소 확인 화면](docs/evidence/17-cmd-git.png)
 
@@ -184,6 +490,24 @@ GitHub Pull Requests 뷰에서도 현재 브랜치의 목록이 열렸습니다.
 ## 10. 보너스 1번 · Docker Compose 기초
 
 빌드와 실행 옵션을 한 파일로 공유하려고 [compose.yaml](compose.yaml)에 웹 서비스 하나와 포트 연결 `8083:80`을 기록했습니다. Docker Desktop을 켠 상태에서 저장소 루트의 PowerShell로 실행했습니다.
+
+저장소 루트의 PowerShell에서 설정 파일을 읽어 빌드하고 실행합니다.
+
+```powershell
+docker compose -p e1-1-replay up -d --build --wait
+```
+
+PC의 8083으로 상태 확인 요청을 보냅니다.
+
+```powershell
+curl.exe -i http://127.0.0.1:8083/healthz
+```
+
+같은 프로젝트의 컨테이너와 네트워크를 정리합니다.
+
+```powershell
+docker compose -p e1-1-replay down
+```
 
 ![사용자가 촬영한 Compose 상태 확인과 종료 결과](docs/evidence/17-cmd-compose.png)
 
