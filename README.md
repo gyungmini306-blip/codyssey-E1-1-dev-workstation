@@ -71,43 +71,15 @@ Ubuntu 컨테이너에서 작업 폴더와 메모를 만들었습니다. 원본�
 
 ## 5. Docker 점검과 운영
 
-웹 서버를 만들기 전에 Docker가 컨테이너를 실행할 수 있는지 확인했습니다. PowerShell에서 `docker info`로 엔진 응답을 확인하고 `hello-world`를 실행했습니다. 이후 목록으로 실행·종료 상태를, 로그로 서버 응답을, `docker stats`로 리소스 사용량을 확인했습니다. 아래 출력은 컨테이너를 실행한 뒤 조회한 기록입니다.
+웹 서버를 만들기 전에 Docker가 컨테이너를 실행할 수 있는지 확인했습니다. PowerShell에서 `docker info`로 엔진 응답을 확인하고 `hello-world`를 실행했습니다. 이후 목록으로 실행·종료 상태를, 로그로 서버 응답을, `docker stats`로 리소스 사용량을 확인했습니다. 상태와 응답은 사용자가 촬영한 실제 화면과 원본 로그에서 확인할 수 있습니다.
 
-```console
-PS> docker --version
-Docker version 29.9.2, build a82e528
-PS> docker info --format 'ServerVersion={{.ServerVersion}} OSType={{.OSType}}'
-ServerVersion=29.9.2 OSType=linux
-PS> docker run --name e1-1-hello hello-world
-Hello from Docker!
-PS> docker images codyssey-workstation
-codyssey-workstation:student-1
-PS> docker ps -a
-… hello-world … Exited (0) … e1-1-hello
-PS> docker logs --tail 10 e1-1-bind-guide
-… "GET /healthz HTTP/1.1" 200 …
-PS> docker stats --no-stream e1-1-bind-guide
-… e1-1-bind-guide   0.00%   8.945MiB / 7.527GiB …
-PS> docker stop e1-1-volume-before
-e1-1-volume-before
-```
+![사용자가 촬영한 Docker 버전과 컨테이너 상태 및 HTTP 응답](docs/evidence/17-cmd-docker.png)
+
+화면에서 Docker 버전, 컨테이너의 `healthy` 상태와 포트 연결, 두 HTTP 응답을 확인할 수 있습니다.
 
 이미지 자동 다운로드 및 실행 기록은 [hello-world 로그](docs/evidence/05-hello-world.md), 전체 운영 출력은 [Docker 운영 로그](docs/evidence/13-user-operations.md), 중지와 삭제 확인은 [볼륨 실습 로그](docs/evidence/12-user-volume.md)에 있습니다.
 
 **Ubuntu의 셸과 컨테이너 수명.** `docker run -dit --name e1-1-shell-guide ubuntu:24.04 bash`로 Bash를 주 프로세스로 시작했습니다. 추가 Bash에서 나갈 때와 주 Bash를 종료할 때의 차이를 비교했습니다.
-
-```console
-PS> docker exec -it e1-1-shell-guide bash
-$ echo "additional shell opened by exec"
-additional shell opened by exec
-$ exit
-PS> docker inspect e1-1-shell-guide --format '{{.State.Running}}'
-true
-PS> docker attach e1-1-shell-guide
-$ exit
-PS> docker inspect e1-1-shell-guide --format '{{.State.Status}}'
-exited
-```
 
 추가 Bash를 종료한 뒤에는 실행 상태가 `true`였고, 주 Bash를 종료하자 `exited`로 바뀌었습니다. `attach` 연결만 분리했을 때는 주 Bash가 계속 실행됐습니다. [셸 실습 원본](docs/evidence/13-user-operations.md)
 
@@ -125,15 +97,7 @@ docker run -d --name e1-1-web -p 127.0.0.1:8080:80 e1-1-web:v1
 curl.exe -i http://127.0.0.1:8080/healthz
 ```
 
-**접속 결과 · PC 8080 → 컨테이너 80.** `docker build`로 만든 이미지에서 컨테이너를 실행했고, PC에서 보낸 요청에 NGINX가 아래와 같이 응답했습니다. 브라우저에서 `http://localhost:8080/`을 열어 웹페이지도 확인했습니다. 7절의 수정 전 캡처에서 주소창과 페이지를 함께 확인할 수 있습니다.
-
-```console
-=> => naming to docker.io/library/e1-1-web:v1
-HTTP/1.1 200 OK
-Server: nginx/1.30.6
-
-ok
-```
+**접속 결과 · PC 8080 → 컨테이너 80.** `docker build`로 만든 이미지에서 컨테이너를 실행했고, PC에서 보낸 상태 확인 요청에 NGINX가 정상 응답했습니다. 사용자 제공 출력에서 HTTP 200과 `ok`를 확인했습니다. 브라우저에서 `http://localhost:8080/`을 열어 웹페이지도 확인했습니다. 7절의 수정 전 캡처에서 주소창과 페이지를 함께 확인할 수 있습니다.
 
 `v1`은 이미지에 붙인 태그입니다. 브라우저의 페이지 버전은 HTML 안의 문구로 결정됩니다. `8080`이 이미 사용 중이면 실행 명령과 접속 주소에 같은 빈 포트를 지정합니다.
 
@@ -182,13 +146,7 @@ docker run -d --name e1-1-volume-after --mount "type=volume,source=e1-1-replay-d
 docker exec e1-1-volume-after cat /data/memo.txt
 ```
 
-**실제 결과.** 기존 컨테이너를 삭제한 뒤에도 볼륨이 목록에 남았고, 새 컨테이너에서는 메모를 다시 쓰지 않고도 같은 내용을 읽었습니다.
-
-```console
-PS> docker volume ls --filter "name=e1-1-replay-data"
-DRIVER    VOLUME NAME
-local     e1-1-replay-data
-```
+**실제 결과.** 기존 컨테이너를 삭제한 뒤에도 볼륨이 목록에 남았고, 새 컨테이너에서는 메모를 다시 쓰지 않고도 같은 내용을 읽었습니다. [사용자가 제공한 볼륨 명령과 원본 출력](docs/evidence/12-user-volume.md)
 
 | 확인 시점 | 실제 메모 출력 |
 |---|---|
@@ -197,18 +155,11 @@ local     e1-1-replay-data
 
 ## 8. Git 설정과 GitHub 연동
 
-HTML 수정 이력을 남기고 공유하기 위해 Git으로 커밋한 뒤 GitHub에 푸시했습니다. 저장소 루트에서 작성자 설정과 기본 브랜치를 확인하고, 현재 브랜치는 별도 명령으로 조회했습니다. Git은 PC에서 변경 이력을 기록하고, GitHub는 푸시한 이력을 원격에서 공유합니다. 아래는 `git config --list`에 로컬 범위를 지정해 조회한 실제 출력의 마스킹 발췌입니다.
+HTML 수정 이력을 남기고 공유하기 위해 Git으로 커밋한 뒤 GitHub에 푸시했습니다. 저장소 루트에서 작성자 설정과 기본 브랜치를 확인하고, 현재 브랜치는 별도 명령으로 조회했습니다. Git은 PC에서 변경 이력을 기록하고, GitHub는 푸시한 이력을 원격에서 공유합니다. 작성자 설정, 브랜치와 푸시 결과는 [사용자 원본 로그](docs/evidence/14-user-git.md)에 있습니다.
 
-```console
-CMD> git config --local --list
-init.defaultbranch=main
-user.email=[마스킹]
-user.name=[마스킹]
-PS> git --no-pager branch --show-current
-main
-PS> git push
-   58c49d9..d580e49  main -> main
-```
+![사용자가 촬영한 커밋과 GitHub 원격 주소 확인 화면](docs/evidence/17-cmd-git.png)
+
+화면에서 HTML 수정 커밋 `d580e49`, 현재 브랜치 `main`과 과제 저장소의 원격 주소를 확인할 수 있습니다.
 
 푸시 출력에서 HTML 수정 커밋이 원격 `main`에 올라간 것을 확인했습니다. VS Code 계정 메뉴에서는 GitHub 로그인 상태를 확인했습니다.
 
@@ -218,17 +169,9 @@ PS> git push
 
 ![VS Code 소스 제어의 main 브랜치와 과제 커밋 이력](docs/evidence/25-vscode-source-control.png)
 
-GitHub Pull Requests 뷰에서도 현재 브랜치의 목록이 열렸습니다. 화면의 “이 범주의 끌어오기 요청 0개”는 해당 범주에 Pull Request가 없다는 뜻입니다. 터미널에서는 같은 폴더의 `origin` 주소도 확인했습니다.
+GitHub Pull Requests 뷰에서도 현재 브랜치의 목록이 열렸습니다. 화면의 “이 범주의 끌어오기 요청 0개”는 해당 범주에 Pull Request가 없다는 뜻입니다. 원격 주소는 위의 사용자 CMD 캡처에서 확인할 수 있습니다.
 
 ![과제 폴더에서 열린 VS Code GitHub Pull Requests 뷰](docs/evidence/25-vscode-github-repository.png)
-
-```console
-PS> git remote -v
-origin  https://github.com/gyungmini306-blip/codyssey-E1-1-dev-workstation.git (fetch)
-origin  https://github.com/gyungmini306-blip/codyssey-E1-1-dev-workstation.git (push)
-PS> git branch --show-current
-main
-```
 
 ## 9. 트러블슈팅
 
@@ -242,17 +185,8 @@ main
 
 빌드와 실행 옵션을 한 파일로 공유하려고 [compose.yaml](compose.yaml)에 웹 서비스 하나와 포트 연결 `8083:80`을 기록했습니다. Docker Desktop을 켠 상태에서 저장소 루트의 PowerShell로 실행했습니다.
 
-```console
-PS> docker compose -p e1-1-replay up -d --build --wait
-Image e1-1-replay-web Built
-Container e1-1-replay-web-1 Healthy
-PS> curl.exe -i http://127.0.0.1:8083/healthz
-HTTP/1.1 200 OK
+![사용자가 촬영한 Compose 상태 확인과 종료 결과](docs/evidence/17-cmd-compose.png)
 
-ok
-PS> docker compose -p e1-1-replay down
-Container e1-1-replay-web-1 Removed
-Network e1-1-replay_default Removed
-```
+이 캡처는 사용자가 CMD에서 기존 PowerShell 로그를 열어 본 화면입니다. 상태 확인 요청의 200 응답과 컨테이너 제거 결과를 확인할 수 있습니다.
 
-**실행 → 접속 → 정리**를 확인했습니다. `up`으로 설정을 적용하니 상태 점검을 통과했고, PC의 `8083`에서 정상 응답을 받았습니다. `down` 후에는 Compose가 만든 컨테이너와 네트워크가 제거됐습니다.
+**실행 → 접속 → 정리**를 확인했습니다. `up`으로 설정을 적용하니 상태 점검을 통과했고, PC의 `8083`에서 정상 응답을 받았습니다. `down` 후에는 Compose가 만든 컨테이너와 네트워크가 제거됐습니다. [Compose 명령과 원본 출력](docs/evidence/16-compose-bonus.md)
