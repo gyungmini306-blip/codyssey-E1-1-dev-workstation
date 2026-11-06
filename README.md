@@ -223,15 +223,13 @@ exit
 
 ## 5. Docker 점검과 운영
 
+### Docker 버전과 엔진 연결 확인
+
 ![사용자가 확인한 Docker 버전, 엔진 응답과 전체 컨테이너 상태](docs/evidence/27-docker-engine-after.png)
 
-**웹 서버 실행과 자원 사용량.** 아래 캡처에서 두 서버가 `healthy`이고, PC의 `8080`과 `8081`이 각 컨테이너의 `80`에 연결된 것을 확인했습니다. `docker stats` 조회 시 `e1-1-web`의 메모리 사용량은 `11.78 MiB`였습니다.
+Docker Desktop을 시작한 뒤 위 세 명령을 실행했습니다. `ServerVersion=29.9.2 OSType=linux`가 나와 엔진 연결 성공을 확인했습니다. 이 화면에서는 웹 서버가 아직 `Exited` 상태이고, `hello-world`는 `Exited (0)`으로 정상 종료돼 있습니다.
 
-![사용자가 시작한 웹 서버의 healthy 상태, 포트 연결과 자원 사용량](docs/evidence/28-user-docker-status-stats.png)
-
-웹 서버를 만들기 전에 Docker가 컨테이너를 실행할 수 있는지 확인했습니다. PowerShell에서 `docker info`로 엔진 응답을 확인하고 `hello-world`를 실행했습니다. 이후 목록으로 실행·종료 상태를, 로그로 서버 응답을, `docker stats`로 리소스 사용량을 확인했습니다. 상태와 응답은 사용자가 촬영한 실제 화면과 원본 로그에서 확인할 수 있습니다.
-
-Docker 명령 도구의 버전을 확인합니다.
+PowerShell에서 Docker 명령 도구의 버전을 확인합니다.
 
 ```powershell
 docker --version
@@ -243,16 +241,46 @@ Docker 엔진 응답을 확인합니다.
 docker info --format 'ServerVersion={{.ServerVersion}} OSType={{.OSType}}'
 ```
 
-테스트 컨테이너를 실행합니다. 같은 이름이 이미 있으면 먼저 기존 상태를 확인합니다.
+캡처와 같은 형식으로 종료된 컨테이너까지 조회합니다.
+
+```powershell
+docker ps -a --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
+```
+
+### 웹 서버 시작과 자원 사용량 확인
+
+![사용자가 시작한 웹 서버의 healthy 상태, 포트 연결과 자원 사용량](docs/evidence/28-user-docker-status-stats.png)
+
+위 화면에서 `e1-1-web`을 시작했고, 목록에는 두 웹 서버가 `healthy` 상태로 표시됐습니다. 이름 필터 `name=e1-1-web`에는 같은 이름으로 시작하는 `e1-1-web-bind`도 포함됐습니다. PC의 `8080`과 `8081`이 각각 컨테이너의 `80`에 연결돼 있습니다.
+
+자원 사용량은 `e1-1-web` 하나를 조회했습니다. 이때 CPU는 `0.00%`, 메모리는 `11.78 MiB`였습니다. 수치는 조회 시점에 따라 달라집니다.
+
+6절에서 만든 컨테이너가 종료 상태일 때 PowerShell에서 다시 시작합니다.
+
+```powershell
+docker start e1-1-web
+```
+
+캡처와 같은 이름 필터 및 출력 형식으로 실행 상태를 조회합니다.
+
+```powershell
+docker ps --filter "name=e1-1-web" --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
+```
+
+해당 웹 서버의 자원 사용량을 한 번 조회합니다.
+
+```powershell
+docker stats --no-stream e1-1-web
+```
+
+### hello-world 실행과 이미지·로그 조회
+
+`hello-world`의 실행 성공, 이미지 다운로드 및 목록은 [사용자 원본 출력](docs/evidence/05-hello-world.md)에 있습니다. 서버 로그의 HTTP 200 응답은 [Docker 운영 원본 출력](docs/evidence/13-user-operations.md)에서 확인할 수 있습니다.
+
+PowerShell에서 테스트 컨테이너를 실행합니다. 같은 이름의 컨테이너가 있다면 먼저 기존 상태를 확인합니다.
 
 ```powershell
 docker run --name e1-1-hello hello-world
-```
-
-종료된 컨테이너까지 조회합니다.
-
-```powershell
-docker ps -a
 ```
 
 6절에서 빌드한 이미지를 조회합니다.
@@ -267,19 +295,7 @@ docker image ls e1-1-web
 docker logs --tail 15 e1-1-web
 ```
 
-실행 중인 웹 서버의 자원 사용량을 한 번 조회합니다.
-
-```powershell
-docker stats --no-stream e1-1-web
-```
-
-화면의 `ServerVersion=29.9.2 OSType=linux`에서 엔진 연결 성공을 확인했습니다. 목록의 웹 서버들은 캡처 시점에 `Exited` 상태이며, `hello-world`의 `Exited (0)`은 정상 종료 결과입니다.
-
-이미지 자동 다운로드 및 실행 기록은 [hello-world 로그](docs/evidence/05-hello-world.md), 전체 운영 출력은 [Docker 운영 로그](docs/evidence/13-user-operations.md), 중지와 삭제 확인은 [볼륨 실습 로그](docs/evidence/12-user-volume.md)에 있습니다.
-
-**Ubuntu의 셸과 컨테이너 수명.** `docker run -dit --name e1-1-shell-guide ubuntu:24.04 bash`로 Bash를 주 프로세스로 시작했습니다. 추가 Bash에서 나갈 때와 주 Bash를 종료할 때의 차이를 비교했습니다.
-
-추가 Bash를 종료한 뒤에는 실행 상태가 `true`였고, 주 Bash를 종료하자 `exited`로 바뀌었습니다. `attach` 연결만 분리했을 때는 주 Bash가 계속 실행됐습니다. [셸 실습 원본](docs/evidence/13-user-operations.md)
+**Ubuntu의 셸과 컨테이너 수명.** 추가 Bash를 종료한 뒤에는 컨테이너가 계속 실행됐고, 주 Bash를 종료하자 컨테이너도 종료됐습니다. 연결만 분리했을 때는 주 Bash가 계속 실행됐습니다. [사용자가 실행한 exec·attach 명령과 상태 출력](docs/evidence/13-user-operations.md)
 
 ## 6. 커스텀 웹 서버 이미지와 포트 매핑
 
