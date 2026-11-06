@@ -225,6 +225,10 @@ exit
 
 ### hello-world 실행 확인
 
+![사용자가 실행한 hello-world 인사말과 컨테이너 정상 종료](docs/evidence/29-user-hello-world.png)
+
+위 캡처에서 `docker run`의 `Hello from Docker!`와 `docker ps -a`의 `Exited (0)`을 확인했습니다. 컨테이너 안의 프로그램이 메시지를 출력한 뒤 정상 종료했습니다.
+
 Docker가 컨테이너를 실제로 실행할 수 있는지 확인하기 위해 `hello-world`를 실행했습니다. 인사말을 출력한 뒤 `Exited (0)`으로 정상 종료했습니다. [사용자가 제공한 실제 실행 출력](docs/evidence/05-hello-world.md)
 
 PowerShell에서 테스트 컨테이너를 실행합니다. 같은 이름의 종료된 컨테이너가 남아 있다면 삭제하거나 다른 이름으로 실행합니다.
