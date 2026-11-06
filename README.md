@@ -223,6 +223,28 @@ exit
 
 ## 5. Docker 점검과 운영
 
+### hello-world 실행 확인
+
+Docker가 컨테이너를 실제로 실행할 수 있는지 확인하기 위해 `hello-world`를 실행했습니다. 인사말을 출력한 뒤 `Exited (0)`으로 정상 종료했습니다. [사용자가 제공한 실제 실행 출력](docs/evidence/05-hello-world.md)
+
+PowerShell에서 테스트 컨테이너를 실행합니다. 같은 이름의 종료된 컨테이너가 남아 있다면 삭제하거나 다른 이름으로 실행합니다.
+
+```powershell
+docker run --name e1-1-hello hello-world
+```
+
+실행에 사용한 이미지가 PC에 있는지 확인합니다.
+
+```powershell
+docker image ls hello-world
+```
+
+테스트 컨테이너의 종료 상태를 확인합니다.
+
+```powershell
+docker ps -a --filter "name=e1-1-hello"
+```
+
 ### Docker 버전과 엔진 연결 확인
 
 ![사용자가 확인한 Docker 버전, 엔진 응답과 전체 컨테이너 상태](docs/evidence/27-docker-engine-after.png)
@@ -273,15 +295,7 @@ docker ps --filter "name=e1-1-web" --format "table {{.Names}}\t{{.Status}}\t{{.P
 docker stats --no-stream e1-1-web
 ```
 
-### hello-world 실행과 이미지·로그 조회
-
-`hello-world`의 실행 성공, 이미지 다운로드 및 목록은 [사용자 원본 출력](docs/evidence/05-hello-world.md)에 있습니다. 서버 로그의 HTTP 200 응답은 [Docker 운영 원본 출력](docs/evidence/13-user-operations.md)에서 확인할 수 있습니다.
-
-PowerShell에서 테스트 컨테이너를 실행합니다. 같은 이름의 컨테이너가 있다면 먼저 기존 상태를 확인합니다.
-
-```powershell
-docker run --name e1-1-hello hello-world
-```
+### 웹 서버 이미지와 요청 로그 확인
 
 6절에서 빌드한 이미지를 조회합니다.
 
@@ -294,6 +308,8 @@ docker image ls e1-1-web
 ```powershell
 docker logs --tail 15 e1-1-web
 ```
+
+서버 로그의 HTTP 200 응답은 [사용자가 제공한 운영 출력](docs/evidence/13-user-operations.md)에서 확인할 수 있습니다.
 
 **Ubuntu의 셸과 컨테이너 수명.** 추가 Bash를 종료한 뒤에는 컨테이너가 계속 실행됐고, 주 Bash를 종료하자 컨테이너도 종료됐습니다. 연결만 분리했을 때는 주 Bash가 계속 실행됐습니다. [사용자가 실행한 exec·attach 명령과 상태 출력](docs/evidence/13-user-operations.md)
 
