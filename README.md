@@ -39,6 +39,12 @@ Docker 명령은 Docker Desktop을 실행한 뒤 PowerShell에서 입력합니�
 
 Ubuntu 컨테이너에서 작업 폴더와 메모를 만들었습니다. 원본을 남겨 둔 채 복사본만 옮기고 삭제하기 위해 `cp`로 복사하고, `mv`로 위치와 이름을 바꾼 뒤 `rm`으로 지웠습니다. 기존 `e1-1-ubuntu`가 실행 중이면 PowerShell에서 `docker exec -it e1-1-ubuntu bash`로 들어갑니다. 새 환경에서는 `docker run --rm -it ubuntu:24.04 bash`로 시작할 수 있습니다.
 
+### 작업 위치와 파일 목록
+
+![작업 위치, 숨김 파일 목록, 메모 내용 확인](docs/evidence/23-terminal-location-list.png)
+
+`pwd`에 작업 경로가 표시되고, `ls -la`에는 숨김 파일인 `.hidden-note`와 빈 파일인 `empty.txt`가 보입니다. `cat memo.txt`로 저장한 문구를 확인했습니다.
+
 Ubuntu 컨테이너가 실행 중일 때 PowerShell에서 들어갑니다.
 
 ```powershell
@@ -46,10 +52,6 @@ docker exec -it e1-1-ubuntu bash
 ```
 
 이후 4절의 명령은 Ubuntu Bash에서 순서대로 실행합니다.
-
-### 작업 위치와 파일 목록
-
-`pwd`에 작업 경로가 표시되고, `ls -la`에는 숨김 파일인 `.hidden-note`와 빈 파일인 `empty.txt`가 보입니다. `cat memo.txt`로 저장한 문구를 확인했습니다.
 
 실습 폴더를 만듭니다.
 
@@ -93,9 +95,9 @@ ls -la
 cat memo.txt
 ```
 
-![작업 위치, 숨김 파일 목록, 메모 내용 확인](docs/evidence/23-terminal-location-list.png)
-
 ### 복사본 이동과 삭제
+
+![메모 복사본을 옮기고 지운 뒤 원본이 남은 화면](docs/evidence/21-terminal-copy-move-delete.png)
 
 `mv` 뒤에는 `archive` 안에 `memo-renamed.txt`가 보입니다. 복사본과 빈 폴더를 지운 뒤 마지막 목록에서 원본 `memo.txt`가 남은 것을 확인했습니다.
 
@@ -147,11 +149,11 @@ rmdir archive
 ls -la
 ```
 
-![메모 복사본을 옮기고 지운 뒤 원본이 남은 화면](docs/evidence/21-terminal-copy-move-delete.png)
-
 `/root/e1-1/guided-practice`는 루트부터 찾는 절대 경로이고, `archive/memo-renamed.txt`는 현재 폴더를 기준으로 찾는 상대 경로입니다. 목록에서 빈 파일 두 개의 크기가 0이고, 복사본을 지운 뒤 `archive`에 파일이 남지 않은 것을 확인했습니다.
 
 ### 파일과 디렉터리 권한 변경 전후
+
+![chmod 전후의 파일과 폴더 권한을 확인한 실제 화면](docs/evidence/23-terminal-permissions.png)
 
 `chmod` 실행 뒤, 파일은 `644 → 600`, 폴더는 `755 → 700`이 되어 그룹과 기타 사용자의 권한이 사라졌습니다.
 
@@ -197,8 +199,6 @@ chmod 700 permissions-dir
 ls -ld permissions-dir
 ```
 
-![chmod 전후의 파일과 폴더 권한을 확인한 실제 화면](docs/evidence/23-terminal-permissions.png)
-
 `ls -l`로 파일을, `ls -ld`로 디렉터리 자체를 조회했습니다. 각각 권한을 변경한 뒤 다시 조회해 전후를 비교했습니다.
 
 | 권한 | 일반 파일 | 디렉터리 |
@@ -210,6 +210,8 @@ ls -ld permissions-dir
 숫자는 소유자·그룹·기타 사용자 순서입니다. `644`는 `rw-r--r--`, `755`는 `rwxr-xr-x`입니다. 위 캡처에서 권한 변경 전후를 확인할 수 있습니다. 과제에서 요구하는 명령·출력 텍스트는 [원본 실습 로그](docs/evidence/10-user-terminal.md)에 보관했습니다.
 
 ## 5. Docker 점검과 운영
+
+![사용자가 촬영한 Docker 버전과 컨테이너 상태 및 HTTP 응답](docs/evidence/17-cmd-docker.png)
 
 웹 서버를 만들기 전에 Docker가 컨테이너를 실행할 수 있는지 확인했습니다. PowerShell에서 `docker info`로 엔진 응답을 확인하고 `hello-world`를 실행했습니다. 이후 목록으로 실행·종료 상태를, 로그로 서버 응답을, `docker stats`로 리소스 사용량을 확인했습니다. 상태와 응답은 사용자가 촬영한 실제 화면과 원본 로그에서 확인할 수 있습니다.
 
@@ -254,8 +256,6 @@ docker logs --tail 15 e1-1-web
 ```powershell
 docker stats --no-stream e1-1-web
 ```
-
-![사용자가 촬영한 Docker 버전과 컨테이너 상태 및 HTTP 응답](docs/evidence/17-cmd-docker.png)
 
 화면에서 Docker 버전, 컨테이너의 `healthy` 상태와 포트 연결, 두 HTTP 응답을 확인할 수 있습니다.
 
@@ -309,6 +309,14 @@ curl.exe -i http://127.0.0.1:8080/healthz
 
 ### HTML 수정 반영
 
+**수정 전.** 왼쪽 `8080`과 오른쪽 `8081` 모두 페이지 버전 2를 반환했습니다.
+
+![수정 전 왼쪽 8080과 오른쪽 8081 모두 페이지 버전 2](docs/evidence/24-replay-bind-before-cropped.png)
+
+**수정 후.** 같은 순서로, 왼쪽 `8080`은 버전 2를 유지했고 오른쪽 `8081`에만 버전 3이 표시됐습니다.
+
+![수정 후 왼쪽은 버전 2를 유지하고 오른쪽은 버전 3으로 변경](docs/evidence/24-replay-bind-after.png)
+
 PC에서 수정한 파일이 어느 서버에 반영되는지 비교했습니다. `8080` 서버를 그대로 둔 상태에서, 저장소 루트의 PowerShell로 **같은 이미지**를 쓰는 두 번째 서버를 실행했습니다. `8081`에만 PC의 `app/` 폴더를 NGINX의 웹 폴더에 읽기 전용으로 연결했습니다.
 
 연결할 PC 폴더의 전체 경로를 구합니다.
@@ -335,14 +343,6 @@ docker run -d --name e1-1-web-bind -p 127.0.0.1:8081:80 --mount $mountSpec e1-1-
 |---|---|---|---|
 | `8080` | 빌드할 때 이미지에 복사해 둔 HTML | 버전 2 | **버전 2 유지** |
 | `8081` | 바인드 마운트로 연결한 PC의 HTML | 버전 2 | **버전 3으로 변경** |
-
-**수정 전.** 왼쪽 `8080`과 오른쪽 `8081` 모두 페이지 버전 2를 반환했습니다.
-
-![수정 전 왼쪽 8080과 오른쪽 8081 모두 페이지 버전 2](docs/evidence/24-replay-bind-before-cropped.png)
-
-**수정 후.** 같은 순서로, 왼쪽 `8080`은 버전 2를 유지했고 오른쪽 `8081`에만 버전 3이 표시됐습니다.
-
-![수정 후 왼쪽은 버전 2를 유지하고 오른쪽은 버전 3으로 변경](docs/evidence/24-replay-bind-after.png)
 
 ### 컨테이너 교체 후 데이터 확인
 
@@ -415,6 +415,22 @@ docker exec e1-1-volume-after cat /data/memo.txt
 
 HTML 수정 이력을 남기고 공유하기 위해 Git으로 커밋한 뒤 GitHub에 푸시했습니다. 저장소 루트에서 작성자 설정과 기본 브랜치를 확인하고, 현재 브랜치는 별도 명령으로 조회했습니다. Git은 PC에서 변경 이력을 기록하고, GitHub는 푸시한 이력을 원격에서 공유합니다. 작성자 설정, 브랜치와 푸시 결과는 [사용자 원본 로그](docs/evidence/14-user-git.md)에 있습니다.
 
+![사용자가 촬영한 커밋과 GitHub 원격 주소 확인 화면](docs/evidence/17-cmd-git.png)
+
+화면에서 HTML 수정 커밋 `d580e49`, 현재 브랜치 `main`과 과제 저장소의 원격 주소를 확인할 수 있습니다.
+
+푸시 출력에서 HTML 수정 커밋이 원격 `main`에 올라간 것을 확인했습니다. VS Code 계정 메뉴에서는 GitHub 로그인 상태를 확인했습니다.
+
+![VS Code에서 확인한 GitHub 로그인](docs/evidence/14-vscode-github.png)
+
+**VS Code의 과제 저장소 연결을 확인했습니다.** 저장소 폴더를 열었을 때 소스 제어에 `main` 브랜치와 실제 커밋 이력이 표시됐습니다. README 안의 과제 저장소 주소와 창 제목을 함께 확인할 수 있습니다.
+
+![VS Code 소스 제어의 main 브랜치와 과제 커밋 이력](docs/evidence/25-vscode-source-control.png)
+
+GitHub Pull Requests 뷰에서도 현재 브랜치의 목록이 열렸습니다. 화면의 “이 범주의 끌어오기 요청 0개”는 해당 범주에 Pull Request가 없다는 뜻입니다. 원격 주소는 위의 사용자 CMD 캡처에서 확인할 수 있습니다.
+
+![과제 폴더에서 열린 VS Code GitHub Pull Requests 뷰](docs/evidence/25-vscode-github-repository.png)
+
 저장소 루트의 PowerShell에서 로컬 Git 설정을 확인합니다. 공개할 출력에서는 개인 이메일을 가립니다.
 
 ```powershell
@@ -463,22 +479,6 @@ git status -sb
 git push
 ```
 
-![사용자가 촬영한 커밋과 GitHub 원격 주소 확인 화면](docs/evidence/17-cmd-git.png)
-
-화면에서 HTML 수정 커밋 `d580e49`, 현재 브랜치 `main`과 과제 저장소의 원격 주소를 확인할 수 있습니다.
-
-푸시 출력에서 HTML 수정 커밋이 원격 `main`에 올라간 것을 확인했습니다. VS Code 계정 메뉴에서는 GitHub 로그인 상태를 확인했습니다.
-
-![VS Code에서 확인한 GitHub 로그인](docs/evidence/14-vscode-github.png)
-
-**VS Code의 과제 저장소 연결을 확인했습니다.** 저장소 폴더를 열었을 때 소스 제어에 `main` 브랜치와 실제 커밋 이력이 표시됐습니다. README 안의 과제 저장소 주소와 창 제목을 함께 확인할 수 있습니다.
-
-![VS Code 소스 제어의 main 브랜치와 과제 커밋 이력](docs/evidence/25-vscode-source-control.png)
-
-GitHub Pull Requests 뷰에서도 현재 브랜치의 목록이 열렸습니다. 화면의 “이 범주의 끌어오기 요청 0개”는 해당 범주에 Pull Request가 없다는 뜻입니다. 원격 주소는 위의 사용자 CMD 캡처에서 확인할 수 있습니다.
-
-![과제 폴더에서 열린 VS Code GitHub Pull Requests 뷰](docs/evidence/25-vscode-github-repository.png)
-
 ## 9. 트러블슈팅
 
 | 문제 | 원인 가설 | 확인 방법과 결과 | 해결 또는 대안 |
@@ -486,8 +486,9 @@ GitHub Pull Requests 뷰에서도 현재 브랜치의 목록이 열렸습니다.
 | Docker 명령은 실행됐지만 엔진에 연결할 수 없음 | Docker Desktop 엔진이 아직 시작되지 않았거나 Windows 기능 변경 후 재시작이 필요했을 수 있음 | `docker --version`은 출력됐지만 `docker info`는 `docker_engine` 파이프에 연결하지 못했습니다. Windows의 `RebootPending`도 `True`였습니다. [설치·오류 기록](docs/evidence/02-installation.md) | Windows 재시작 후 `docker info`에서 `ServerVersion=29.9.2 OSType=linux`를 확인했습니다. `hello-world`도 `Exited (0)`으로 정상 종료했습니다. [재시작 후 확인](docs/evidence/05-hello-world.md) |
 | 새 컨테이너가 호스트 포트 8083을 사용하지 못함 | 기존 서비스가 같은 포트를 점유했을 수 있음 | `docker ps`와 `netstat -ano`에서 점유를 확인했고, 같은 포트에 실행하자 `port is already allocated` 출력 | 빈 포트 18085로 실행해 HTTP 200과 `ok`를 확인함. [기록](docs/evidence/18-port-conflict.md) |
 
-
 ## 10. 보너스 1번 · Docker Compose 기초
+
+![사용자가 촬영한 Compose 상태 확인과 종료 결과](docs/evidence/17-cmd-compose.png)
 
 빌드와 실행 옵션을 한 파일로 공유하려고 [compose.yaml](compose.yaml)에 웹 서비스 하나와 포트 연결 `8083:80`을 기록했습니다. Docker Desktop을 켠 상태에서 저장소 루트의 PowerShell로 실행했습니다.
 
@@ -508,8 +509,6 @@ curl.exe -i http://127.0.0.1:8083/healthz
 ```powershell
 docker compose -p e1-1-replay down
 ```
-
-![사용자가 촬영한 Compose 상태 확인과 종료 결과](docs/evidence/17-cmd-compose.png)
 
 이 캡처는 사용자가 CMD에서 기존 PowerShell 로그를 열어 본 화면입니다. 상태 확인 요청의 200 응답과 컨테이너 제거 결과를 확인할 수 있습니다.
 
