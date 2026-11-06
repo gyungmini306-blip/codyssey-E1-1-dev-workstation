@@ -252,9 +252,9 @@ docker image ls hello-world
 
 ### Docker 버전과 엔진 연결 확인
 
-![사용자가 확인한 Docker 버전, 엔진 응답과 전체 컨테이너 상태](docs/evidence/27-docker-engine-after.png)
+![사용자가 조회한 Docker CLI와 엔진 버전](docs/evidence/30-docker-version-engine.png)
 
-Docker Desktop을 시작한 뒤 위 세 명령을 실행했습니다. `ServerVersion=29.9.2 OSType=linux`가 나와 엔진 연결 성공을 확인했습니다. 이 화면에서는 웹 서버가 아직 `Exited` 상태이고, `hello-world`는 `Exited (0)`으로 정상 종료돼 있습니다.
+Docker Desktop을 시작한 뒤 버전과 엔진 응답을 확인했습니다. `ServerVersion=29.9.2 OSType=linux`가 나와 엔진 연결 성공을 확인했습니다.
 
 PowerShell에서 Docker 명령 도구의 버전을 확인합니다.
 
@@ -268,59 +268,10 @@ Docker 엔진 응답을 확인합니다.
 docker info --format 'ServerVersion={{.ServerVersion}} OSType={{.OSType}}'
 ```
 
-캡처와 같은 형식으로 종료된 컨테이너까지 조회합니다.
-
-```powershell
-docker ps -a --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
-```
 
 ### Ubuntu의 셸과 컨테이너 수명
 
- 추가 Bash를 종료한 뒤에는 컨테이너가 계속 실행됐고, 주 Bash를 종료하자 컨테이너도 종료됐습니다. 연결만 분리했을 때는 주 Bash가 계속 실행됐습니다. [사용자가 실행한 exec·attach 명령과 상태 출력](docs/evidence/13-user-operations.md)
-
-### 웹 서버 시작과 자원 사용량 확인
-
-아래 운영 명령은 6절의 웹 서버를 만든 뒤 사용합니다. 캡처에 함께 보이는 바인드 서버는 7절에서 만든 것입니다.
-
-![사용자가 시작한 웹 서버의 healthy 상태, 포트 연결과 자원 사용량](docs/evidence/28-user-docker-status-stats.png)
-
-위 화면에서 `e1-1-web`을 시작했고, 목록에는 두 웹 서버가 `healthy` 상태로 표시됐습니다. 이름 필터 `name=e1-1-web`에는 같은 이름으로 시작하는 `e1-1-web-bind`도 포함됐습니다. PC의 `8080`과 `8081`이 각각 컨테이너의 `80`에 연결돼 있습니다.
-
-자원 사용량은 `e1-1-web` 하나를 조회했습니다. 이때 CPU는 `0.00%`, 메모리는 `11.78 MiB`였습니다. 수치는 조회 시점에 따라 달라집니다.
-
-6절에서 만든 컨테이너가 종료 상태일 때 PowerShell에서 다시 시작합니다.
-
-```powershell
-docker start e1-1-web
-```
-
-캡처와 같은 이름 필터 및 출력 형식으로 실행 상태를 조회합니다.
-
-```powershell
-docker ps --filter "name=e1-1-web" --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
-```
-
-해당 웹 서버의 자원 사용량을 한 번 조회합니다.
-
-```powershell
-docker stats --no-stream e1-1-web
-```
-
-### 웹 서버 이미지와 요청 로그 확인
-
-6절에서 빌드한 이미지를 조회합니다.
-
-```powershell
-docker image ls e1-1-web
-```
-
-6절에서 실행한 웹 서버의 최근 요청 기록을 봅니다.
-
-```powershell
-docker logs --tail 15 e1-1-web
-```
-
-서버 로그의 HTTP 200 응답은 [사용자가 제공한 운영 출력](docs/evidence/13-user-operations.md)에서 확인할 수 있습니다.
+추가 Bash를 종료한 뒤에는 컨테이너가 계속 실행됐고, 주 Bash를 종료하자 컨테이너도 종료됐습니다. 연결만 분리했을 때는 주 Bash가 계속 실행됐습니다. [사용자가 실행한 exec·attach 명령과 상태 출력](docs/evidence/13-user-operations.md)
 
 ## 6. 커스텀 웹 서버 이미지와 포트 매핑
 
@@ -362,6 +313,44 @@ curl.exe -i http://127.0.0.1:8080/healthz
 
 `v1`은 이미지에 붙인 태그입니다. 브라우저의 페이지 버전은 HTML 안의 문구로 결정됩니다. `8080`이 이미 사용 중이면 실행 명령과 접속 주소에 같은 빈 포트를 지정합니다.
 
+### 실행한 웹 서버의 이미지·로그·자원 확인
+
+![사용자가 조회한 e1-1-web의 CPU와 메모리 사용량](docs/evidence/30-web-resource.png)
+
+위 캡처는 `e1-1-web` 하나의 자원 조회 결과입니다. 조회 당시 CPU는 `0.00%`, 메모리는 `11.78 MiB`였습니다.
+
+아래 명령은 이 절에서 `e1-1-web`을 만든 뒤 실행합니다. 요청 로그에서 응답 상태를 확인하고, 자원 조회로 실행 중인 서버의 CPU와 메모리 사용량을 확인합니다. [사용자가 제공한 운영 출력](docs/evidence/13-user-operations.md)
+
+웹 서버 이미지를 조회합니다.
+
+```powershell
+docker image ls e1-1-web
+```
+
+종료된 웹 서버 컨테이너를 다시 시작할 때 사용합니다.
+
+```powershell
+docker start e1-1-web
+```
+
+웹 서버 하나의 실행 상태와 포트 연결을 조회합니다.
+
+```powershell
+docker ps --filter "name=^/e1-1-web$" --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
+```
+
+서버가 받은 최근 요청을 조회합니다.
+
+```powershell
+docker logs --tail 15 e1-1-web
+```
+
+웹 서버의 자원 사용량을 한 번 조회합니다.
+
+```powershell
+docker stats --no-stream e1-1-web
+```
+
 ## 7. 바인드 마운트와 볼륨 영속성
 
 ### HTML 수정 반영
@@ -373,6 +362,10 @@ curl.exe -i http://127.0.0.1:8080/healthz
 **수정 후.** 같은 순서로, 왼쪽 `8080`은 버전 2를 유지했고 오른쪽 `8081`에만 버전 3이 표시됐습니다.
 
 ![수정 후 왼쪽은 버전 2를 유지하고 오른쪽은 버전 3으로 변경](docs/evidence/24-replay-bind-after.png)
+
+**두 컨테이너의 포트 연결.** 같은 이름으로 시작하는 두 서버를 조회한 화면입니다. `8080`과 `8081`이 각각 별도의 컨테이너 `80`번에 연결돼 있습니다.
+
+![두 웹 서버의 healthy 상태와 8080 및 8081 포트 연결](docs/evidence/30-two-web-containers.png)
 
 PC에서 수정한 파일이 어느 서버에 반영되는지 비교했습니다. `8080` 서버를 그대로 둔 상태에서, 저장소 루트의 PowerShell로 **같은 이미지**를 쓰는 두 번째 서버를 실행했습니다. `8081`에만 PC의 `app/` 폴더를 NGINX의 웹 폴더에 읽기 전용으로 연결했습니다.
 
