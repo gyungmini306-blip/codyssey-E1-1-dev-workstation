@@ -33,7 +33,7 @@ Docker 명령은 Docker Desktop을 실행한 뒤 PowerShell에서 입력합니�
 - [x] 바인드 마운트와 볼륨 영속성 · [수정·삭제 전후 비교](#7-바인드-마운트와-볼륨-영속성)
 - [x] Git 설정과 GitHub 푸시 · [마스킹한 설정과 푸시 결과](#8-git-설정과-github-연동)
 - [x] VS Code GitHub 로그인 · [계정 메뉴 캡처](docs/evidence/14-vscode-github.png)
-- [ ] VS Code에서 해당 저장소까지 연결된 화면 · [제출 전 보완](#9-트러블슈팅과-제출-전-보완-항목)
+- [x] VS Code에서 과제 저장소 연결 확인 · [소스 제어와 GitHub 화면](#8-git-설정과-github-연동)
 
 ## 4. 터미널과 권한 실습
 
@@ -265,18 +265,31 @@ PS> git push
 
 ![VS Code에서 확인한 GitHub 로그인](docs/evidence/14-vscode-github.png)
 
+**VS Code의 과제 저장소 연결을 확인했습니다.** 저장소 폴더를 열었을 때 소스 제어에 `main` 브랜치와 실제 커밋 이력이 표시됐습니다. README 안의 과제 저장소 주소와 창 제목을 함께 확인할 수 있습니다.
+
+![VS Code 소스 제어의 main 브랜치와 과제 커밋 이력](docs/evidence/25-vscode-source-control.png)
+
+GitHub Pull Requests 뷰에서도 현재 브랜치의 목록이 열렸습니다. 화면의 “이 범주의 끌어오기 요청 0개”는 해당 범주에 Pull Request가 없다는 뜻입니다. 터미널에서는 같은 폴더의 `origin` 주소도 확인했습니다.
+
+![과제 폴더에서 열린 VS Code GitHub Pull Requests 뷰](docs/evidence/25-vscode-github-repository.png)
+
+```console
+PS> git remote -v
+origin  https://github.com/gyungmini306-blip/codyssey-E1-1-dev-workstation.git (fetch)
+origin  https://github.com/gyungmini306-blip/codyssey-E1-1-dev-workstation.git (push)
+PS> git branch --show-current
+main
+```
+
 재실습에서 바꾼 화면 문구는 `457f88c`로 로컬에 커밋했습니다. `git status -sb`의 `[ahead 1]`로 로컬 커밋이 하나 앞선 것을 확인했습니다.
 
-## 9. 트러블슈팅과 제출 전 보완 항목
+## 9. 트러블슈팅
 
 | 문제 | 원인 가설 | 확인 방법과 결과 | 해결 또는 대안 |
 |---|---|---|---|
 | Docker 명령은 실행됐지만 엔진에 연결할 수 없음 | Docker Desktop 엔진이 아직 시작되지 않았거나 Windows 기능 변경 후 재시작이 필요했을 수 있음 | `docker --version`은 출력됐지만 `docker info`는 `docker_engine` 파이프에 연결하지 못했습니다. Windows의 `RebootPending`도 `True`였습니다. [설치·오류 기록](docs/evidence/02-installation.md) | Windows 재시작 후 `docker info`에서 `ServerVersion=29.9.2 OSType=linux`를 확인했습니다. `hello-world`도 `Exited (0)`으로 정상 종료했습니다. [재시작 후 확인](docs/evidence/05-hello-world.md) |
 | 새 컨테이너가 호스트 포트 8083을 사용하지 못함 | 기존 서비스가 같은 포트를 점유했을 수 있음 | `docker ps`와 `netstat -ano`에서 점유를 확인했고, 같은 포트에 실행하자 `port is already allocated` 출력 | 빈 포트 18085로 실행해 HTTP 200과 `ok`를 확인함. [기록](docs/evidence/18-port-conflict.md) |
 
-**제출 전 보완**
-
-- **VS Code 저장소 연결 화면 · 증거 미확인.** GitHub 로그인 캡처와 터미널 푸시 기록은 확보했습니다. VS Code에서 과제 폴더를 연 뒤 Source Control과 GitHub Pull Requests 뷰에 이 저장소가 표시되는 화면이 있으면, VS Code 안에서의 저장소 연결도 직접 확인할 수 있습니다.
 
 ## 10. 보너스 1번 · Docker Compose 기초
 
