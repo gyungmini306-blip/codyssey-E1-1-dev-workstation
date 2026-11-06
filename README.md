@@ -45,7 +45,13 @@ Ubuntu 컨테이너에서 작업 폴더와 메모를 만들었습니다. 원본�
 
 `pwd`에 작업 경로가 표시되고, `ls -la`에는 숨김 파일인 `.hidden-note`와 빈 파일인 `empty.txt`가 보입니다. `cat memo.txt`로 저장한 문구를 확인했습니다.
 
-Ubuntu 컨테이너가 실행 중일 때 PowerShell에서 들어갑니다.
+처음 실행하는 경우 PowerShell에서 Ubuntu 컨테이너와 Bash를 시작합니다. 아래 명령과 기존 컨테이너 진입 명령 중 현재 상태에 맞는 하나를 사용합니다.
+
+```powershell
+docker run --rm -it ubuntu:24.04 bash
+```
+
+기존 `e1-1-ubuntu` 컨테이너가 실행 중이라면 대신 아래 명령으로 추가 Bash를 엽니다.
 
 ```powershell
 docker exec -it e1-1-ubuntu bash
@@ -208,6 +214,12 @@ ls -ld permissions-dir
 | `x` = 1 | 프로그램으로 실행 | 디렉터리 진입과 경로 탐색 |
 
 숫자는 소유자·그룹·기타 사용자 순서입니다. `644`는 `rw-r--r--`, `755`는 `rwxr-xr-x`입니다. 위 캡처에서 권한 변경 전후를 확인할 수 있습니다. 과제에서 요구하는 명령·출력 텍스트는 [원본 실습 로그](docs/evidence/10-user-terminal.md)에 보관했습니다.
+
+4절이 끝나면 Ubuntu Bash에서 아래 명령으로 나와 PowerShell로 돌아옵니다. 위의 `--rm`으로 시작한 임시 컨테이너는 이때 삭제되며, 그 안의 실습 파일도 함께 삭제됩니다.
+
+```bash
+exit
+```
 
 ## 5. Docker 점검과 운영
 
