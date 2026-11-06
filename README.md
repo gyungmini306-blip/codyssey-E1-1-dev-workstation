@@ -20,7 +20,7 @@
 | [docs/evidence/](docs/evidence/) | 실습 로그와 캡처. 각 항목에서 해당 기록을 연결합니다. |
 | [compose.yaml](compose.yaml) | 보너스 과제의 단일 웹 서비스 설정 |
 
-Docker 명령은 Docker Desktop을 실행한 뒤 PowerShell에서 입력합니다. 파일과 권한 명령은 Ubuntu 컨테이너의 Bash에서 실행합니다. 실습 증거는 사용자가 제공한 캡처와 터미널 출력에서 발췌했습니다. 따라 실행할 명령은 실행 방법으로 표시했습니다.
+Docker 명령은 Docker Desktop을 실행한 뒤 PowerShell에서 입력합니다. 파일과 권한 명령은 Ubuntu 컨테이너의 Bash에서 실행합니다. 명령과 출력은 확인에 필요한 부분을 발췌했습니다.
 
 ## 3. 수행 체크리스트
 
@@ -28,12 +28,12 @@ Docker 명령은 Docker Desktop을 실행한 뒤 PowerShell에서 입력합니�
 - [x] 파일·디렉터리 권한 변경 · [권한 전후 비교](#4-터미널과-권한-실습)
 - [x] Docker 엔진 점검과 운영 · [목록·로그·리소스 기록](docs/evidence/13-user-operations.md)
 - [x] hello-world와 Ubuntu 실습 · [실행과 셸 종료 결과](#5-docker-점검과-운영)
-- [x] 커스텀 이미지 빌드·실행 · [빌드와 접속 결과](#6-커스텀-웹-서버-이미지와-포트-매핑)
+- [x] 커스텀 이미지 빌드·실행 · [실제 빌드 및 실행 기록](docs/evidence/07-web-server.md)
 - [x] 포트 매핑 접속 · [명령과 HTTP 응답](#6-커스텀-웹-서버-이미지와-포트-매핑)
 - [x] 바인드 마운트와 볼륨 영속성 · [수정·삭제 전후 비교](#7-바인드-마운트와-볼륨-영속성)
 - [x] Git 설정과 GitHub 푸시 · [마스킹한 설정과 푸시 결과](#8-git-설정과-github-연동)
 - [x] VS Code GitHub 로그인 · [계정 메뉴 캡처](docs/evidence/14-vscode-github.png)
-- [x] Git 원격 저장소 연동 · [사용자 원격 주소와 푸시 출력](docs/evidence/14-user-git.md)
+- [x] VS Code에서 과제 저장소 연결 확인 · [소스 제어와 GitHub 화면](#8-git-설정과-github-연동)
 
 ## 4. 터미널과 권한 실습
 
@@ -51,36 +51,6 @@ Ubuntu 컨테이너에서 작업 폴더와 메모를 만들었습니다. 원본�
 
 ![메모 복사본을 옮기고 지운 뒤 원본이 남은 화면](docs/evidence/21-terminal-copy-move-delete.png)
 
-**파일 조작 명령과 실제 출력**
-
-```console
-$ mkdir -p /root/e1-1/guided-practice
-$ cd /root/e1-1/guided-practice
-$ pwd
-/root/e1-1/guided-practice
-$ touch empty.txt .hidden-note
-$ echo "E1-1 terminal practice" > memo.txt
-$ ls -la
--rw-r--r-- 1 root root    0 Nov  3 00:05 .hidden-note
--rw-r--r-- 1 root root    0 Nov  3 00:05 empty.txt
--rw-r--r-- 1 root root   23 Nov  3 00:05 memo.txt
-$ cat memo.txt
-E1-1 terminal practice
-$ cp memo.txt memo-copy.txt
-$ mkdir -p archive
-$ mv memo-copy.txt archive/memo-renamed.txt
-$ cd archive
-$ ls -la
--rw-r--r-- 1 root root   23 Nov  3 00:08 memo-renamed.txt
-$ cd ..
-$ rm archive/memo-renamed.txt
-$ ls -la archive
-total 8
-drwxr-xr-x 2 root root 4096 Nov  3 00:09 .
-drwxr-xr-x 3 root root 4096 Nov  3 00:09 ..
-$ rmdir archive
-```
-
 `/root/e1-1/guided-practice`는 루트부터 찾는 절대 경로이고, `archive/memo-renamed.txt`는 현재 폴더를 기준으로 찾는 상대 경로입니다. 목록에서 빈 파일 두 개의 크기가 0이고, 복사본을 지운 뒤 `archive`에 파일이 남지 않은 것을 확인했습니다.
 
 ### 파일과 디렉터리 권한 변경 전후
@@ -91,26 +61,13 @@ $ rmdir archive
 
 `ls -l`로 파일을, `ls -ld`로 디렉터리 자체를 조회했습니다. 각각 권한을 변경한 뒤 다시 조회해 전후를 비교했습니다.
 
-```console
-$ ls -l memo.txt
--rw-r--r-- 1 root root 23 Nov  4 09:27 memo.txt
-$ chmod 600 memo.txt
-$ ls -l memo.txt
--rw------- 1 root root 23 Nov  4 09:27 memo.txt
-$ ls -ld permissions-dir
-drwxr-xr-x 2 root root 4096 Nov  4 09:32 permissions-dir
-$ chmod 700 permissions-dir
-$ ls -ld permissions-dir
-drwx------ 2 root root 4096 Nov  4 09:32 permissions-dir
-```
-
 | 권한 | 일반 파일 | 디렉터리 |
 |---|---|---|
 | `r` = 4 | 내용 읽기 | 이름 목록 읽기 |
 | `w` = 2 | 내용 수정 | 항목 생성·삭제·이름 변경에 필요하며 일반적으로 `x`도 필요 |
 | `x` = 1 | 프로그램으로 실행 | 디렉터리 진입과 경로 탐색 |
 
-숫자는 소유자·그룹·기타 사용자 순서입니다. `644`는 `rw-r--r--`, `755`는 `rwxr-xr-x`입니다. 위 실습에서는 권한 비트 변경을 확인했습니다. [터미널 전체 기록](docs/evidence/10-user-terminal.md)
+숫자는 소유자·그룹·기타 사용자 순서입니다. `644`는 `rw-r--r--`, `755`는 `rwxr-xr-x`입니다. 위 캡처에서 권한 변경 전후를 확인할 수 있습니다. 과제에서 요구하는 명령·출력 텍스트는 [원본 실습 로그](docs/evidence/10-user-terminal.md)에 보관했습니다.
 
 ## 5. Docker 점검과 운영
 
@@ -158,7 +115,7 @@ exited
 
 NGINX로 제 HTML을 제공하기 위해 [Dockerfile](Dockerfile)에 베이스 이미지 `nginx:stable-alpine`을 지정했습니다. `COPY`로 HTML과 서버 설정을 이미지에 넣고, `LABEL`로 이미지 용도를 기록했습니다. `EXPOSE 80`은 컨테이너가 사용할 포트를 표시하고, 실제 수신 포트는 [nginx.conf](nginx.conf)의 `listen 80`에서 정합니다. `HEALTHCHECK`는 컨테이너 내부에서 `/healthz`에 요청을 보내 NGINX 응답을 점검합니다.
 
-**실행 방법.** Docker Desktop을 켜고 PowerShell에서 저장소를 내려받습니다. 이미 내려받았다면 처음 두 줄 대신 해당 저장소 폴더로 이동한 뒤 빌드부터 실행합니다.
+Docker Desktop을 켜고 PowerShell에서 저장소를 내려받습니다. 이미 내려받았다면 처음 두 줄 대신 해당 저장소 폴더로 이동한 뒤 빌드부터 실행합니다.
 
 ```powershell
 git clone https://github.com/gyungmini306-blip/codyssey-E1-1-dev-workstation.git e1-1
@@ -171,7 +128,7 @@ curl.exe -i http://127.0.0.1:8080/healthz
 **접속 결과 · PC 8080 → 컨테이너 80.** `docker build`로 만든 이미지에서 컨테이너를 실행했고, PC에서 보낸 요청에 NGINX가 아래와 같이 응답했습니다. 브라우저에서 `http://localhost:8080/`을 열어 웹페이지도 확인했습니다. 7절의 수정 전 캡처에서 주소창과 페이지를 함께 확인할 수 있습니다.
 
 ```console
-=> => naming to docker.io/library/e1-1-web:v1                     0.0s
+=> => naming to docker.io/library/e1-1-web:v1
 HTTP/1.1 200 OK
 Server: nginx/1.30.6
 
@@ -211,7 +168,7 @@ docker run -d --name e1-1-web-bind -p 127.0.0.1:8081:80 --mount $mountSpec e1-1-
 
 컨테이너를 삭제한 뒤에도 메모가 남는지 확인했습니다. PowerShell에서 볼륨을 생성하고 첫 컨테이너에 연결해 메모를 저장했습니다. 그 컨테이너를 삭제한 뒤 새 컨테이너에 같은 볼륨을 연결했습니다.
 
-**실행 방법.** 아래 명령은 파일명 입력 오류를 바로잡아 같은 결과를 확인할 수 있도록 정리한 절차이며, 원본 로그는 아닙니다. 처음 컨테이너의 `cat`과 새 컨테이너의 `cat` 출력을 비교합니다. 이름이 이미 사용 중이면 새 실습용 이름으로 바꿉니다.
+아래는 같은 결과를 확인하는 실행 순서입니다. 처음 컨테이너의 `cat`과 새 컨테이너의 `cat` 출력을 비교합니다. 이름이 이미 사용 중이면 새 실습용 이름으로 바꿉니다.
 
 ```powershell
 docker volume create e1-1-replay-data
@@ -257,22 +214,29 @@ PS> git push
 
 ![VS Code에서 확인한 GitHub 로그인](docs/evidence/14-vscode-github.png)
 
-사용자가 제공한 같은 저장소의 원격 주소 확인 결과입니다.
+**VS Code의 과제 저장소 연결을 확인했습니다.** 저장소 폴더를 열었을 때 소스 제어에 `main` 브랜치와 실제 커밋 이력이 표시됐습니다. README 안의 과제 저장소 주소와 창 제목을 함께 확인할 수 있습니다.
+
+![VS Code 소스 제어의 main 브랜치와 과제 커밋 이력](docs/evidence/25-vscode-source-control.png)
+
+GitHub Pull Requests 뷰에서도 현재 브랜치의 목록이 열렸습니다. 화면의 “이 범주의 끌어오기 요청 0개”는 해당 범주에 Pull Request가 없다는 뜻입니다. 터미널에서는 같은 폴더의 `origin` 주소도 확인했습니다.
+
+![과제 폴더에서 열린 VS Code GitHub Pull Requests 뷰](docs/evidence/25-vscode-github-repository.png)
 
 ```console
-PS> git --no-pager remote -v
+PS> git remote -v
 origin  https://github.com/gyungmini306-blip/codyssey-E1-1-dev-workstation.git (fetch)
 origin  https://github.com/gyungmini306-blip/codyssey-E1-1-dev-workstation.git (push)
+PS> git branch --show-current
+main
 ```
 
 ## 9. 트러블슈팅
 
-사용자가 제공한 오류 출력과 해결 후 결과를 정리했습니다.
-
-| 문제 | 원인 가설 | 확인 방법과 결과 | 해결 및 결과 |
+| 문제 | 원인 가설 | 확인 방법과 결과 | 해결 또는 대안 |
 |---|---|---|---|
-| PowerShell에서 웹 응답의 한글이 깨짐 | 웹 응답과 PowerShell의 문자 해석 방식이 달랐을 수 있음 | 같은 응답에서 영문 표식 `SIMPLE_PAGE_V1`은 보였지만 한글 문구는 깨져 보였습니다. | `[Console]::OutputEncoding = [System.Text.Encoding]::UTF8`을 적용한 뒤 `curl.exe`로 다시 조회하니 한글 버전 문구가 정상 표시됐습니다. [사용자 전후 출력](docs/evidence/11-user-bind.md) |
-| Git 설정 조회 후 다음 명령 결과 대신 less 도움말이 나옴 | 출력 보기 프로그램에 머물러 입력이 셸 명령으로 처리되지 않았을 수 있음 | 사용자 기록에 `SUMMARY OF LESS COMMANDS`와 `log file:`이 나타났습니다. | PowerShell에서 `git --no-pager`로 다시 조회한 뒤 `main`, 원격 주소, 파일 변경 상태를 확인했습니다. [사용자 오류 및 재조회 출력](docs/evidence/14-user-git.md) |
+| Docker 명령은 실행됐지만 엔진에 연결할 수 없음 | Docker Desktop 엔진이 아직 시작되지 않았거나 Windows 기능 변경 후 재시작이 필요했을 수 있음 | `docker --version`은 출력됐지만 `docker info`는 `docker_engine` 파이프에 연결하지 못했습니다. Windows의 `RebootPending`도 `True`였습니다. [설치·오류 기록](docs/evidence/02-installation.md) | Windows 재시작 후 `docker info`에서 `ServerVersion=29.9.2 OSType=linux`를 확인했습니다. `hello-world`도 `Exited (0)`으로 정상 종료했습니다. [재시작 후 확인](docs/evidence/05-hello-world.md) |
+| 새 컨테이너가 호스트 포트 8083을 사용하지 못함 | 기존 서비스가 같은 포트를 점유했을 수 있음 | `docker ps`와 `netstat -ano`에서 점유를 확인했고, 같은 포트에 실행하자 `port is already allocated` 출력 | 빈 포트 18085로 실행해 HTTP 200과 `ok`를 확인함. [기록](docs/evidence/18-port-conflict.md) |
+
 
 ## 10. 보너스 1번 · Docker Compose 기초
 
