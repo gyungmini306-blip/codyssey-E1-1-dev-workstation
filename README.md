@@ -229,7 +229,7 @@ exit
 
 위 캡처에서 `docker run`의 `Hello from Docker!`와 `docker ps -a`의 `Exited (0)`을 확인했습니다. 컨테이너 안의 프로그램이 메시지를 출력한 뒤 정상 종료했습니다.
 
-Docker가 컨테이너를 실제로 실행할 수 있는지 확인하기 위해 `hello-world`를 실행했습니다. 인사말을 출력한 뒤 `Exited (0)`으로 정상 종료했습니다. [사용자가 제공한 실제 실행 출력](docs/evidence/05-hello-world.md)
+[hello-world 실행 원본 로그](docs/evidence/05-hello-world.md)
 
 PowerShell에서 테스트 컨테이너를 실행합니다. 같은 이름의 종료된 컨테이너가 남아 있다면 삭제하거나 다른 이름으로 실행합니다.
 
@@ -237,16 +237,17 @@ PowerShell에서 테스트 컨테이너를 실행합니다. 같은 이름의 종
 docker run --name e1-1-hello hello-world
 ```
 
-실행에 사용한 이미지가 PC에 있는지 확인합니다.
-
-```powershell
-docker image ls hello-world
-```
 
 테스트 컨테이너의 종료 상태를 확인합니다.
 
 ```powershell
 docker ps -a --filter "name=e1-1-hello"
+```
+
+실행에 사용한 이미지가 PC에 있는지 확인합니다.
+
+```powershell
+docker image ls hello-world
 ```
 
 ### Docker 버전과 엔진 연결 확인
@@ -273,7 +274,13 @@ docker info --format 'ServerVersion={{.ServerVersion}} OSType={{.OSType}}'
 docker ps -a --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
 ```
 
+### Ubuntu의 셸과 컨테이너 수명
+
+ 추가 Bash를 종료한 뒤에는 컨테이너가 계속 실행됐고, 주 Bash를 종료하자 컨테이너도 종료됐습니다. 연결만 분리했을 때는 주 Bash가 계속 실행됐습니다. [사용자가 실행한 exec·attach 명령과 상태 출력](docs/evidence/13-user-operations.md)
+
 ### 웹 서버 시작과 자원 사용량 확인
+
+아래 운영 명령은 6절의 웹 서버를 만든 뒤 사용합니다. 캡처에 함께 보이는 바인드 서버는 7절에서 만든 것입니다.
 
 ![사용자가 시작한 웹 서버의 healthy 상태, 포트 연결과 자원 사용량](docs/evidence/28-user-docker-status-stats.png)
 
@@ -314,8 +321,6 @@ docker logs --tail 15 e1-1-web
 ```
 
 서버 로그의 HTTP 200 응답은 [사용자가 제공한 운영 출력](docs/evidence/13-user-operations.md)에서 확인할 수 있습니다.
-
-**Ubuntu의 셸과 컨테이너 수명.** 추가 Bash를 종료한 뒤에는 컨테이너가 계속 실행됐고, 주 Bash를 종료하자 컨테이너도 종료됐습니다. 연결만 분리했을 때는 주 Bash가 계속 실행됐습니다. [사용자가 실행한 exec·attach 명령과 상태 출력](docs/evidence/13-user-operations.md)
 
 ## 6. 커스텀 웹 서버 이미지와 포트 매핑
 
