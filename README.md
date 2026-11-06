@@ -2,7 +2,7 @@
 
 ## 1. 프로젝트 개요
 
-다른 사람도 같은 웹 서버를 실행할 수 있도록 개발 환경을 구성했습니다. 먼저 Ubuntu의 Bash에서 파일과 권한을 다뤘습니다. 그다음 Dockerfile로 NGINX 웹 서버를 만들고, PC에서 접속해 HTML 변경이 반영되는지 확인했습니다. 별도의 Ubuntu 컨테이너에서는 볼륨에 쓴 데이터가 컨테이너 교체 후에도 남는지 확인했습니다. 소스와 실습 기록은 Git으로 관리하고 GitHub에 공유했습니다. 다른 사람도 저장소를 받아 [빌드·실행 절차](#6-커스텀-웹-서버-이미지와-포트-매핑)부터 재현할 수 있습니다.
+다른 사람도 같은 웹 서버를 실행할 수 있도록 개발 환경을 구성했습니다. 먼저 Ubuntu의 Bash에서 파일과 권한을 다뤘습니다. 그다음 Dockerfile로 NGINX 웹 서버를 만들고, PC에서 접속해 HTML 변경이 반영되는지 확인했습니다. 별도의 Ubuntu 컨테이너에서는 볼륨에 쓴 데이터가 컨테이너 교체 후에도 남는지 확인했습니다. 소스와 실습 기록은 Git으로 관리하고 GitHub에 공유했습니다. 6절의 명령으로 저장소를 내려받아 웹 서버를 실행할 수 있습니다.
 
 ## 2. 실행 환경과 저장소 구성
 
@@ -20,7 +20,7 @@
 | [docs/evidence/](docs/evidence/) | 실습 로그와 캡처. 각 항목에서 해당 기록을 연결합니다. |
 | [compose.yaml](compose.yaml) | 보너스 과제의 단일 웹 서비스 설정 |
 
-Docker 명령은 Docker Desktop을 실행한 뒤 PowerShell에서 입력합니다. 파일과 권한 명령은 Ubuntu 컨테이너의 Bash에서 실행합니다. 아래 실제 출력은 관련 줄을 발췌했고, 재현 명령은 별도로 표시했습니다.
+Docker 명령은 Docker Desktop을 실행한 뒤 PowerShell에서 입력합니다. 파일과 권한 명령은 Ubuntu 컨테이너의 Bash에서 실행합니다. 명령과 출력은 확인에 필요한 부분을 발췌했습니다.
 
 ## 3. 수행 체크리스트
 
@@ -85,26 +85,23 @@ $ rmdir archive
 
 ### 파일과 디렉터리 권한 변경 전후
 
-재실습 화면의 `chmod` 실행 뒤, 파일은 `644 → 600`, 폴더는 `755 → 700`이 되어 그룹과 기타 사용자의 권한이 사라졌습니다.
+`chmod` 실행 뒤, 파일은 `644 → 600`, 폴더는 `755 → 700`이 되어 그룹과 기타 사용자의 권한이 사라졌습니다.
 
 ![chmod 전후의 파일과 폴더 권한을 확인한 실제 화면](docs/evidence/23-terminal-permissions.png)
 
-**최초 권한 실습과 실제 출력.** 아래 로그에서는 반대로 파일을 `600 → 644`, 폴더를 `700 → 755`로 변경했습니다. 소유자만 사용할 수 있게 설정한 뒤 그룹과 다른 사용자에게 어떤 권한이 추가되는지 확인했습니다. 같은 작업 폴더에서 `chmod`로 권한을 바꾸고, 파일은 `ls -l`, 디렉터리 자체는 `ls -ld`로 조회했습니다.
+`ls -l`로 파일을, `ls -ld`로 디렉터리 자체를 조회했습니다. 각각 권한을 변경한 뒤 다시 조회해 전후를 비교했습니다.
 
 ```console
-$ mkdir -p permissions-dir
+$ ls -l memo.txt
+-rw-r--r-- 1 root root 23 Nov  4 09:27 memo.txt
 $ chmod 600 memo.txt
+$ ls -l memo.txt
+-rw------- 1 root root 23 Nov  4 09:27 memo.txt
+$ ls -ld permissions-dir
+drwxr-xr-x 2 root root 4096 Nov  4 09:32 permissions-dir
 $ chmod 700 permissions-dir
-$ ls -l memo.txt
--rw------- 1 root root 23 Nov  3 00:05 memo.txt
 $ ls -ld permissions-dir
-drwx------ 2 root root 4096 Nov  3 00:12 permissions-dir
-$ chmod 644 memo.txt
-$ chmod 755 permissions-dir
-$ ls -l memo.txt
--rw-r--r-- 1 root root 23 Nov  3 00:05 memo.txt
-$ ls -ld permissions-dir
-drwxr-xr-x 2 root root 4096 Nov  3 00:12 permissions-dir
+drwx------ 2 root root 4096 Nov  4 09:32 permissions-dir
 ```
 
 | 권한 | 일반 파일 | 디렉터리 |
@@ -115,11 +112,9 @@ drwxr-xr-x 2 root root 4096 Nov  3 00:12 permissions-dir
 
 숫자는 소유자·그룹·기타 사용자 순서입니다. `644`는 `rw-r--r--`, `755`는 `rwxr-xr-x`입니다. 위 실습에서는 권한 비트 변경을 확인했습니다. [터미널 전체 기록](docs/evidence/10-user-terminal.md)
 
-재실습에서도 복사본을 삭제한 뒤 원본 `memo.txt`가 남았고, 파일은 `644 → 600`, 폴더는 `755 → 700`으로 바뀌는 것을 확인했습니다.
-
 ## 5. Docker 점검과 운영
 
-웹 서버를 만들기 전에 Docker가 컨테이너를 실행할 수 있는지 확인했습니다. PowerShell에서 `docker info`로 엔진 응답을 확인하고 `hello-world`를 실행했습니다. 이후 목록으로 실행·종료 상태를, 로그로 서버 응답을, `docker stats`로 리소스 사용량을 확인했습니다. 운영 명령에 사용한 컨테이너는 해당 실습에서 미리 실행했습니다.
+웹 서버를 만들기 전에 Docker가 컨테이너를 실행할 수 있는지 확인했습니다. PowerShell에서 `docker info`로 엔진 응답을 확인하고 `hello-world`를 실행했습니다. 이후 목록으로 실행·종료 상태를, 로그로 서버 응답을, `docker stats`로 리소스 사용량을 확인했습니다. 아래 출력은 컨테이너를 실행한 뒤 조회한 기록입니다.
 
 ```console
 PS> docker --version
@@ -159,8 +154,6 @@ exited
 
 추가 Bash를 종료한 뒤에는 실행 상태가 `true`였고, 주 Bash를 종료하자 `exited`로 바뀌었습니다. `attach` 연결만 분리했을 때는 주 Bash가 계속 실행됐습니다. [셸 실습 원본](docs/evidence/13-user-operations.md)
 
-재실습에서도 `hello-world`는 `Exited (0)`으로 종료됐습니다. 웹 서버의 `docker logs`에서 상태 점검 요청의 `200` 응답을, `docker stats --no-stream`에서 조회 시점의 메모리 사용량 `13.41 MiB`를 확인했습니다.
-
 ## 6. 커스텀 웹 서버 이미지와 포트 매핑
 
 NGINX로 제 HTML을 제공하기 위해 [Dockerfile](Dockerfile)에 베이스 이미지 `nginx:stable-alpine`을 지정했습니다. `COPY`로 HTML과 서버 설정을 이미지에 넣고, `LABEL`로 이미지 용도를 기록했습니다. `EXPOSE 80`은 컨테이너가 사용할 포트를 표시하고, 실제 수신 포트는 [nginx.conf](nginx.conf)의 `listen 80`에서 정합니다. `HEALTHCHECK`는 컨테이너 내부에서 `/healthz`에 요청을 보내 NGINX 응답을 점검합니다.
@@ -175,7 +168,7 @@ docker run -d --name e1-1-web -p 127.0.0.1:8080:80 e1-1-web:v1
 curl.exe -i http://127.0.0.1:8080/healthz
 ```
 
-**재실습 결과 · PC 8080 → 컨테이너 80.** `docker build`로 만든 이미지에서 컨테이너를 실행했고, PC에서 보낸 요청에 NGINX가 아래와 같이 응답했습니다. 브라우저에서 `http://localhost:8080/`을 열어 웹페이지도 확인했습니다. 주소창과 페이지는 [7절 수정 전 캡처](#html-수정-반영)에 함께 보입니다.
+**접속 결과 · PC 8080 → 컨테이너 80.** `docker build`로 만든 이미지에서 컨테이너를 실행했고, PC에서 보낸 요청에 NGINX가 아래와 같이 응답했습니다. 브라우저에서 `http://localhost:8080/`을 열어 웹페이지도 확인했습니다. 7절의 수정 전 캡처에서 주소창과 페이지를 함께 확인할 수 있습니다.
 
 ```console
 => => naming to docker.io/library/e1-1-web:v1
@@ -185,7 +178,7 @@ Server: nginx/1.30.6
 ok
 ```
 
-`v1`은 이미지에 붙인 태그입니다. 브라우저의 페이지 버전은 HTML 안의 문구로 결정됩니다. `8080`이 이미 사용 중이면 실행 명령과 접속 주소에 같은 빈 포트를 지정합니다. [최초 빌드·실행 기록](docs/evidence/07-web-server.md)
+`v1`은 이미지에 붙인 태그입니다. 브라우저의 페이지 버전은 HTML 안의 문구로 결정됩니다. `8080`이 이미 사용 중이면 실행 명령과 접속 주소에 같은 빈 포트를 지정합니다.
 
 ## 7. 바인드 마운트와 볼륨 영속성
 
@@ -214,37 +207,36 @@ docker run -d --name e1-1-web-bind -p 127.0.0.1:8081:80 --mount $mountSpec e1-1-
 
 ![수정 후 왼쪽은 버전 2를 유지하고 오른쪽은 버전 3으로 변경](docs/evidence/24-replay-bind-after.png)
 
-[최초 실습의 바인드 마운트 명령과 HTTP 출력](docs/evidence/11-user-bind.md)
-
 ### 컨테이너 교체 후 데이터 확인
 
-메모가 컨테이너를 교체한 뒤에도 남는지 확인하기 위해, PowerShell에서 `e1-1-replay-data` 볼륨을 만들고 첫 컨테이너의 `/data`에 연결했습니다. 메모를 읽은 뒤 컨테이너를 삭제했고, 새 컨테이너에 같은 볼륨을 연결해 다시 읽었습니다.
+컨테이너를 삭제한 뒤에도 메모가 남는지 확인했습니다. PowerShell에서 볼륨을 생성하고 첫 컨테이너에 연결해 메모를 저장했습니다. 그 컨테이너를 삭제한 뒤 새 컨테이너에 같은 볼륨을 연결했습니다.
+
+아래는 같은 결과를 확인하는 실행 순서입니다. 처음 컨테이너의 `cat`과 새 컨테이너의 `cat` 출력을 비교합니다. 이름이 이미 사용 중이면 새 실습용 이름으로 바꿉니다.
+
+```powershell
+docker volume create e1-1-replay-data
+docker run -d --name e1-1-volume-before --mount "type=volume,source=e1-1-replay-data,target=/data" ubuntu:24.04 sleep infinity
+docker exec e1-1-volume-before sh -c 'echo E1-1-volume-proof > /data/memo.txt'
+docker exec e1-1-volume-before cat /data/memo.txt
+docker stop e1-1-volume-before
+docker rm e1-1-volume-before
+docker volume ls --filter "name=e1-1-replay-data"
+docker run -d --name e1-1-volume-after --mount "type=volume,source=e1-1-replay-data,target=/data" ubuntu:24.04 sleep infinity
+docker exec e1-1-volume-after cat /data/memo.txt
+```
+
+**실제 결과.** 기존 컨테이너를 삭제한 뒤에도 볼륨이 목록에 남았고, 새 컨테이너에서는 메모를 다시 쓰지 않고도 같은 내용을 읽었습니다.
 
 ```console
-PS> docker volume create e1-1-replay-data
-e1-1-replay-data
-PS> docker run -d --name e1-1-volume-before --mount "type=volume,source=e1-1-replay-data,target=/data" ubuntu:24.04 sleep infinity
-PS> docker exec e1-1-volume-before cat /data/memo.txt
-E1-1-volume-proof
-PS> docker stop e1-1-volume-before
-e1-1-volume-before
-PS> docker rm e1-1-volume-before
-e1-1-volume-before
 PS> docker volume ls --filter "name=e1-1-replay-data"
 DRIVER    VOLUME NAME
 local     e1-1-replay-data
-PS> docker run -d --name e1-1-volume-after --mount "type=volume,source=e1-1-replay-data,target=/data" ubuntu:24.04 sleep infinity
-PS> docker exec e1-1-volume-after cat /data/memo.txt
-E1-1-volume-proof
 ```
 
-첫 컨테이너에서 메모를 작성했고, 새 컨테이너에서는 읽기만 했습니다. **삭제 전후에 같은 `E1-1-volume-proof`가 출력**됐고, 삭제 직후에도 볼륨이 남아 있었습니다. 처음부터 재현할 때는 첫 조회 전에 아래 명령으로 메모를 작성합니다. 이름이 이미 사용 중이면 새 실습용 이름으로 바꿉니다.
-
-```powershell
-docker exec e1-1-volume-before sh -c 'echo E1-1-volume-proof > /data/memo.txt'
-```
-
-[최초 실습의 볼륨 생성·기록·삭제·재연결 전체 출력](docs/evidence/12-user-volume.md)
+| 확인 시점 | 실제 메모 출력 |
+|---|---|
+| 첫 컨테이너에서 삭제 전 조회 | `E1-1-volume-proof` |
+| 새 컨테이너에 같은 볼륨 연결 후 조회 | `E1-1-volume-proof` |
 
 ## 8. Git 설정과 GitHub 연동
 
@@ -281,8 +273,6 @@ PS> git branch --show-current
 main
 ```
 
-재실습에서 바꾼 화면 문구는 `457f88c`로 로컬에 커밋했습니다. `git status -sb`의 `[ahead 1]`로 로컬 커밋이 하나 앞선 것을 확인했습니다.
-
 ## 9. 트러블슈팅
 
 | 문제 | 원인 가설 | 확인 방법과 결과 | 해결 또는 대안 |
@@ -308,4 +298,4 @@ Container e1-1-replay-web-1 Removed
 Network e1-1-replay_default Removed
 ```
 
-**실행 → 접속 → 정리**를 확인했습니다. `up`으로 설정을 적용하니 상태 점검을 통과했고, PC의 `8083`에서 정상 응답을 받았습니다. `down` 후에는 Compose가 만든 컨테이너와 네트워크가 제거됐습니다. [최초 Compose 실습 전체 기록](docs/evidence/16-compose-bonus.md)
+**실행 → 접속 → 정리**를 확인했습니다. `up`으로 설정을 적용하니 상태 점검을 통과했고, PC의 `8083`에서 정상 응답을 받았습니다. `down` 후에는 Compose가 만든 컨테이너와 네트워크가 제거됐습니다.
