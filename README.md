@@ -225,6 +225,10 @@ exit
 
 ![사용자가 확인한 Docker 버전, 엔진 응답과 전체 컨테이너 상태](docs/evidence/27-docker-engine-after.png)
 
+**웹 서버 실행과 자원 사용량.** 아래 캡처에서 두 서버가 `healthy`이고, PC의 `8080`과 `8081`이 각 컨테이너의 `80`에 연결된 것을 확인했습니다. `docker stats` 조회 시 `e1-1-web`의 메모리 사용량은 `11.78 MiB`였습니다.
+
+![사용자가 시작한 웹 서버의 healthy 상태, 포트 연결과 자원 사용량](docs/evidence/28-user-docker-status-stats.png)
+
 웹 서버를 만들기 전에 Docker가 컨테이너를 실행할 수 있는지 확인했습니다. PowerShell에서 `docker info`로 엔진 응답을 확인하고 `hello-world`를 실행했습니다. 이후 목록으로 실행·종료 상태를, 로그로 서버 응답을, `docker stats`로 리소스 사용량을 확인했습니다. 상태와 응답은 사용자가 촬영한 실제 화면과 원본 로그에서 확인할 수 있습니다.
 
 Docker 명령 도구의 버전을 확인합니다.
