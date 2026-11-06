@@ -490,7 +490,35 @@ git push
 
 ![사용자가 촬영한 Compose 상태 확인과 종료 결과](docs/evidence/17-cmd-compose.png)
 
-빌드와 실행 옵션을 한 파일로 공유하려고 [compose.yaml](compose.yaml)에 웹 서비스 하나와 포트 연결 `8083:80`을 기록했습니다. Docker Desktop을 켠 상태에서 저장소 루트의 PowerShell로 실행했습니다.
+**Compose는 Docker의 빌드·실행 설정을 파일로 저장하고 적용하는 도구입니다.** 앞에서는 이미지 빌드와 컨테이너 실행 명령에 옵션을 직접 적었습니다. 이번에는 같은 서버를 반복해서 띄우고 다른 사람에게 실행 설정을 공유하기 위해, 빌드 위치와 포트 연결을 `compose.yaml`에 적었습니다.
+
+**작성한 결과물은 [compose.yaml](compose.yaml)입니다.** 이 파일에서 웹 서버 하나를 정의했습니다.
+
+```yaml
+services:
+  web:
+    build: .
+    ports:
+      - "127.0.0.1:8083:80"
+```
+
+| 설정 | 의미 |
+|---|---|
+| `services.web` | web이라는 웹 서버 서비스 한 개 |
+| `build: .` | 현재 폴더의 Dockerfile로 이미지 빌드 |
+| `127.0.0.1:8083:80` | 내 PC의 8083번을 컨테이너의 80번에 연결 |
+
+**사용자가 직접 실행해 확인한 결과입니다.**
+
+| 수행한 일 | 실제 확인 결과 |
+|---|---|
+| Compose 설정으로 빌드·실행 | 이미지 Built, 컨테이너 Healthy |
+| PC의 8083으로 상태 확인 요청 | HTTP 200 OK와 ok |
+| Compose 프로젝트 종료 | 컨테이너와 네트워크 Removed |
+
+[사용자가 제공한 Compose 명령과 출력](docs/evidence/26-user-compose.md)
+
+Docker Desktop을 켠 상태에서 저장소 루트의 PowerShell로 아래 명령을 실행합니다.
 
 저장소 루트의 PowerShell에서 설정 파일을 읽어 빌드하고 실행합니다.
 
@@ -512,4 +540,4 @@ docker compose -p e1-1-replay down
 
 이 캡처는 사용자가 CMD에서 기존 PowerShell 로그를 열어 본 화면입니다. 상태 확인 요청의 200 응답과 컨테이너 제거 결과를 확인할 수 있습니다.
 
-**실행 → 접속 → 정리**를 확인했습니다. `up`으로 설정을 적용하니 상태 점검을 통과했고, PC의 `8083`에서 정상 응답을 받았습니다. `down` 후에는 Compose가 만든 컨테이너와 네트워크가 제거됐습니다. [Compose 명령과 원본 출력](docs/evidence/16-compose-bonus.md)
+**실행 → 접속 → 정리**를 확인했습니다. `up`으로 설정을 적용하니 상태 점검을 통과했고, PC의 `8083`에서 정상 응답을 받았습니다. `down` 후에는 Compose가 만든 컨테이너와 네트워크가 제거됐습니다. [사용자 실행 로그](docs/evidence/26-user-compose.md)
