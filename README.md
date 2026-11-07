@@ -663,9 +663,7 @@ git push
 
 ## 10. 보너스 1번 · Docker Compose 기초
 
-![사용자가 촬영한 Compose 상태 확인과 종료 결과](docs/evidence/17-cmd-compose.png)
-
-**같은 웹 서버를 같은 설정으로 다시 실행하기 위해 Compose를 사용했습니다.** [Dockerfile](Dockerfile)은 NGINX·HTML을 담을 이미지를 정하고, 아래 [compose.yaml](compose.yaml)은 빌드 위치와 실행할 포트를 정합니다. 두 파일을 함께 사용합니다.
+**Compose는 설정 파일대로 컨테이너를 실행·정리하는 도구입니다.** 같은 웹 서버를 같은 설정으로 다시 실행하려고 사용했습니다. [Dockerfile](Dockerfile)은 NGINX·HTML을 담을 이미지를 정하고, 아래 [compose.yaml](compose.yaml)은 빌드 위치와 실행할 포트를 정합니다. 두 파일을 함께 사용합니다.
 
 ```yaml
 services:
@@ -687,6 +685,14 @@ docker compose -p e1-1-replay up -d --build --wait
 
 **② PC의 8083으로 서버 응답을 확인합니다.**
 
+![사용자가 Compose 컨테이너의 healthy 상태와 8083 접속의 HTTP 200 및 ok를 확인한 화면](docs/evidence/48-user-compose-response.png)
+
+실행 목록에서 `healthy`와 `8083->80`을 확인합니다.
+
+```powershell
+docker compose -p e1-1-replay ps
+```
+
 ```powershell
 curl.exe -i http://127.0.0.1:8083/healthz
 ```
@@ -695,10 +701,16 @@ curl.exe -i http://127.0.0.1:8083/healthz
 
 **③ 해당 프로젝트의 컨테이너와 네트워크를 정리합니다.**
 
+![사용자가 Compose 프로젝트를 정리하고 빈 컨테이너 목록을 확인한 화면](docs/evidence/48-user-compose-down.png)
+
 ```powershell
 docker compose -p e1-1-replay down
 ```
 
-**실제 결과:** 빌드·실행은 `Built`·`Healthy`, 접속은 HTTP `200 OK`와 `ok`, 정리는 `Removed`로 확인했습니다. [명령과 실제 출력](docs/evidence/26-user-compose.md)
+정리 후 목록에 컨테이너가 없는지 확인합니다.
 
-위 이미지는 기존 PowerShell 로그를 CMD에서 열어 촬영한 화면입니다.
+```powershell
+docker compose -p e1-1-replay ps -a
+```
+
+**실제 결과:** 실행 상태는 `healthy`, 접속은 HTTP `200 OK`와 `ok`, 정리는 `Removed`와 빈 목록으로 확인했습니다. [이번 캡처의 명령과 출력](docs/evidence/48-user-compose.md) · [이미지 빌드·실행 기록](docs/evidence/26-user-compose.md)
