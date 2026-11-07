@@ -657,10 +657,6 @@ git push
 | Docker 명령은 실행됐지만 엔진에 연결할 수 없음 | Docker Desktop 엔진이 시작되지 않았을 수 있음 | 사용자 화면에서 `docker --version`은 출력됐지만 `docker info`와 `docker ps`는 `dockerDesktopLinuxEngine` 파이프에 연결하지 못했습니다. | Docker Desktop을 시작한 뒤 사용자가 같은 명령을 다시 실행하자 서버 버전과 컨테이너 목록이 출력됐습니다. [사용자 전후 캡처와 출력](docs/evidence/27-docker-engine.md) |
 | 새 컨테이너가 호스트 포트 8083을 사용하지 못함 | 기존 서비스가 같은 포트를 점유했을 수 있음 | `docker ps`와 `netstat -ano`에서 점유를 확인했고, 같은 포트에 실행하자 `port is already allocated` 출력 | 빈 포트 18085로 실행해 HTTP 200과 `ok`를 확인함. [기록](docs/evidence/18-port-conflict.md) |
 
-**엔진 연결 실패 화면.** Docker 버전은 조회됐지만 엔진을 사용하는 두 명령은 실패했습니다. 해결 후 엔진 정보는 5절의 ‘Docker 버전과 엔진 연결 확인’에 있는 ‘실행결과’ 링크에서 확인할 수 있습니다.
-
-![Docker Desktop 시작 전 엔진 연결에 실패한 사용자 화면](docs/evidence/27-docker-engine-before.png)
-
 ## 10. 보너스 1번 · Docker Compose 기초
 
 **Compose는 설정 파일대로 이미지를 빌드하고 컨테이너를 실행하는 도구입니다.** 같은 웹 서버를 같은 설정으로 다시 실행하려고 사용했습니다. [Dockerfile](Dockerfile)은 NGINX·HTML을 담을 이미지를 정하고, 아래 [compose.yaml](compose.yaml)은 빌드 위치와 실행할 포트를 정합니다. 두 파일을 함께 사용합니다.
