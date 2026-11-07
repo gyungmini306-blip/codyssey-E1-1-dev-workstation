@@ -331,7 +331,7 @@ Docker 명령 도구의 버전을 확인합니다.
 docker --version
 ```
 
-Docker 엔진 응답을 확인합니다. [(실행결과)](docs/evidence/35-docker-info.png)
+Docker 엔진 응답을 확인합니다. [(실행결과)](docs/evidence/35-docker-info.md)
 
 ```powershell
 docker info
