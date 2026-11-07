@@ -394,13 +394,13 @@ docker image ls e1-1-web:build-check
 
 Docker Desktop을 켜고 PowerShell에서 저장소를 내려받습니다. 이미 내려받았다면 기존 저장소 폴더로 이동한 뒤 빌드부터 실행합니다.
 
-저장소를 내려받습니다.
+저장소를 내려받습니다. [(실행결과)](docs/evidence/39-user-clone.md)
 
 ```powershell
 git clone https://github.com/gyungmini306-blip/codyssey-E1-1-dev-workstation.git e1-1
 ```
 
-저장소 루트로 이동합니다.
+저장소 루트로 이동합니다. [(실행결과)](docs/evidence/39-user-clone.md)
 
 ```powershell
 cd e1-1
