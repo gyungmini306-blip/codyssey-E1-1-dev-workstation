@@ -482,9 +482,9 @@ docker stats --no-stream e1-1-web
 
 ![수정 후 왼쪽은 버전 2를 유지하고 오른쪽은 버전 3으로 변경](docs/evidence/24-replay-bind-after.png)
 
-**두 컨테이너의 포트 연결.** 같은 이름으로 시작하는 두 서버를 조회한 화면입니다. `8080`과 `8081`이 각각 별도의 컨테이너 `80`번에 연결돼 있습니다.
+**포트 연결 확인.** 원본 목록에서 두 웹 서버의 `8080 → 80`, `8081 → 80` 행만 잘라 이어 붙였습니다. [명령과 출력](docs/evidence/41-user-web-ports.md)
 
-![두 웹 서버의 healthy 상태와 8080 및 8081 포트 연결](docs/evidence/30-two-web-containers.png)
+![docker ps -a 결과에서 두 웹 서버의 포트 연결 행만 발췌](docs/evidence/41-user-web-ports.png)
 
 PC에서 수정한 파일이 어느 서버에 반영되는지 비교했습니다. `8080` 서버를 그대로 둔 상태에서, 저장소 루트의 PowerShell로 **같은 이미지**를 쓰는 두 번째 서버를 실행했습니다. `8081`에만 PC의 `app/` 폴더를 NGINX의 웹 폴더에 읽기 전용으로 연결했습니다.
 
