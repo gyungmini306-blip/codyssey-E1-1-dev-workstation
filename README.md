@@ -519,10 +519,6 @@ docker run -d --name e1-1-web-bind -p 127.0.0.1:8081:80 --mount $mountSpec e1-1-
 
 ### 컨테이너 교체 후 데이터 확인
 
-![볼륨 생성과 컨테이너 연결 및 삭제 전 메모 저장을 확인한 사용자 화면](docs/evidence/43-user-volume-before.png)
-
-**삭제 전.** 볼륨을 생성·연결한 뒤 메모를 저장했고, `cat`에서 `E1-1-volume-proof`가 출력됐습니다. [명령과 실제 출력](docs/evidence/43-user-volume.md)
-
 `-v e1-1-replay-data:/data`는 컨테이너의 `/data`를 볼륨에 연결합니다. 따라서 `/data/memo.txt`에 쓰면 해당 볼륨에 저장되며, 별도로 복사하는 과정은 없습니다. 컨테이너를 삭제한 뒤 새 컨테이너에 같은 볼륨을 연결해 메모가 남는지 확인했습니다.
 
 아래 순서대로 실행하고, 삭제 전후 두 `cat` 명령의 출력이 같은지 비교합니다.
@@ -544,6 +540,10 @@ docker run -d --name e1-1-volume-before -v e1-1-replay-data:/data ubuntu:24.04 s
 ```powershell
 docker exec e1-1-volume-before sh -c 'echo E1-1-volume-proof > /data/memo.txt'
 ```
+
+![볼륨 생성과 컨테이너 연결 및 삭제 전 메모 저장을 확인한 사용자 화면](docs/evidence/43-user-volume-before.png)
+
+**저장 결과.** 캡처에는 볼륨 생성·연결·메모 저장과 아래 `cat` 명령의 조회 결과가 담겨 있습니다. `E1-1-volume-proof`가 출력됐습니다. [명령과 실제 출력](docs/evidence/43-user-volume.md)
 
 삭제 전 메모를 읽습니다.
 
