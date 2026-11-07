@@ -668,12 +668,15 @@ git push
 ```yaml
 services:
   web:
-    build: .
+    build:
+      context: .
+      args:
+        INDEX_PAGE: compose.html
     ports:
       - "127.0.0.1:8083:80"
 ```
 
-`web`은 서비스 이름, `build: .`은 같은 폴더의 Dockerfile로 이미지 빌드, `ports`는 **PC 8083 → 컨테이너 80** 연결입니다. 명령에 입력하던 설정을 파일에 남겨 재사용할 수 있습니다.
+`web`은 서비스 이름, `context: .`은 같은 폴더의 Dockerfile로 이미지 빌드, `ports`는 **PC 8083 → 컨테이너 80** 연결입니다. `INDEX_PAGE`는 Compose 서버의 첫 화면으로 `compose.html`을 선택하며, Dockerfile이 이를 이미지의 `index.html`로 복사합니다. 명령에 입력하던 설정을 파일에 남겨 재사용할 수 있습니다.
 
 Docker Desktop을 켜고 과제 폴더의 PowerShell에서 실행합니다.
 
@@ -697,7 +700,7 @@ docker compose -p e1-1-replay ps
 curl.exe -i http://127.0.0.1:8083/healthz
 ```
 
-웹 화면은 브라우저에서 `http://localhost:8083/compose.html`을 열어 `Hello Compose!`를 확인합니다. [확인용 HTML](app/compose.html)은 Dockerfile의 `COPY app/`로 이미지에 포함됩니다.
+웹 화면은 브라우저에서 `http://localhost:8083/`을 열어 `Hello Compose!`를 확인합니다. [확인용 HTML](app/compose.html)을 Compose 이미지의 첫 화면으로 지정했습니다. 일반 빌드는 Dockerfile의 기본값 `INDEX_PAGE=index.html`을 사용합니다.
 
 **③ 해당 프로젝트의 컨테이너와 네트워크를 정리합니다.**
 
