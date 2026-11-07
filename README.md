@@ -694,7 +694,9 @@ docker compose -p e1-1-replay up -d --build --wait
 curl.exe -i http://127.0.0.1:8083/healthz
 ```
 
-브라우저에서 `http://localhost:8083/`을 열면 [확인용 HTML](app/compose.html)의 `Hello Compose!` 화면을 볼 수 있습니다.
+<img src="docs/evidence/49-user-compose-browser.png" alt="주소창 localhost:8083과 Hello Compose 첫 화면이 함께 보이는 사용자 캡처" width="800">
+
+**웹 접속 결과.** 주소창의 `localhost:8083`과 [확인용 HTML](app/compose.html)의 `Hello Compose!` 화면을 확인했습니다. [캡처 설명](docs/evidence/49-user-compose-browser.md)
 
 **③ 해당 프로젝트의 컨테이너와 네트워크를 정리합니다.**
 
