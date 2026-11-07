@@ -321,9 +321,9 @@ docker image ls hello-world
 
 ### Docker 버전과 엔진 연결 확인
 
-![사용자가 조회한 Docker CLI와 엔진 버전](docs/evidence/30-docker-version-engine.png)
+![docker --version 명령과 Docker CLI 버전 출력](docs/evidence/35-docker-cli-version.png)
 
-캡처는 필요한 정보만 골라 조회한 기록으로, `ServerVersion=29.9.2 OSType=linux`를 확인했습니다. 아래에서는 `docker info`로 전체 정보를 조회하고, `Server` 영역의 버전과 정보가 오류 없이 출력되는지 확인합니다.
+캡처에서 Docker CLI 버전 `29.9.2`를 확인했습니다.
 
 Docker 명령 도구의 버전을 확인합니다.
 
@@ -331,7 +331,7 @@ Docker 명령 도구의 버전을 확인합니다.
 docker --version
 ```
 
-Docker 엔진 응답을 확인합니다.
+Docker 엔진 응답을 확인합니다. [(실행결과)](docs/evidence/35-docker-info.png)
 
 ```powershell
 docker info
@@ -644,7 +644,7 @@ git push
 | Docker 명령은 실행됐지만 엔진에 연결할 수 없음 | Docker Desktop 엔진이 시작되지 않았을 수 있음 | 사용자 화면에서 `docker --version`은 출력됐지만 `docker info`와 `docker ps`는 `dockerDesktopLinuxEngine` 파이프에 연결하지 못했습니다. | Docker Desktop을 시작한 뒤 사용자가 같은 명령을 다시 실행하자 서버 버전과 컨테이너 목록이 출력됐습니다. [사용자 전후 캡처와 출력](docs/evidence/27-docker-engine.md) |
 | 새 컨테이너가 호스트 포트 8083을 사용하지 못함 | 기존 서비스가 같은 포트를 점유했을 수 있음 | `docker ps`와 `netstat -ano`에서 점유를 확인했고, 같은 포트에 실행하자 `port is already allocated` 출력 | 빈 포트 18085로 실행해 HTTP 200과 `ok`를 확인함. [기록](docs/evidence/18-port-conflict.md) |
 
-**엔진 연결 실패 화면.** Docker 버전은 조회됐지만 엔진을 사용하는 두 명령은 실패했습니다. 해결 후 화면은 5절의 ‘Docker 버전과 엔진 연결 확인’ 캡처에서 확인할 수 있습니다.
+**엔진 연결 실패 화면.** Docker 버전은 조회됐지만 엔진을 사용하는 두 명령은 실패했습니다. 해결 후 엔진 정보는 5절의 ‘Docker 버전과 엔진 연결 확인’에 있는 ‘실행결과’ 링크에서 확인할 수 있습니다.
 
 ![Docker Desktop 시작 전 엔진 연결에 실패한 사용자 화면](docs/evidence/27-docker-engine-before.png)
 
