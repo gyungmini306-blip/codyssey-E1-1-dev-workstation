@@ -294,11 +294,11 @@ exit
 
 ### hello-world 실행 확인
 
-![사용자가 실행한 hello-world 인사말과 컨테이너 정상 종료](docs/evidence/29-user-hello-world.png)
+![사용자가 실행한 hello-world 인사말과 정상 종료 및 이미지 목록 조회 결과](docs/evidence/50-user-hello-combined.png)
 
-위 캡처에서 `docker run`의 `Hello from Docker!`와 `docker ps -a`의 `Exited (0)`을 확인했습니다. 컨테이너 안의 프로그램이 메시지를 출력한 뒤 정상 종료했습니다.
+실제 캡처 두 장을 이어 붙였습니다. `Hello from Docker!`와 `Exited (0)`으로 실행·정상 종료를, `hello-world:latest` 목록으로 PC에 이미지가 있음을 확인했습니다.
 
-[hello-world 실행 원본 로그](docs/evidence/05-hello-world.md)
+[위 캡처의 명령과 실제 출력](docs/evidence/50-user-hello.md)
 
 테스트 컨테이너를 실행합니다. 같은 이름의 종료된 컨테이너가 남아 있다면 삭제하거나 다른 이름으로 실행합니다.
 
