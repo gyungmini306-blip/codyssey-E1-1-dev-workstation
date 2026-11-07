@@ -323,7 +323,7 @@ docker image ls hello-world
 
 ![사용자가 조회한 Docker CLI와 엔진 버전](docs/evidence/30-docker-version-engine.png)
 
-Docker Desktop을 시작한 뒤 버전과 엔진 응답을 확인했습니다. `ServerVersion=29.9.2 OSType=linux`가 나와 엔진 연결 성공을 확인했습니다.
+캡처는 필요한 정보만 골라 조회한 기록으로, `ServerVersion=29.9.2 OSType=linux`를 확인했습니다. 아래에서는 `docker info`로 전체 정보를 조회하고, `Server` 영역의 버전과 정보가 오류 없이 출력되는지 확인합니다.
 
 Docker 명령 도구의 버전을 확인합니다.
 
@@ -334,7 +334,7 @@ docker --version
 Docker 엔진 응답을 확인합니다.
 
 ```powershell
-docker info --format 'ServerVersion={{.ServerVersion}} OSType={{.OSType}}'
+docker info
 ```
 
 
