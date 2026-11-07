@@ -2,7 +2,7 @@
 
 사용자가 `C:\Users\gyung\Documents\e1-1`의 PowerShell에서 실행해 제공한 실제 캡처입니다. 이미 빌드한 `e1-1-web:v1` 이미지로 컨테이너를 실행했습니다.
 
-![컨테이너 실행 명령과 HTTP 200 응답](images/06-03-user-web-run-http.png)
+![컨테이너 실행 명령과 HTTP 200 응답](40-user-web-run-http.png)
 
 ## 위 캡처의 명령과 응답
 

@@ -2,7 +2,7 @@
 
 사용자가 PowerShell에서 실행해 제공한 캡처의 명령·출력을 옮겼습니다. 프롬프트의 개인 경로, Docker Debug 안내, 다른 컨테이너의 목록 행은 생략했습니다.
 
-![추가 Bash 종료 후에도 Up인 e1-1-shell-guide](images/05-03-user-exec-running.png)
+![추가 Bash 종료 후에도 Up인 e1-1-shell-guide](36-user-exec-running.png)
 
 ```text
 PS> docker exec -it e1-1-shell-guide bash

@@ -2,9 +2,9 @@
 
 사용자가 `C:\Users\gyung\Documents`의 PowerShell에서 실행해 제공한 실제 캡처입니다.
 
-![GitHub 저장소를 e1-1 폴더로 내려받고 cd로 이동한 사용자 화면](images/06-ref-04-user-clone.png)
+![GitHub 저장소를 e1-1 폴더로 내려받고 cd로 이동한 사용자 화면](39-user-clone.png)
 
-[원본 이미지 보기](images/06-ref-04-user-clone.png)
+[원본 이미지 보기](39-user-clone.png)
 
 ## 실제 명령과 출력
 

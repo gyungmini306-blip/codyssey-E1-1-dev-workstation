@@ -4,7 +4,7 @@
 
 ## 시작 전
 
-![엔진 연결 실패](images/09-ref-02-docker-engine-before.png)
+![엔진 연결 실패](27-docker-engine-before.png)
 
 ```console
 PS> docker --version
@@ -17,7 +17,7 @@ ServerVersion= OSType=
 
 ## Docker Desktop 시작 후
 
-![서버 버전과 컨테이너 목록 조회 성공](images/09-ref-01-docker-engine-after.png)
+![서버 버전과 컨테이너 목록 조회 성공](27-docker-engine-after.png)
 
 ```console
 PS> docker info --format 'ServerVersion={{.ServerVersion}} OSType={{.OSType}}'

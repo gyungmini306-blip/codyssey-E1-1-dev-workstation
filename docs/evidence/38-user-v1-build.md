@@ -2,9 +2,9 @@
 
 사용자가 제공한 실제 PowerShell 캡처입니다. 저장소 폴더 `C:\Users\gyung\e1-1`에서 README와 같은 이미지 이름·태그로 빌드했습니다.
 
-![docker build로 e1-1-web:v1을 빌드해 FINISHED가 표시된 사용자 화면](images/06-ref-03-user-v1-build.png)
+![docker build로 e1-1-web:v1을 빌드해 FINISHED가 표시된 사용자 화면](38-user-v1-build.png)
 
-[원본 이미지 보기](images/06-ref-03-user-v1-build.png)
+[원본 이미지 보기](38-user-v1-build.png)
 
 ## 핵심 명령·출력 발췌
 

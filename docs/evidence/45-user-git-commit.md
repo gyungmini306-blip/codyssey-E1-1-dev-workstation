@@ -2,7 +2,7 @@
 
 사용자가 제공한 PowerShell 캡처입니다.
 
-<img src="images/08-ref-01-user-git-commit.png" alt="최근 커밋을 한 줄로 조회한 사용자 화면" width="650">
+<img src="45-user-git-commit.png" alt="최근 커밋을 한 줄로 조회한 사용자 화면" width="650">
 
 ```text
 PS C:\Users\gyung\e1-1> git log -1 --oneline

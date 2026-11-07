@@ -4,27 +4,27 @@
 
 ## 1. 명령 입력과 클라이언트 정보
 
-![docker info 명령과 Client 버전 및 플러그인 목록](images/05-ref-02-docker-info-01.png)
+![docker info 명령과 Client 버전 및 플러그인 목록](35-docker-info-01.png)
 
-[원본 보기](images/05-ref-02-docker-info-01.png)
+[원본 보기](35-docker-info-01.png)
 
 ## 2. 클라이언트 정보 계속 · Docker 엔진 정보
 
-![플러그인 목록에 이어 표시된 Server 정보와 엔진 버전](images/05-ref-03-docker-info-02.png)
+![플러그인 목록에 이어 표시된 Server 정보와 엔진 버전](35-docker-info-02.png)
 
-[원본 보기](images/05-ref-03-docker-info-02.png)
+[원본 보기](35-docker-info-02.png)
 
 ## 3. Docker 엔진 정보 계속
 
-![서버의 네트워크 기능과 커널 및 운영체제 정보](images/05-ref-04-docker-info-03.png)
+![서버의 네트워크 기능과 커널 및 운영체제 정보](35-docker-info-03.png)
 
-[원본 보기](images/05-ref-04-docker-info-03.png)
+[원본 보기](35-docker-info-03.png)
 
 ## 4. 출력 마지막 부분
 
-![docker info 출력의 마지막 설정 항목](images/05-ref-05-docker-info-04.png)
+![docker info 출력의 마지막 설정 항목](35-docker-info-04.png)
 
-[원본 보기](images/05-ref-05-docker-info-04.png)
+[원본 보기](35-docker-info-04.png)
 
 ## 핵심 출력 발췌
 

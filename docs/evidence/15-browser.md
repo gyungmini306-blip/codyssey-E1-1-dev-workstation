@@ -2,7 +2,7 @@
 
 2026-11-03 사용자가 제공한 원본 캡처다. 두 Chrome 창의 주소창과 실제 페이지 버전이 함께 보인다.
 
-![왼쪽 localhost:8080 버전 1, 오른쪽 localhost:8081 버전 2](images/06-ref-01-browser-addresses.png)
+![왼쪽 localhost:8080 버전 1, 오른쪽 localhost:8081 버전 2](15-browser-addresses.png)
 
 | 화면 | 접속 주소 | 기존 실행 기록에 따른 서버 | 화면 결과 |
 |---|---|---|---|

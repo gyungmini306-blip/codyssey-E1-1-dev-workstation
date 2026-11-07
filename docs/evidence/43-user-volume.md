@@ -4,7 +4,7 @@
 
 ## 볼륨 생성과 삭제 전 메모 확인
 
-![볼륨 생성·연결·메모 저장과 조회](images/07-05-user-volume-before.png)
+![볼륨 생성·연결·메모 저장과 조회](43-user-volume-before.png)
 
 ```text
 PS> docker volume create e1-1-replay-data
@@ -18,7 +18,7 @@ E1-1-volume-proof
 
 ## 컨테이너 삭제와 새 컨테이너에서 메모 재확인
 
-![컨테이너 삭제·볼륨 목록·새 컨테이너의 메모 조회](images/07-06-user-volume-after.png)
+![컨테이너 삭제·볼륨 목록·새 컨테이너의 메모 조회](43-user-volume-after.png)
 
 ```text
 PS> docker stop e1-1-volume-before
@@ -41,4 +41,4 @@ E1-1-volume-proof
 
 ## 캡처 원본
 
-[사용자가 제공한 전체 캡처](images/07-ref-03-user-volume-full.png). README에 사용한 두 이미지는 이 원본에서 삭제 전과 삭제 후 부분을 잘라낸 것으로, 명령이나 출력 내용을 바꾸지 않았습니다.
+[사용자가 제공한 전체 캡처](43-user-volume-full.png). README에 사용한 두 이미지는 이 원본에서 삭제 전과 삭제 후 부분을 잘라낸 것으로, 명령이나 출력 내용을 바꾸지 않았습니다.

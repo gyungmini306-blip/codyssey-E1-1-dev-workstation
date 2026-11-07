@@ -4,7 +4,7 @@
 
 ## 실행 상태와 HTTP 응답
 
-![Compose 실행 상태와 HTTP 응답](images/10-01-user-compose-response.png)
+![Compose 실행 상태와 HTTP 응답](48-user-compose-response.png)
 
 ```text
 PS C:\Users\gyung\e1-1> docker compose -p e1-1-replay ps
@@ -25,7 +25,7 @@ ok
 
 ## 프로젝트 정리와 빈 목록 확인
 
-![Compose down과 정리 후 목록](images/10-ref-01-user-compose-down.png)
+![Compose down과 정리 후 목록](48-user-compose-down.png)
 
 ```text
 PS C:\Users\gyung\e1-1> docker compose -p e1-1-replay down
@@ -38,4 +38,4 @@ NAME      IMAGE     COMMAND   SERVICE   CREATED   STATUS    PORTS
 
 컨테이너와 네트워크에 `Removed`가 표시됐고, 후속 `ps -a`에는 표 제목만 남아 해당 프로젝트의 컨테이너가 정리됐음을 확인했습니다.
 
-[사용자가 제공한 전체 캡처](images/10-ref-02-user-compose-full.png). README의 두 이미지는 이 원본에서 실행·접속 부분과 정리 부분을 나눠 자른 것이며, 명령과 출력 내용은 변경하지 않았습니다.
+[사용자가 제공한 전체 캡처](48-user-compose-full.png). README의 두 이미지는 이 원본에서 실행·접속 부분과 정리 부분을 나눠 자른 것이며, 명령과 출력 내용은 변경하지 않았습니다.

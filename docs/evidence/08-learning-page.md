@@ -103,7 +103,7 @@ codyssey-web | codyssey-workstation:2.0 | Up About a minute (healthy) | 127.0.0.
 codyssey-web-v1 | codyssey-workstation:1.0 | Exited (0) 8 minutes ago |
 ```
 
-![E1-1 동작 원리 설명 페이지](images/06-ref-05-learning-page-v2.png)
+![E1-1 동작 원리 설명 페이지](learning-page-v2.png)
 
 이 캡처는 브라우저 콘텐츠만 포함한다. 과제의 주소창 포함 증거는 별도 수집 대상이다.
 
