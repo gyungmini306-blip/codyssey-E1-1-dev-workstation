@@ -663,7 +663,7 @@ git push
 
 ## 10. 보너스 1번 · Docker Compose 기초
 
-**Compose는 설정 파일대로 컨테이너를 실행·정리하는 도구입니다.** 같은 웹 서버를 같은 설정으로 다시 실행하려고 사용했습니다. [Dockerfile](Dockerfile)은 NGINX·HTML을 담을 이미지를 정하고, 아래 [compose.yaml](compose.yaml)은 빌드 위치와 실행할 포트를 정합니다. 두 파일을 함께 사용합니다.
+**Compose는 설정 파일대로 이미지를 빌드하고 컨테이너를 실행하는 도구입니다.** 같은 웹 서버를 같은 설정으로 다시 실행하려고 사용했습니다. [Dockerfile](Dockerfile)은 NGINX·HTML을 담을 이미지를 정하고, 아래 [compose.yaml](compose.yaml)은 빌드 위치와 실행할 포트를 정합니다. 두 파일을 함께 사용합니다.
 
 ```yaml
 services:
@@ -698,12 +698,4 @@ curl.exe -i http://127.0.0.1:8083/healthz
 
 **웹 접속 결과.** 주소창의 `localhost:8083`과 [확인용 HTML](app/compose.html)의 `Hello Compose!` 화면을 확인했습니다. [캡처 설명](docs/evidence/49-user-compose-browser.md)
 
-**③ 해당 프로젝트의 컨테이너와 네트워크를 정리합니다.**
-
-![사용자가 Compose 프로젝트를 정리하고 빈 컨테이너 목록을 확인한 화면](docs/evidence/48-user-compose-down.png)
-
-```powershell
-docker compose -p e1-1-replay down
-```
-
-**실제 결과:** 실행 상태는 `healthy`, 접속은 HTTP `200 OK`와 `ok`, 정리는 `Removed`와 빈 목록으로 확인했습니다. [이번 캡처의 명령과 출력](docs/evidence/48-user-compose.md) · [이미지 빌드·실행 기록](docs/evidence/26-user-compose.md)
+**실제 결과:** 단일 웹 서버를 Compose로 실행했고, `healthy`, HTTP `200 OK`와 `ok`, 브라우저의 `Hello Compose!` 화면을 확인했습니다. [실행 상태와 HTTP 응답 기록](docs/evidence/48-user-compose.md#실행-상태와-http-응답) · [이미지 빌드·실행 기록](docs/evidence/26-user-compose.md)
