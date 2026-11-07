@@ -362,6 +362,8 @@ e1-1-web:build-check    8dafd1b2588d   92.8MB       26.1MB
 
 NGINX로 제 HTML을 제공하기 위해 [Dockerfile](Dockerfile)에 베이스 이미지 `nginx:stable-alpine`을 지정했습니다. `COPY`로 HTML과 서버 설정을 이미지에 넣고, `LABEL`로 이미지 용도를 기록했습니다. `EXPOSE 80`은 컨테이너가 사용할 포트를 표시하고, 실제 수신 포트는 [nginx.conf](nginx.conf)의 `listen 80`에서 정합니다. `HEALTHCHECK`는 컨테이너 내부에서 `/healthz`에 요청을 보내 NGINX 응답을 점검합니다.
 
+**NGINX는 언제 설치했나요?** `nginx:stable-alpine`은 NGINX가 이미 설치된 공식 이미지입니다. `FROM`으로 이 이미지를 기반으로 삼았기 때문에 별도의 NGINX 설치 명령이 필요하지 않았습니다. 여기에 우리 HTML과 설정을 복사해 커스텀 이미지를 만들었습니다. 컨테이너 실행 시 사용할 NGINX 시작 명령도 기반 이미지에서 이어받습니다.
+
 흐름은 **Dockerfile과 HTML → `docker build`로 이미지 생성 → `docker run`으로 그 이미지에서 컨테이너 생성·실행**입니다. HTML을 수정하는 것만으로 기존 이미지가 바뀌지는 않습니다.
 
 Docker Desktop을 켜고 PowerShell에서 저장소를 내려받습니다. 이미 내려받았다면 기존 저장소 폴더로 이동한 뒤 빌드부터 실행합니다.
@@ -645,7 +647,32 @@ git push
 
 **Compose는 Docker의 빌드·실행 설정을 파일로 저장하고 적용하는 도구입니다.** 앞에서는 이미지 빌드와 컨테이너 실행 명령에 옵션을 직접 적었습니다. 이번에는 같은 서버를 반복해서 띄우고 다른 사람에게 실행 설정을 공유하기 위해, 빌드 위치와 포트 연결을 `compose.yaml`에 적었습니다.
 
-**작성한 결과물은 [compose.yaml](compose.yaml)입니다.** 이 파일에서 웹 서버 하나를 정의했습니다.
+**Dockerfile과 Compose 파일을 함께 사용합니다.** 두 파일은 같은 저장소 폴더에 있습니다.
+
+| 파일 | 이 실습에서 정한 내용 |
+|---|---|
+| `Dockerfile` | 이미지에 넣을 NGINX·HTML·서버 설정·상태 점검 |
+| `compose.yaml` | 빌드할 폴더, 실행할 서비스, PC와 컨테이너의 포트 연결 |
+
+**① [Dockerfile](Dockerfile) — 이미지를 어떻게 만들지 정합니다.** 아래는 저장소의 실제 파일 내용입니다.
+
+```dockerfile
+FROM nginx:stable-alpine
+
+LABEL org.opencontainers.image.title="Codyssey E1-1 Workstation Lab"
+LABEL org.opencontainers.image.description="A personal development workstation practice server"
+
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+COPY app/ /usr/share/nginx/html/
+
+EXPOSE 80
+HEALTHCHECK --interval=10s --timeout=3s --start-period=5s --retries=3 \
+    CMD wget -q -O /dev/null http://127.0.0.1/healthz || exit 1
+```
+
+`FROM`은 NGINX가 설치된 기반 이미지를 선택하고, 두 `COPY`는 서버 설정과 웹페이지를 추가합니다. `HEALTHCHECK`는 NGINX가 응답하는지 점검합니다. `EXPOSE 80`만으로 PC의 포트가 연결되지는 않으므로 아래 Compose 파일에 포트 연결도 적었습니다.
+
+**② [compose.yaml](compose.yaml) — 그 이미지로 웹 서버 하나를 실행할 설정을 정합니다.**
 
 ```yaml
 services:
@@ -658,8 +685,10 @@ services:
 | 설정 | 의미 |
 |---|---|
 | `services.web` | web이라는 웹 서버 서비스 한 개 |
-| `build: .` | 현재 폴더의 Dockerfile로 이미지 빌드 |
+| `build: .` | Compose 파일이 있는 폴더를 빌드 대상으로 삼고, 그 안의 Dockerfile 사용 |
 | `127.0.0.1:8083:80` | 내 PC의 8083번을 컨테이너의 80번에 연결 |
+
+**③ 아래 `up -d --build --wait` 명령으로 두 파일의 설정을 적용합니다.** Compose가 `build: .`을 읽어 Dockerfile로 이미지를 빌드하고, 그 이미지로 `web` 컨테이너를 생성·실행하며 PC의 8083번을 연결합니다. `--wait`는 상태 점검을 통과할 때까지 기다립니다. 파일을 작성하기만 하면 서버가 켜지는 것은 아니므로 실행 명령도 필요합니다.
 
 **사용자가 직접 실행해 확인한 결과입니다.**
 
