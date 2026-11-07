@@ -523,6 +523,10 @@ docker run -d --name e1-1-web-bind -p 127.0.0.1:8081:80 --mount $mountSpec e1-1-
 
 아래 순서대로 실행하고, 삭제 전후 두 `cat` 명령의 출력이 같은지 비교합니다.
 
+![볼륨 생성과 컨테이너 연결 및 삭제 전 메모 저장을 확인한 사용자 화면](docs/evidence/43-user-volume-before.png)
+
+**저장 결과.** 볼륨을 생성·연결하고 메모를 저장한 뒤, `cat`에서 `E1-1-volume-proof`가 출력됐습니다. [명령과 실제 출력](docs/evidence/43-user-volume.md)
+
 이름 있는 볼륨을 만듭니다.
 
 ```powershell
@@ -541,15 +545,15 @@ docker run -d --name e1-1-volume-before -v e1-1-replay-data:/data ubuntu:24.04 s
 docker exec e1-1-volume-before sh -c 'echo E1-1-volume-proof > /data/memo.txt'
 ```
 
-![볼륨 생성과 컨테이너 연결 및 삭제 전 메모 저장을 확인한 사용자 화면](docs/evidence/43-user-volume-before.png)
-
-**저장 결과.** 캡처에는 볼륨 생성·연결·메모 저장과 아래 `cat` 명령의 조회 결과가 담겨 있습니다. `E1-1-volume-proof`가 출력됐습니다. [명령과 실제 출력](docs/evidence/43-user-volume.md)
-
 삭제 전 메모를 읽습니다.
 
 ```powershell
 docker exec e1-1-volume-before cat /data/memo.txt
 ```
+
+![기존 컨테이너 삭제 후 볼륨 유지와 새 컨테이너의 동일 메모 출력을 확인한 사용자 화면](docs/evidence/43-user-volume-after.png)
+
+**삭제·재연결 결과.** 기존 컨테이너를 삭제한 뒤에도 볼륨이 목록에 남았고, 새 컨테이너에서는 메모를 다시 쓰지 않고도 같은 내용을 읽었습니다. [사용자가 제공한 볼륨 명령과 실제 출력](docs/evidence/43-user-volume.md)
 
 첫 컨테이너를 멈춥니다.
 
@@ -580,10 +584,6 @@ docker run -d --name e1-1-volume-after -v e1-1-replay-data:/data ubuntu:24.04 sl
 ```powershell
 docker exec e1-1-volume-after cat /data/memo.txt
 ```
-
-![기존 컨테이너 삭제 후 볼륨 유지와 새 컨테이너의 동일 메모 출력을 확인한 사용자 화면](docs/evidence/43-user-volume-after.png)
-
-**삭제 후 결과.** 기존 컨테이너를 삭제한 뒤에도 볼륨이 목록에 남았고, 새 컨테이너에서는 메모를 다시 쓰지 않고도 같은 내용을 읽었습니다. [사용자가 제공한 볼륨 명령과 실제 출력](docs/evidence/43-user-volume.md)
 
 | 확인 시점 | 실제 메모 출력 |
 |---|---|
