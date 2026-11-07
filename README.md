@@ -294,9 +294,9 @@ exit
 
 ### hello-world 실행 확인
 
-![사용자가 실행한 hello-world 인사말과 정상 종료 및 이미지 목록 조회 결과](docs/evidence/50-user-hello-combined.png)
+![docker run과 ps 및 image ls의 입력 명령과 실제 결과를 함께 보여주는 사용자 캡처](docs/evidence/51-user-hello-commands-results.png)
 
-실제 캡처 두 장을 이어 붙였습니다. `Hello from Docker!`와 `Exited (0)`으로 실행·정상 종료를, `hello-world:latest` 목록으로 PC에 이미지가 있음을 확인했습니다.
+각 입력 명령과 결과가 함께 보이도록 실제 캡처 두 장에서 긴 안내문을 제외하고 이어 붙였습니다. `Hello from Docker!`와 `Exited (0)`으로 실행·정상 종료를, `hello-world:latest` 목록으로 PC에 이미지가 있음을 확인했습니다.
 
 [위 캡처의 명령과 실제 출력](docs/evidence/50-user-hello.md)
 
