@@ -363,12 +363,13 @@ docker info
 
 ![사용자가 입력한 Docker 빌드 명령과 FINISHED 결과](docs/evidence/31-user-build-finished.png)
 
-**위 캡처의 실제 출력 발췌.** 빌드가 끝나 `FINISHED`가 표시됐습니다.
+**캡처의 실행 명령.** 빌드 결과에서 `FINISHED`를 확인했습니다. [실제 명령과 출력](docs/evidence/31-user-build.md)
 
-```text
-PS> docker build -t e1-1-web:build-check .
-[+] Building 12.4s (9/9) FINISHED
+```powershell
+docker build -t e1-1-web:build-check .
 ```
+
+`-t`는 이미지 이름·태그를 지정하고, 마지막 `.`은 현재 폴더를 빌드 재료로 사용한다는 뜻입니다.
 
 **생성된 이미지 확인.** 목록에 `e1-1-web:build-check`가 표시됐습니다.
 
