@@ -22,7 +22,7 @@
 
 웹 콘텐츠는 `app/`, 실행 설정은 저장소 루트, 검증 기록은 `docs/evidence/`에 두었습니다. HTML을 수정할 위치와 서버 실행 설정, 확인 결과를 구분해 찾기 위한 구성입니다.
 
-Docker 명령은 Docker Desktop을 실행한 뒤 PowerShell에서 입력합니다. 파일과 권한 명령은 Ubuntu 컨테이너의 Bash에서 실행합니다. 아래 명령은 한 줄씩 복사해 실행할 수 있습니다. PowerShell과 Ubuntu Bash 표시를 구분해서 사용합니다. 명령 실행 결과는 캡처와 원본 로그에서 확인합니다.
+Docker Desktop을 켠 뒤 Docker·Git 명령은 PowerShell에서, 4절의 파일·권한 명령은 Ubuntu 컨테이너의 Bash에서 실행합니다. 명령은 한 줄씩 복사하고, 실행 결과는 각 항목의 캡처와 원본 로그에서 확인합니다.
 
 ## 3. 수행 체크리스트
 
@@ -37,7 +37,7 @@ Docker 명령은 Docker Desktop을 실행한 뒤 PowerShell에서 입력합니�
 - [x] VS Code GitHub 로그인 · [계정 메뉴 캡처](docs/evidence/14-vscode-github.png)
 - [x] VS Code에서 과제 저장소 연결 확인 · [소스 제어와 GitHub 화면](#8-git-설정과-github-연동)
 
-이미지로 확인한 핵심 결과를 본문에도 텍스트로 발췌했습니다. 반복 목록·긴 ID·진행률은 줄였으며, 아래 링크에서 명령과 전체 기록을 확인할 수 있습니다.
+이미지의 핵심 결과는 본문에도 텍스트로 발췌했으며, 전체 명령·출력은 아래 증거 링크에서 확인할 수 있습니다.
 
 | 검증 항목 | 확인한 실제 결과 | 텍스트 증거 |
 |---|---|---|
@@ -48,7 +48,7 @@ Docker 명령은 Docker Desktop을 실행한 뒤 PowerShell에서 입력합니�
 
 ## 4. 터미널과 권한 실습
 
-Ubuntu 컨테이너에서 작업 폴더와 메모를 만들었습니다. 원본을 남겨 둔 채 복사본만 옮기고 삭제하기 위해 `cp`로 복사하고, `mv`로 위치와 이름을 바꾼 뒤 `rm`으로 지웠습니다. 기존 `e1-1-ubuntu`가 실행 중이면 PowerShell에서 `docker exec -it e1-1-ubuntu bash`로 들어갑니다. 새 환경에서는 `docker run --rm -it ubuntu:24.04 bash`로 시작할 수 있습니다.
+Windows에서 Linux 명령과 `chmod` 권한을 실습하기 위해 Ubuntu 컨테이너를 실행했습니다. 이 컨테이너는 파일·권한 연습에 사용했고, 웹 서버는 6절의 별도 NGINX 컨테이너에서 실행했습니다. 원본을 남겨 두기 위해 `cp`로 복사한 뒤, 복사본만 `mv`로 옮기고 `rm`으로 지웠습니다.
 
 ### 작업 위치와 파일 목록
 
@@ -69,11 +69,18 @@ $ cat memo.txt
 E1-1 terminal practice
 ```
 
-처음 실행하는 경우 PowerShell에서 Ubuntu 컨테이너와 Bash를 시작합니다. 아래 명령과 기존 컨테이너 진입 명령 중 현재 상태에 맞는 하나를 사용합니다.
+처음 실행한다면 아래 명령으로 Ubuntu 컨테이너와 Bash를 시작합니다. 이미 실행 중인 컨테이너가 있다면 다음 `exec` 명령을 사용합니다.
 
 ```powershell
 docker run --rm -it ubuntu:24.04 bash
 ```
+
+**`-it`를 사용한 이유.** 컨테이너 안의 Bash에 직접 명령을 입력하며 실습하기 위해 `-i`와 `-t`를 함께 사용했습니다.
+
+| 옵션 | 의미 |
+|---|---|
+| `-i` | 표준 입력을 열어 두어 키보드 입력을 전달할 수 있게 함 |
+| `-t` | 셸을 대화형으로 사용할 터미널 환경을 제공함 |
 
 기존 `e1-1-ubuntu` 컨테이너가 실행 중이라면 대신 아래 명령으로 추가 Bash를 엽니다.
 
@@ -293,7 +300,7 @@ exit
 
 [hello-world 실행 원본 로그](docs/evidence/05-hello-world.md)
 
-PowerShell에서 테스트 컨테이너를 실행합니다. 같은 이름의 종료된 컨테이너가 남아 있다면 삭제하거나 다른 이름으로 실행합니다.
+테스트 컨테이너를 실행합니다. 같은 이름의 종료된 컨테이너가 남아 있다면 삭제하거나 다른 이름으로 실행합니다.
 
 ```powershell
 docker run --name e1-1-hello hello-world
@@ -318,7 +325,7 @@ docker image ls hello-world
 
 Docker Desktop을 시작한 뒤 버전과 엔진 응답을 확인했습니다. `ServerVersion=29.9.2 OSType=linux`가 나와 엔진 연결 성공을 확인했습니다.
 
-PowerShell에서 Docker 명령 도구의 버전을 확인합니다.
+Docker 명령 도구의 버전을 확인합니다.
 
 ```powershell
 docker --version
@@ -337,7 +344,7 @@ docker info --format 'ServerVersion={{.ServerVersion}} OSType={{.OSType}}'
 
 ## 6. 커스텀 웹 서버 이미지와 포트 매핑
 
-**이미지 빌드 결과.** 사용자가 빌드 확인용 태그 `build-check`로 실행한 캡처입니다. 중간 다운로드·해시 출력은 생략하고, 같은 원본에서 두 구간을 잘랐습니다.
+**이미지 빌드 결과.** 사용자가 `build-check` 태그로 빌드한 화면에서 명령과 성공 결과를 잘랐습니다.
 
 ![사용자가 입력한 Docker 빌드 명령과 FINISHED 결과](docs/evidence/31-user-build-finished.png)
 
@@ -358,11 +365,11 @@ IMAGE                  ID             DISK USAGE   CONTENT SIZE
 e1-1-web:build-check    8dafd1b2588d   92.8MB       26.1MB
 ```
 
-다운로드·해시를 포함한 기록은 [전체 캡처](docs/evidence/31-user-build-full.png)에 보관했습니다. 별도 사용자 빌드의 단계별 텍스트 기록도 [실제 빌드 로그](docs/evidence/11-user-bind.md#11-b-사용자-직접-이미지-빌드)와 [전체 출력](docs/evidence/user-student-build.log)에서 확인할 수 있습니다. 이 별도 기록은 당시 태그인 `codyssey-workstation:student-1`을 사용합니다.
+다운로드·해시를 포함한 기록은 [전체 캡처](docs/evidence/31-user-build-full.png)에 보관했습니다. 별도로 수행한 `codyssey-workstation:student-1` 빌드는 [실제 빌드 로그](docs/evidence/11-user-bind.md#11-b-사용자-직접-이미지-빌드)와 [전체 출력](docs/evidence/user-student-build.log)에서 확인할 수 있습니다.
 
 NGINX로 제 HTML을 제공하기 위해 [Dockerfile](Dockerfile)에 베이스 이미지 `nginx:stable-alpine`을 지정했습니다. `COPY`로 HTML과 서버 설정을 이미지에 넣고, `LABEL`로 이미지 용도를 기록했습니다. `EXPOSE 80`은 컨테이너가 사용할 포트를 표시하고, 실제 수신 포트는 [nginx.conf](nginx.conf)의 `listen 80`에서 정합니다. `HEALTHCHECK`는 컨테이너 내부에서 `/healthz`에 요청을 보내 NGINX 응답을 점검합니다.
 
-**NGINX는 언제 설치했나요?** `nginx:stable-alpine`은 NGINX가 이미 설치된 공식 이미지입니다. `FROM`으로 이 이미지를 기반으로 삼았기 때문에 별도의 NGINX 설치 명령이 필요하지 않았습니다. 여기에 우리 HTML과 설정을 복사해 커스텀 이미지를 만들었습니다. 컨테이너 실행 시 사용할 NGINX 시작 명령도 기반 이미지에서 이어받습니다.
+**NGINX는 언제 설치했나요?** `FROM nginx:stable-alpine`로 NGINX가 이미 설치된 공식 이미지를 사용해 별도 설치가 필요하지 않았습니다. 이 이미지에 HTML·설정을 추가했으며, NGINX 시작 명령도 기반 이미지에서 이어받습니다.
 
 흐름은 **Dockerfile과 HTML → `docker build`로 이미지 생성 → `docker run`으로 그 이미지에서 컨테이너 생성·실행**입니다. HTML을 수정하는 것만으로 기존 이미지가 바뀌지는 않습니다.
 
@@ -386,7 +393,7 @@ NGINX와 HTML을 담은 이미지를 만듭니다.
 docker build -t e1-1-web:v1 .
 ```
 
-이미지에서 웹 서버를 실행하고 PC의 8080을 컨테이너의 80에 연결합니다. NGINX는 컨테이너 안의 80번에서 요청을 기다리므로, PC의 브라우저가 접근할 입구를 `-p`로 연결합니다. `127.0.0.1`로 지정해 이 PC에서 접속하도록 했습니다.
+이미지에서 웹 서버를 실행하고 PC의 8080을 컨테이너의 80에 연결합니다. `127.0.0.1`로 지정해 이 PC에서 접속하도록 했습니다.
 
 ```powershell
 docker run -d --name e1-1-web -p 127.0.0.1:8080:80 e1-1-web:v1
@@ -398,7 +405,7 @@ PC에서 웹 서버 응답을 확인합니다.
 curl.exe -i http://127.0.0.1:8080/healthz
 ```
 
-**접속 결과 · PC 8080 → 컨테이너 80.** `docker build`로 만든 이미지에서 컨테이너를 실행했고, PC에서 보낸 상태 확인 요청에 NGINX가 정상 응답했습니다. 사용자 제공 출력에서 HTTP 200과 `ok`를 확인했습니다. 브라우저에서 `http://localhost:8080/`을 열어 웹페이지도 확인했습니다. 7절의 수정 전 캡처에서 주소창과 페이지를 함께 확인할 수 있습니다.
+**접속 결과 · PC 8080 → 컨테이너 80.** 사용자 실행 결과에서 HTTP `200 OK`와 `ok`를 확인했습니다. 브라우저에서도 `http://localhost:8080/`에 웹페이지가 표시됐으며, 주소창과 화면은 7절의 수정 전 캡처에서 확인할 수 있습니다.
 
 **사용자가 제공한 실제 응답 발췌.** 2026-11-04 실습에서 받은 헤더 중 상태·서버·본문만 남겼습니다.
 
@@ -410,7 +417,7 @@ Server: nginx/1.30.6
 ok
 ```
 
-**포트 매핑이 필요한 이유.** 이번처럼 기본 브리지 네트워크로 실행한 컨테이너는 각각 별도의 **네트워크 네임스페이스**를 사용합니다. 이는 네트워크 인터페이스·IP 주소·포트 공간을 분리하는 Linux 기능입니다. 따라서 PC의 8080번과 컨테이너의 80번은 서로 다른 공간의 포트입니다. `-p 127.0.0.1:8080:80`은 PC의 8080번으로 들어온 요청을 컨테이너의 80번으로 전달하도록 설정하는 포트 포워딩입니다. 같은 이유로 7절의 두 NGINX는 각 컨테이너 안에서 모두 80번을 사용하고, PC에서는 8080·8081로 구분해 접속할 수 있습니다.
+**포트 매핑이 필요한 이유.** 이번 실습의 컨테이너는 PC와 분리된 네트워크 공간(네트워크 네임스페이스)에서 실행되므로, PC에서 접속할 포트를 연결해야 합니다. `-p 127.0.0.1:8080:80`은 PC의 8080번으로 들어온 요청을 컨테이너 안의 NGINX 80번으로 전달합니다(포트 포워딩). 7절에서는 두 컨테이너가 각각 내부 80번을 사용하고, PC에서는 8080·8081로 구분해 접속합니다.
 
 `v1`은 이미지에 붙인 태그입니다. 브라우저의 페이지 버전은 HTML 안의 문구로 결정됩니다. `8080`이 이미 사용 중이면 실행 명령과 접속 주소에 같은 빈 포트를 지정합니다.
 
@@ -418,7 +425,7 @@ ok
 
 ![사용자가 실행한 웹 서버 시작, 이미지 목록, 상태, 요청 로그와 자원 조회 결과](docs/evidence/32-user-web-operations.png)
 
-위 캡처에서 `e1-1-web`은 `e1-1-web:v1` 이미지로 실행 중이며, `healthy` 상태와 `8080 → 80` 연결을 확인했습니다. 목록의 `build-check`는 별도로 빌드한 이미지 태그입니다. 로그의 `Wget` 요청은 자동 상태 점검이며, `/healthz` 응답은 세 줄 모두 `200`이었습니다. 조회 당시 CPU는 `0.00%`, 메모리는 `11.33 MiB`였습니다.
+`e1-1-web`은 `e1-1-web:v1` 이미지로 실행돼 `healthy`와 `8080 → 80` 연결이 표시됐으며, `build-check`는 별도 빌드 태그입니다. 자동 상태 점검(`Wget`)의 `/healthz` 응답은 세 번 모두 `200`이었고, 조회 당시 CPU는 `0.00%`, 메모리는 `11.33 MiB`였습니다.
 
 아래 명령은 이 절에서 `e1-1-web`을 만든 뒤 PowerShell에서 실행합니다. 서버의 실행 상태와 정상 응답, 자원 사용량을 확인하기 위해 조회했습니다. [캡처의 명령과 실제 출력](docs/evidence/32-user-web-operations.md)
 
@@ -564,7 +571,7 @@ docker exec e1-1-volume-after cat /data/memo.txt
 
 ## 8. Git 설정과 GitHub 연동
 
-HTML 수정 이력을 남기고 공유하기 위해 Git으로 커밋한 뒤 GitHub에 푸시했습니다. 저장소 루트에서 작성자 설정과 기본 브랜치를 확인하고, 현재 브랜치는 별도 명령으로 조회했습니다. Git은 PC에서 변경 이력을 기록하고, GitHub는 푸시한 이력을 원격에서 공유합니다. 작성자 설정, 브랜치와 푸시 결과는 [사용자 원본 로그](docs/evidence/14-user-git.md)에 있습니다.
+PC에서 변경 이력을 관리하는 Git으로 HTML 수정을 커밋하고, 원격 공유 플랫폼인 GitHub에 푸시했습니다. 작성자 설정·기본 브랜치·현재 브랜치와 푸시 결과는 [사용자 원본 로그](docs/evidence/14-user-git.md)에서 확인할 수 있습니다.
 
 ![사용자가 촬영한 커밋과 GitHub 원격 주소 확인 화면](docs/evidence/17-cmd-git.png)
 
@@ -574,11 +581,11 @@ HTML 수정 이력을 남기고 공유하기 위해 Git으로 커밋한 뒤 GitH
 
 ![VS Code에서 확인한 GitHub 로그인](docs/evidence/14-vscode-github.png)
 
-**VS Code의 과제 저장소 연결을 확인했습니다.** 저장소 폴더를 열었을 때 소스 제어에 `main` 브랜치와 실제 커밋 이력이 표시됐습니다. README 안의 과제 저장소 주소와 창 제목을 함께 확인할 수 있습니다.
+**VS Code 저장소 연결.** 과제 폴더를 열었을 때 소스 제어에 `main` 브랜치와 커밋 이력이 표시됐으며, README의 저장소 주소와 창 제목도 함께 확인했습니다.
 
 ![VS Code 소스 제어의 main 브랜치와 과제 커밋 이력](docs/evidence/25-vscode-source-control.png)
 
-GitHub Pull Requests 뷰에서도 현재 브랜치의 목록이 열렸습니다. 화면의 “이 범주의 끌어오기 요청 0개”는 해당 범주에 Pull Request가 없다는 뜻입니다. 원격 주소는 위의 사용자 CMD 캡처에서 확인할 수 있습니다.
+GitHub Pull Requests 뷰에서 현재 브랜치의 목록을 확인했으며, “이 범주의 끌어오기 요청 0개”는 해당 범주에 요청이 없다는 뜻입니다. 원격 주소는 위의 사용자 CMD 캡처에서 확인할 수 있습니다.
 
 ![과제 폴더에서 열린 VS Code GitHub Pull Requests 뷰](docs/evidence/25-vscode-github-repository.png)
 
@@ -645,9 +652,9 @@ git push
 
 ![사용자가 촬영한 Compose 상태 확인과 종료 결과](docs/evidence/17-cmd-compose.png)
 
-**Compose는 Docker의 빌드·실행 설정을 파일로 저장하고 적용하는 도구입니다.** 앞에서는 이미지 빌드와 컨테이너 실행 명령에 옵션을 직접 적었습니다. 이번에는 같은 서버를 반복해서 띄우고 다른 사람에게 실행 설정을 공유하기 위해, 빌드 위치와 포트 연결을 `compose.yaml`에 적었습니다.
+**Compose는 빌드·실행 설정을 파일로 저장하고 적용하는 도구입니다.** 같은 서버를 반복 실행하고 설정을 공유하기 위해, 명령에 직접 입력했던 빌드 위치와 포트 연결을 `compose.yaml`에 적었습니다.
 
-**Dockerfile과 Compose 파일을 함께 사용합니다.** 두 파일은 같은 저장소 폴더에 있습니다.
+**같은 저장소 폴더의 Dockerfile과 Compose 파일을 함께 사용합니다.**
 
 | 파일 | 이 실습에서 정한 내용 |
 |---|---|
@@ -670,7 +677,7 @@ HEALTHCHECK --interval=10s --timeout=3s --start-period=5s --retries=3 \
     CMD wget -q -O /dev/null http://127.0.0.1/healthz || exit 1
 ```
 
-`FROM`은 NGINX가 설치된 기반 이미지를 선택하고, 두 `COPY`는 서버 설정과 웹페이지를 추가합니다. `HEALTHCHECK`는 NGINX가 응답하는지 점검합니다. `EXPOSE 80`만으로 PC의 포트가 연결되지는 않으므로 아래 Compose 파일에 포트 연결도 적었습니다.
+`FROM`은 NGINX 기반 이미지를 선택하고, 두 `COPY`는 서버 설정과 HTML을 추가합니다. `HEALTHCHECK`는 응답을 점검하며, PC의 포트 연결은 아래 Compose 파일에서 설정합니다.
 
 **② [compose.yaml](compose.yaml) — 그 이미지로 웹 서버 하나를 실행할 설정을 정합니다.**
 
@@ -688,7 +695,7 @@ services:
 | `build: .` | Compose 파일이 있는 폴더를 빌드 대상으로 삼고, 그 안의 Dockerfile 사용 |
 | `127.0.0.1:8083:80` | 내 PC의 8083번을 컨테이너의 80번에 연결 |
 
-**③ 아래 `up -d --build --wait` 명령으로 두 파일의 설정을 적용합니다.** Compose가 `build: .`을 읽어 Dockerfile로 이미지를 빌드하고, 그 이미지로 `web` 컨테이너를 생성·실행하며 PC의 8083번을 연결합니다. `--wait`는 상태 점검을 통과할 때까지 기다립니다. 파일을 작성하기만 하면 서버가 켜지는 것은 아니므로 실행 명령도 필요합니다.
+**③ 아래 `up -d --build --wait` 명령으로 실행합니다.** Compose는 `build: .`에 지정된 폴더의 Dockerfile로 이미지를 빌드한 뒤, `web` 컨테이너를 생성·실행하고 PC의 8083번을 연결하며 상태 점검을 통과할 때까지 기다립니다.
 
 **사용자가 직접 실행해 확인한 결과입니다.**
 
@@ -700,9 +707,7 @@ services:
 
 [사용자가 제공한 Compose 명령과 출력](docs/evidence/26-user-compose.md)
 
-Docker Desktop을 켠 상태에서 저장소 루트의 PowerShell로 아래 명령을 실행합니다.
-
-저장소 루트의 PowerShell에서 설정 파일을 읽어 빌드하고 실행합니다.
+Docker Desktop을 켠 뒤 저장소 루트의 PowerShell에서 빌드·실행합니다.
 
 ```powershell
 docker compose -p e1-1-replay up -d --build --wait
@@ -722,4 +727,4 @@ docker compose -p e1-1-replay down
 
 이 캡처는 사용자가 CMD에서 기존 PowerShell 로그를 열어 본 화면입니다. 상태 확인 요청의 200 응답과 컨테이너 제거 결과를 확인할 수 있습니다.
 
-**실행 → 접속 → 정리**를 확인했습니다. `up`으로 설정을 적용하니 상태 점검을 통과했고, PC의 `8083`에서 정상 응답을 받았습니다. `down` 후에는 Compose가 만든 컨테이너와 네트워크가 제거됐습니다. [사용자 실행 로그](docs/evidence/26-user-compose.md)
+**실행 → 접속 → 정리**를 확인했습니다. `up` 후 상태 점검을 통과하고 `8083`에서 정상 응답을 받았으며, `down` 후 컨테이너와 네트워크가 제거됐습니다. [사용자 실행 로그](docs/evidence/26-user-compose.md)
