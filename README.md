@@ -406,7 +406,7 @@ git clone https://github.com/gyungmini306-blip/codyssey-E1-1-dev-workstation.git
 cd e1-1
 ```
 
-NGINX와 HTML을 담은 이미지를 만듭니다.
+NGINX와 HTML을 담은 이미지를 만듭니다. [(실행결과)](docs/evidence/38-user-v1-build.md)
 
 ```powershell
 docker build -t e1-1-web:v1 .
