@@ -381,13 +381,16 @@ docker image ls e1-1-web:build-check
 
 캡처에서 이미지 ID `8dafd1b2588d`, 디스크 사용량 `92.8MB`, 콘텐츠 크기 `26.1MB`를 확인했습니다. [실제 명령과 출력](docs/evidence/31-user-build.md)
 
-다운로드·해시를 포함한 기록은 [전체 캡처](docs/evidence/31-user-build-full.png)에 보관했습니다. 별도로 수행한 `codyssey-workstation:student-1` 빌드는 [실제 빌드 로그](docs/evidence/11-user-bind.md#11-b-사용자-직접-이미지-빌드)와 [전체 출력](docs/evidence/user-student-build.log)에서 확인할 수 있습니다.
+**이미지 구성.** [Dockerfile](Dockerfile)의 `FROM nginx:stable-alpine`로 NGINX가 이미 설치된 이미지를 사용했습니다. 여기에 우리 HTML과 서버 설정을 추가했습니다.
 
-NGINX로 제 HTML을 제공하기 위해 [Dockerfile](Dockerfile)에 베이스 이미지 `nginx:stable-alpine`을 지정했습니다. `COPY`로 HTML과 서버 설정을 이미지에 넣고, `LABEL`로 이미지 용도를 기록했습니다. `EXPOSE 80`은 컨테이너가 사용할 포트를 표시하고, 실제 수신 포트는 [nginx.conf](nginx.conf)의 `listen 80`에서 정합니다. `HEALTHCHECK`는 컨테이너 내부에서 `/healthz`에 요청을 보내 NGINX 응답을 점검합니다.
+| 설정 | 작성한 이유 |
+|---|---|
+| `COPY` | HTML과 NGINX 설정을 이미지에 추가 |
+| `LABEL` | 이미지 용도 기록 |
+| `EXPOSE 80` | 사용 포트 표시 — 실제 수신 포트는 [nginx.conf](nginx.conf)의 `listen 80`에서 설정 |
+| `HEALTHCHECK` | `/healthz` 응답으로 서버 상태 점검 |
 
-**NGINX는 언제 설치했나요?** `FROM nginx:stable-alpine`로 NGINX가 이미 설치된 공식 이미지를 사용해 별도 설치가 필요하지 않았습니다. 이 이미지에 HTML·설정을 추가했으며, NGINX 시작 명령도 기반 이미지에서 이어받습니다.
-
-흐름은 **Dockerfile과 HTML → `docker build`로 이미지 생성 → `docker run`으로 그 이미지에서 컨테이너 생성·실행**입니다. HTML을 수정하는 것만으로 기존 이미지가 바뀌지는 않습니다.
+**Dockerfile과 HTML → `docker build` → 이미지 → `docker run` → 컨테이너 실행** 순서입니다.
 
 Docker Desktop을 켜고 PowerShell에서 저장소를 내려받습니다. 이미 내려받았다면 기존 저장소 폴더로 이동한 뒤 빌드부터 실행합니다.
 
