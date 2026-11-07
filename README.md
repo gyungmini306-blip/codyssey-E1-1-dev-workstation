@@ -346,7 +346,16 @@ docker info
 
 **이유:** `exec`로 연 추가 Bash만 종료됐고, 컨테이너를 유지하는 원래 Bash는 계속 실행 중이기 때문입니다. [위 캡처의 명령과 실제 출력](docs/evidence/36-user-exec.md)
 
-주 Bash를 종료하면 컨테이너도 종료되고, 종료하지 않고 연결만 분리하면 계속 실행됩니다. 이 비교의 기존 실습 결과는 [사용자가 실행한 exec·attach 명령과 상태 출력](docs/evidence/13-user-operations.md)에 있습니다.
+![attach로 원래 Bash에 연결해 exit한 뒤 e1-1-shell-guide가 Exited 상태인 사용자 화면](docs/evidence/37-user-attach-exited.png)
+
+이번에는 `docker attach`로 원래 Bash에 연결한 뒤 `exit`했습니다. 같은 컨테이너가 `Exited (0)`으로 바뀌어, 주 Bash를 종료하면 컨테이너도 정상 종료됨을 확인했습니다. [위 캡처의 명령과 실제 출력](docs/evidence/37-user-attach.md)
+
+| 연결 방식 | `exit`로 종료한 대상 | 실제 컨테이너 상태 |
+|---|---|---|
+| `exec` | 추가로 연 Bash | `Up` — 계속 실행 |
+| `attach` | 원래 주 프로세스인 Bash | `Exited (0)` — 정상 종료 |
+
+이 비교는 주 프로세스가 Bash인 위 Ubuntu 컨테이너의 결과입니다. 종료하지 않고 연결만 분리한 사례는 [기존 exec·attach 명령과 상태 출력](docs/evidence/13-user-operations.md)에서 확인할 수 있습니다.
 
 ## 6. 커스텀 웹 서버 이미지와 포트 매핑
 
