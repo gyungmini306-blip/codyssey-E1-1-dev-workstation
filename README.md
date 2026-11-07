@@ -375,11 +375,11 @@ docker build -t e1-1-web:build-check .
 
 ![빌드한 이미지의 이름과 ID가 표시된 사용자 조회 결과](docs/evidence/31-user-built-image.png)
 
-```text
-PS> docker image ls e1-1-web:build-check
-IMAGE                  ID             DISK USAGE   CONTENT SIZE
-e1-1-web:build-check    8dafd1b2588d   92.8MB       26.1MB
+```powershell
+docker image ls e1-1-web:build-check
 ```
+
+캡처에서 이미지 ID `8dafd1b2588d`, 디스크 사용량 `92.8MB`, 콘텐츠 크기 `26.1MB`를 확인했습니다. [실제 명령과 출력](docs/evidence/31-user-build.md)
 
 다운로드·해시를 포함한 기록은 [전체 캡처](docs/evidence/31-user-build-full.png)에 보관했습니다. 별도로 수행한 `codyssey-workstation:student-1` 빌드는 [실제 빌드 로그](docs/evidence/11-user-bind.md#11-b-사용자-직접-이미지-빌드)와 [전체 출력](docs/evidence/user-student-build.log)에서 확인할 수 있습니다.
 
