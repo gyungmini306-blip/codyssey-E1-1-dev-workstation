@@ -2,7 +2,7 @@
 
 사용자가 PowerShell에서 README의 세 명령을 실행해 제공한 실제 캡처입니다. 현재 위치는 `C:\Users\gyung\e1-1`이며, 연결한 폴더는 그 안의 `app`입니다.
 
-![호스트 app 폴더 연결 설정과 바인드 컨테이너 생성 결과](42-user-bind-mount.png)
+![호스트 app 폴더 연결 설정과 바인드 컨테이너 생성 결과](images/07-04-user-bind-mount.png)
 
 ## 실제 명령과 출력
 

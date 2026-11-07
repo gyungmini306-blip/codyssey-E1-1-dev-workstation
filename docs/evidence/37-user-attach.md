@@ -2,7 +2,7 @@
 
 사용자가 PowerShell에서 실행해 제공한 캡처의 명령·출력을 옮겼습니다. 프롬프트의 개인 경로와 다른 컨테이너 목록 행은 생략했습니다.
 
-![주 Bash 종료 후 Exited (0)인 e1-1-shell-guide](37-user-attach-exited.png)
+![주 Bash 종료 후 Exited (0)인 e1-1-shell-guide](images/05-04-user-attach-exited.png)
 
 ```text
 PS> docker attach e1-1-shell-guide

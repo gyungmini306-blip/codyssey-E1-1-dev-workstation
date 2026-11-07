@@ -2,7 +2,7 @@
 
 사용자가 과제 폴더의 PowerShell에서 `git push`를 실행하고 직접 촬영한 화면입니다.
 
-<img src="47-user-git-push.png" alt="git push 실행 명령과 GitHub main 브랜치 갱신 결과" width="650">
+<img src="images/08-06-user-git-push.png" alt="git push 실행 명령과 GitHub main 브랜치 갱신 결과" width="650">
 
 ```text
 PS C:\Users\gyung\e1-1> git push

@@ -2,7 +2,7 @@
 
 사용자가 직접 촬영한 브라우저 화면입니다.
 
-<img src="49-user-compose-browser.png" alt="localhost:8083 주소창과 Hello Compose 웹페이지" width="800">
+<img src="images/10-02-user-compose-browser.png" alt="localhost:8083 주소창과 Hello Compose 웹페이지" width="800">
 
 ## 캡처에서 확인한 결과
 

@@ -2,7 +2,7 @@
 
 사용자가 PowerShell에서 실행하고 직접 촬영한 화면의 명령과 실제 출력입니다.
 
-<img src="46-user-git-add-commit.png" alt="HTML 선택과 커밋 성공 및 최근 커밋 조회" width="650">
+<img src="images/08-05-user-git-add-commit.png" alt="HTML 선택과 커밋 성공 및 최근 커밋 조회" width="650">
 
 ```text
 PS C:\Users\gyung\e1-1> git add app/index.html

@@ -18,6 +18,7 @@
 | [app/index.html](app/index.html) | 웹 서버가 제공하는 정적 HTML |
 | [Dockerfile](Dockerfile) · [nginx.conf](nginx.conf) | 이미지 구성과 NGINX 수신 포트·응답 설정 |
 | [docs/evidence/](docs/evidence/) | 실습 로그와 캡처. 각 항목에서 해당 기록을 연결합니다. |
+| [docs/evidence/images/](docs/evidence/images/) | 이미지 파일. `07-01`은 7절 첫 번째, `ref`는 증거 문서의 참고·원본 이미지입니다. [위치 목록](docs/evidence/images/index.md) |
 | [compose.yaml](compose.yaml) | 보너스 과제의 단일 웹 서비스 설정 |
 
 웹 콘텐츠는 `app/`, 실행 설정은 저장소 루트, 검증 기록은 `docs/evidence/`에 두었습니다. HTML을 수정할 위치와 서버 실행 설정, 확인 결과를 구분해 찾기 위한 구성입니다.
@@ -34,7 +35,7 @@ Docker Desktop을 켠 뒤 Docker·Git 명령은 PowerShell에서, 4절의 파일
 - [x] 포트 매핑 접속 · [명령과 HTTP 응답](#6-커스텀-웹-서버-이미지와-포트-매핑)
 - [x] 바인드 마운트와 볼륨 영속성 · [수정·삭제 전후 비교](#7-바인드-마운트와-볼륨-영속성)
 - [x] Git 설정과 GitHub 푸시 · [마스킹한 설정과 푸시 결과](#8-git-설정과-github-연동)
-- [x] VS Code GitHub 로그인 · [계정 메뉴 캡처](docs/evidence/14-vscode-github.png)
+- [x] VS Code GitHub 로그인 · [계정 메뉴 캡처](docs/evidence/images/08-02-vscode-github.png)
 - [x] VS Code에서 과제 저장소 연결 확인 · [소스 제어와 GitHub 화면](#8-git-설정과-github-연동)
 
 이미지의 핵심 결과는 본문에도 텍스트로 발췌했으며, 전체 명령·출력은 아래 증거 링크에서 확인할 수 있습니다.
@@ -52,7 +53,7 @@ Windows에서 Linux 명령과 `chmod` 권한을 실습하기 위해 Ubuntu 컨�
 
 ### 작업 위치와 파일 목록
 
-![작업 위치, 숨김 파일 목록, 메모 내용 확인](docs/evidence/23-terminal-location-list.png)
+![작업 위치, 숨김 파일 목록, 메모 내용 확인](docs/evidence/images/04-01-terminal-location-list.png)
 
 `pwd`에 작업 경로가 표시되고, `ls -la`에는 숨김 파일인 `.hidden-note`와 빈 파일인 `empty.txt`가 보입니다. `cat memo.txt`로 저장한 문구를 확인했습니다.
 
@@ -134,7 +135,7 @@ cat memo.txt
 
 ### 복사본 이동과 삭제
 
-![메모 복사본을 옮기고 지운 뒤 원본이 남은 화면](docs/evidence/21-terminal-copy-move-delete.png)
+![메모 복사본을 옮기고 지운 뒤 원본이 남은 화면](docs/evidence/images/04-02-terminal-copy-move-delete.png)
 
 `mv` 뒤에는 `archive` 안에 `memo-renamed.txt`가 보입니다. 복사본과 빈 폴더를 지운 뒤 마지막 목록에서 원본 `memo.txt`가 남은 것을 확인했습니다.
 
@@ -210,7 +211,7 @@ ls -la
 
 ### 파일과 디렉터리 권한 변경 전후
 
-![chmod 전후의 파일과 폴더 권한을 확인한 실제 화면](docs/evidence/23-terminal-permissions.png)
+![chmod 전후의 파일과 폴더 권한을 확인한 실제 화면](docs/evidence/images/04-03-terminal-permissions.png)
 
 `chmod` 실행 뒤, 파일은 `644 → 600`, 폴더는 `755 → 700`이 되어 그룹과 기타 사용자의 권한이 사라졌습니다.
 
@@ -294,7 +295,7 @@ exit
 
 ### hello-world 실행 확인
 
-![docker run과 ps 및 image ls의 입력 명령과 실제 결과를 함께 보여주는 사용자 캡처](docs/evidence/51-user-hello-commands-results.png)
+![docker run과 ps 및 image ls의 입력 명령과 실제 결과를 함께 보여주는 사용자 캡처](docs/evidence/images/05-01-user-hello-commands-results.png)
 
 각 입력 명령과 결과가 함께 보이도록 실제 캡처 두 장에서 긴 안내문을 제외하고 이어 붙였습니다. `Hello from Docker!`와 `Exited (0)`으로 실행·정상 종료를, `hello-world:latest` 목록으로 PC에 이미지가 있음을 확인했습니다.
 
@@ -321,7 +322,7 @@ docker image ls hello-world
 
 ### Docker 버전과 엔진 연결 확인
 
-![docker --version 명령과 Docker CLI 버전 출력](docs/evidence/35-docker-cli-version.png)
+![docker --version 명령과 Docker CLI 버전 출력](docs/evidence/images/05-02-docker-cli-version.png)
 
 캡처에서 Docker CLI 버전 `29.9.2`를 확인했습니다.
 
@@ -340,13 +341,13 @@ docker info
 
 ### Ubuntu의 셸과 컨테이너 수명
 
-![exec로 연 Bash에서 exit한 뒤에도 e1-1-shell-guide가 Up 상태인 사용자 화면](docs/evidence/36-user-exec-running.png)
+![exec로 연 Bash에서 exit한 뒤에도 e1-1-shell-guide가 Up 상태인 사용자 화면](docs/evidence/images/05-03-user-exec-running.png)
 
 과제에서 요구한 셸 종료와 컨테이너 유지의 차이를 확인했습니다. `docker exec`로 추가 Bash를 열었다가 `exit`로 나왔지만, `docker ps -a`에서 `e1-1-shell-guide`가 `Up`으로 표시돼 컨테이너는 계속 실행 중임을 확인했습니다.
 
 **이유:** `exec`로 연 추가 Bash만 종료됐고, 컨테이너를 유지하는 원래 Bash는 계속 실행 중이기 때문입니다. [위 캡처의 명령과 실제 출력](docs/evidence/36-user-exec.md)
 
-![attach로 원래 Bash에 연결해 exit한 뒤 e1-1-shell-guide가 Exited 상태인 사용자 화면](docs/evidence/37-user-attach-exited.png)
+![attach로 원래 Bash에 연결해 exit한 뒤 e1-1-shell-guide가 Exited 상태인 사용자 화면](docs/evidence/images/05-04-user-attach-exited.png)
 
 이번에는 `docker attach`로 원래 Bash에 연결한 뒤 `exit`했습니다. 같은 컨테이너가 `Exited (0)`으로 바뀌어, 주 Bash를 종료하면 컨테이너도 정상 종료됨을 확인했습니다. [위 캡처의 명령과 실제 출력](docs/evidence/37-user-attach.md)
 
@@ -361,7 +362,7 @@ docker info
 
 **이미지 빌드 결과.** 사용자가 `build-check` 태그로 빌드한 화면에서 명령과 성공 결과를 잘랐습니다.
 
-![사용자가 입력한 Docker 빌드 명령과 FINISHED 결과](docs/evidence/31-user-build-finished.png)
+![사용자가 입력한 Docker 빌드 명령과 FINISHED 결과](docs/evidence/images/06-01-user-build-finished.png)
 
 **캡처의 실행 명령.** 빌드 결과에서 `FINISHED`를 확인했습니다. [실제 명령과 출력](docs/evidence/31-user-build.md)
 
@@ -373,7 +374,7 @@ docker build -t e1-1-web:build-check .
 
 **생성된 이미지 확인.** 목록에 `e1-1-web:build-check`가 표시됐습니다.
 
-![빌드한 이미지의 이름과 ID가 표시된 사용자 조회 결과](docs/evidence/31-user-built-image.png)
+![빌드한 이미지의 이름과 ID가 표시된 사용자 조회 결과](docs/evidence/images/06-02-user-built-image.png)
 
 ```powershell
 docker image ls e1-1-web:build-check
@@ -412,7 +413,7 @@ NGINX와 HTML을 담은 이미지를 만듭니다. [(실행결과)](docs/evidenc
 docker build -t e1-1-web:v1 .
 ```
 
-![웹 서버 컨테이너 생성과 PC 8080 포트의 HTTP 200 응답을 확인한 사용자 화면](docs/evidence/40-user-web-run-http.png)
+![웹 서버 컨테이너 생성과 PC 8080 포트의 HTTP 200 응답을 확인한 사용자 화면](docs/evidence/images/06-03-user-web-run-http.png)
 
 이미지에서 웹 서버를 실행하고 PC의 8080을 컨테이너의 80에 연결합니다. `127.0.0.1`로 지정해 이 PC에서 접속하도록 했습니다.
 
@@ -434,7 +435,7 @@ curl.exe -i http://127.0.0.1:8080/healthz
 
 ### 실행한 웹 서버의 이미지·로그·자원 확인
 
-![사용자가 실행한 웹 서버 시작, 이미지 목록, 상태, 요청 로그와 자원 조회 결과](docs/evidence/32-user-web-operations.png)
+![사용자가 실행한 웹 서버 시작, 이미지 목록, 상태, 요청 로그와 자원 조회 결과](docs/evidence/images/06-04-user-web-operations.png)
 
 `e1-1-web`은 `e1-1-web:v1` 이미지로 실행돼 `healthy`와 `8080 → 80` 연결이 표시됐으며, `build-check`는 별도 빌드 태그입니다. 자동 상태 점검(`Wget`)의 `/healthz` 응답은 세 번 모두 `200`이었고, 조회 당시 CPU는 `0.00%`, 메모리는 `11.33 MiB`였습니다.
 
@@ -476,19 +477,19 @@ docker stats --no-stream e1-1-web
 
 **수정 전.** 왼쪽 `8080`과 오른쪽 `8081` 모두 페이지 버전 2를 반환했습니다.
 
-![수정 전 왼쪽 8080과 오른쪽 8081 모두 페이지 버전 2](docs/evidence/24-replay-bind-before-cropped.png)
+![수정 전 왼쪽 8080과 오른쪽 8081 모두 페이지 버전 2](docs/evidence/images/07-01-replay-bind-before-cropped.png)
 
 **수정 후.** 같은 순서로, 왼쪽 `8080`은 버전 2를 유지했고 오른쪽 `8081`에만 버전 3이 표시됐습니다.
 
-![수정 후 왼쪽은 버전 2를 유지하고 오른쪽은 버전 3으로 변경](docs/evidence/24-replay-bind-after.png)
+![수정 후 왼쪽은 버전 2를 유지하고 오른쪽은 버전 3으로 변경](docs/evidence/images/07-02-replay-bind-after.png)
 
 **포트 연결 확인.** 원본 목록에서 두 웹 서버의 `8080 → 80`, `8081 → 80` 행만 잘라 이어 붙였습니다. [명령과 출력](docs/evidence/41-user-web-ports.md)
 
-![docker ps -a 결과에서 두 웹 서버의 포트 연결 행만 발췌](docs/evidence/41-user-web-ports.png)
+![docker ps -a 결과에서 두 웹 서버의 포트 연결 행만 발췌](docs/evidence/images/07-03-user-web-ports.png)
 
 PC에서 수정한 파일이 어느 서버에 반영되는지 비교했습니다. `8080` 서버를 그대로 둔 상태에서, 저장소 루트의 PowerShell로 **같은 이미지**를 쓰는 두 번째 서버를 실행했습니다. `8081`에만 PC의 `app/` 폴더를 NGINX의 웹 폴더에 읽기 전용으로 연결했습니다.
 
-![PC app 폴더의 바인드 마운트 설정과 8081 웹 서버 생성 명령을 실행한 사용자 화면](docs/evidence/42-user-bind-mount.png)
+![PC app 폴더의 바인드 마운트 설정과 8081 웹 서버 생성 명령을 실행한 사용자 화면](docs/evidence/images/07-04-user-bind-mount.png)
 
 위 캡처에서 PC 폴더 경로와 연결 설정을 지정한 뒤 컨테이너 생성 ID가 출력됐습니다. [명령과 실제 출력](docs/evidence/42-user-bind-mount.md)
 
@@ -523,7 +524,7 @@ docker run -d --name e1-1-web-bind -p 127.0.0.1:8081:80 --mount $mountSpec e1-1-
 
 아래 순서대로 실행하고, 삭제 전후 두 `cat` 명령의 출력이 같은지 비교합니다.
 
-![볼륨 생성과 컨테이너 연결 및 삭제 전 메모 저장을 확인한 사용자 화면](docs/evidence/43-user-volume-before.png)
+![볼륨 생성과 컨테이너 연결 및 삭제 전 메모 저장을 확인한 사용자 화면](docs/evidence/images/07-05-user-volume-before.png)
 
 **저장 결과.** 볼륨을 생성·연결하고 메모를 저장한 뒤, `cat`에서 `E1-1-volume-proof`가 출력됐습니다. [명령과 실제 출력](docs/evidence/43-user-volume.md)
 
@@ -551,7 +552,7 @@ docker exec e1-1-volume-before sh -c 'echo E1-1-volume-proof > /data/memo.txt'
 docker exec e1-1-volume-before cat /data/memo.txt
 ```
 
-![기존 컨테이너 삭제 후 볼륨 유지와 새 컨테이너의 동일 메모 출력을 확인한 사용자 화면](docs/evidence/43-user-volume-after.png)
+![기존 컨테이너 삭제 후 볼륨 유지와 새 컨테이너의 동일 메모 출력을 확인한 사용자 화면](docs/evidence/images/07-06-user-volume-after.png)
 
 **삭제·재연결 결과.** 기존 컨테이너를 삭제한 뒤에도 볼륨이 목록에 남았고, 새 컨테이너에서는 메모를 다시 쓰지 않고도 같은 내용을 읽었습니다. [사용자가 제공한 볼륨 명령과 실제 출력](docs/evidence/43-user-volume.md)
 
@@ -594,21 +595,21 @@ docker exec e1-1-volume-after cat /data/memo.txt
 
 PC에서 변경 이력을 관리하는 Git으로 HTML 수정을 커밋하고, 원격 공유 플랫폼인 GitHub에 푸시했습니다. 작성자 설정·기본 브랜치·현재 브랜치와 푸시 결과는 [사용자 원본 로그](docs/evidence/14-user-git.md)에서 확인할 수 있습니다.
 
-![main 브랜치와 GitHub 원격 저장소 주소를 확인한 사용자 화면](docs/evidence/44-user-git-connection.png)
+![main 브랜치와 GitHub 원격 저장소 주소를 확인한 사용자 화면](docs/evidence/images/08-01-user-git-connection.png)
 
 화면에서 현재 브랜치 `main`과 과제 저장소의 fetch·push 주소를 확인할 수 있습니다. 명령과 해당 출력만 보이도록 원본 캡처를 잘랐습니다.
 
 푸시 출력에서 HTML 수정 커밋이 원격 `main`에 올라간 것을 확인했습니다. VS Code 계정 메뉴에서는 GitHub 로그인 상태를 확인했습니다.
 
-![VS Code에서 확인한 GitHub 로그인](docs/evidence/14-vscode-github.png)
+![VS Code에서 확인한 GitHub 로그인](docs/evidence/images/08-02-vscode-github.png)
 
 **VS Code 저장소 연결.** 과제 폴더를 열었을 때 소스 제어에 `main` 브랜치와 커밋 이력이 표시됐으며, README의 저장소 주소와 창 제목도 함께 확인했습니다.
 
-![VS Code 소스 제어의 main 브랜치와 과제 커밋 이력](docs/evidence/25-vscode-source-control.png)
+![VS Code 소스 제어의 main 브랜치와 과제 커밋 이력](docs/evidence/images/08-03-vscode-source-control.png)
 
 GitHub Pull Requests 뷰에서 현재 브랜치의 목록을 확인했으며, “이 범주의 끌어오기 요청 0개”는 해당 범주에 요청이 없다는 뜻입니다. 원격 주소는 위의 사용자 CMD 캡처에서 확인할 수 있습니다.
 
-![과제 폴더에서 열린 VS Code GitHub Pull Requests 뷰](docs/evidence/25-vscode-github-repository.png)
+![과제 폴더에서 열린 VS Code GitHub Pull Requests 뷰](docs/evidence/images/08-04-vscode-github-repository.png)
 
 과제 폴더의 PowerShell에서 Git 설정을 확인합니다. 공개할 출력에서는 개인 이메일을 가립니다.
 
@@ -616,7 +617,7 @@ GitHub Pull Requests 뷰에서 현재 브랜치의 목록을 확인했으며, �
 git config --local --list
 ```
 
-<img src="docs/evidence/46-user-git-add-commit.png" alt="사용자가 HTML을 선택하고 커밋한 뒤 결과를 확인한 화면" width="650">
+<img src="docs/evidence/images/08-05-user-git-add-commit.png" alt="사용자가 HTML을 선택하고 커밋한 뒤 결과를 확인한 화면" width="650">
 
 **커밋 결과.** HTML 수정 내용을 선택해 `3e9c201` 커밋으로 기록했습니다. `1 file changed, 1 insertion(+), 1 deletion(-)`으로 파일 한 개의 한 줄 변경을 확인했습니다. 이 화면은 로컬 기록이며, GitHub 업로드 성공은 푸시 결과로 따로 확인합니다. [캡처의 명령과 출력](docs/evidence/46-user-git-add-commit.md)
 
@@ -640,7 +641,7 @@ git commit -m "Update bind mount practice text"
 git log -1 --oneline
 ```
 
-<img src="docs/evidence/47-user-git-push.png" alt="사용자가 git push로 GitHub main 브랜치 업로드에 성공한 화면" width="650">
+<img src="docs/evidence/images/08-06-user-git-push.png" alt="사용자가 git push로 GitHub main 브랜치 업로드에 성공한 화면" width="650">
 
 **업로드 결과.** `ddab736..757b35a main -> main`으로 GitHub의 `main`이 갱신됐습니다. 실습 커밋과 최신 문서 이력을 합친 뒤 업로드했습니다. [캡처의 명령과 실제 출력](docs/evidence/47-user-git-push.md)
 
@@ -684,13 +685,13 @@ docker compose -p e1-1-replay up -d --build --wait
 
 **② PC의 8083으로 서버 응답을 확인합니다.**
 
-![사용자가 Compose 컨테이너의 healthy 상태와 8083 접속의 HTTP 200 및 ok를 확인한 화면](docs/evidence/48-user-compose-response.png)
+![사용자가 Compose 컨테이너의 healthy 상태와 8083 접속의 HTTP 200 및 ok를 확인한 화면](docs/evidence/images/10-01-user-compose-response.png)
 
 ```powershell
 curl.exe -i http://127.0.0.1:8083/healthz
 ```
 
-<img src="docs/evidence/49-user-compose-browser.png" alt="주소창 localhost:8083과 Hello Compose 첫 화면이 함께 보이는 사용자 캡처" width="800">
+<img src="docs/evidence/images/10-02-user-compose-browser.png" alt="주소창 localhost:8083과 Hello Compose 첫 화면이 함께 보이는 사용자 캡처" width="800">
 
 **웹 접속 결과.** 주소창의 `localhost:8083`과 [확인용 HTML](app/compose.html)의 `Hello Compose!` 화면을 확인했습니다. [캡처 설명](docs/evidence/49-user-compose-browser.md)
 

@@ -139,4 +139,4 @@ Extension 'github.vscode-pull-request-github' v0.174.0 was successfully installe
 
 로그인 후 VS Code 계정 메뉴에 `gyungmini306-blip (GitHub)`과 로그아웃 항목이 표시됐다. 계정 이름은 과제 저장소 소유자와 일치한다.
 
-![VS Code 계정 메뉴에 표시된 gyungmini306-blip GitHub 계정](14-vscode-github.png)
+![VS Code 계정 메뉴에 표시된 gyungmini306-blip GitHub 계정](images/08-02-vscode-github.png)

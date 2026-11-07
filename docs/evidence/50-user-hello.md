@@ -2,11 +2,11 @@
 
 사용자가 직접 제공한 두 캡처의 명령과 출력입니다. README에서는 각 입력 명령과 해당 결과를 남기고, hello-world의 긴 안내문과 이미지 조회 캡처 오른쪽 안내 영역을 잘라 같은 폭으로 이어 붙였습니다. 남긴 명령과 출력 내용은 변경하지 않았습니다. 서로 다른 캡처를 연결한 이미지입니다.
 
-![각 입력 명령과 hello-world 실행·종료 및 이미지 조회 결과](51-user-hello-commands-results.png)
+![각 입력 명령과 hello-world 실행·종료 및 이미지 조회 결과](images/05-01-user-hello-commands-results.png)
 
 ## 실행과 정상 종료
 
-아래는 [기존 실행·종료 캡처](29-user-hello-world.png)의 발췌입니다. 인사말 이후의 안내문은 생략했습니다.
+아래는 [기존 실행·종료 캡처](images/05-ref-01-user-hello-world.png)의 발췌입니다. 인사말 이후의 안내문은 생략했습니다.
 
 ```text
 PS C:\Users\gyung\e1-1> docker run --name e1-1-hello hello-world
@@ -22,7 +22,7 @@ CONTAINER ID   IMAGE         COMMAND    CREATED         STATUS                  
 
 ## PC에 이미지가 있는지 확인
 
-[사용자가 제공한 이미지 조회 원본](50-user-hello-image-list.png)입니다. 오른쪽의 안내 표시를 제외한 표를 발췌했습니다.
+[사용자가 제공한 이미지 조회 원본](images/05-ref-06-user-hello-image-list.png)입니다. 오른쪽의 안내 표시를 제외한 표를 발췌했습니다.
 
 ```text
 PS C:\Users\gyung\e1-1> docker image ls hello-world

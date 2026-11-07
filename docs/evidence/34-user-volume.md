@@ -2,7 +2,7 @@
 
 사용자가 README와 같은 볼륨·컨테이너 이름으로 실습해 제공한 실제 캡처입니다.
 
-![e1-1-replay-data 생성과 메모 저장·읽기](34-user-volume-before.png)
+![e1-1-replay-data 생성과 메모 저장·읽기](images/07-ref-02-user-volume-before.png)
 
 ## 명령과 실제 출력
 
