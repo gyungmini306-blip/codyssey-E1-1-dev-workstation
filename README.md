@@ -275,6 +275,14 @@ docker info --format 'ServerVersion={{.ServerVersion}} OSType={{.OSType}}'
 
 ## 6. 커스텀 웹 서버 이미지와 포트 매핑
 
+**이미지 빌드 결과.** 사용자가 빌드 확인용 태그 `build-check`로 실행한 캡처입니다. 중간 다운로드·해시 출력은 생략하고, 같은 원본에서 두 구간을 잘랐습니다.
+
+![사용자가 입력한 Docker 빌드 명령과 FINISHED 결과](docs/evidence/31-user-build-finished.png)
+
+**생성된 이미지 확인.** 목록에 `e1-1-web:build-check`가 표시됐습니다.
+
+![빌드한 이미지의 이름과 ID가 표시된 사용자 조회 결과](docs/evidence/31-user-built-image.png)
+
 NGINX로 제 HTML을 제공하기 위해 [Dockerfile](Dockerfile)에 베이스 이미지 `nginx:stable-alpine`을 지정했습니다. `COPY`로 HTML과 서버 설정을 이미지에 넣고, `LABEL`로 이미지 용도를 기록했습니다. `EXPOSE 80`은 컨테이너가 사용할 포트를 표시하고, 실제 수신 포트는 [nginx.conf](nginx.conf)의 `listen 80`에서 정합니다. `HEALTHCHECK`는 컨테이너 내부에서 `/healthz`에 요청을 보내 NGINX 응답을 점검합니다.
 
 Docker Desktop을 켜고 PowerShell에서 저장소를 내려받습니다. 이미 내려받았다면 기존 저장소 폴더로 이동한 뒤 빌드부터 실행합니다.
