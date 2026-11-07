@@ -665,34 +665,7 @@ git push
 
 ![사용자가 촬영한 Compose 상태 확인과 종료 결과](docs/evidence/17-cmd-compose.png)
 
-**Compose는 빌드·실행 설정을 파일로 저장하고 적용하는 도구입니다.** 같은 서버를 반복 실행하고 설정을 공유하기 위해, 명령에 직접 입력했던 빌드 위치와 포트 연결을 `compose.yaml`에 적었습니다.
-
-**같은 저장소 폴더의 Dockerfile과 Compose 파일을 함께 사용합니다.**
-
-| 파일 | 이 실습에서 정한 내용 |
-|---|---|
-| `Dockerfile` | 이미지에 넣을 NGINX·HTML·서버 설정·상태 점검 |
-| `compose.yaml` | 빌드할 폴더, 실행할 서비스, PC와 컨테이너의 포트 연결 |
-
-**① [Dockerfile](Dockerfile) — 이미지를 어떻게 만들지 정합니다.** 아래는 저장소의 실제 파일 내용입니다.
-
-```dockerfile
-FROM nginx:stable-alpine
-
-LABEL org.opencontainers.image.title="Codyssey E1-1 Workstation Lab"
-LABEL org.opencontainers.image.description="A personal development workstation practice server"
-
-COPY nginx.conf /etc/nginx/conf.d/default.conf
-COPY app/ /usr/share/nginx/html/
-
-EXPOSE 80
-HEALTHCHECK --interval=10s --timeout=3s --start-period=5s --retries=3 \
-    CMD wget -q -O /dev/null http://127.0.0.1/healthz || exit 1
-```
-
-`FROM`은 NGINX 기반 이미지를 선택하고, 두 `COPY`는 서버 설정과 HTML을 추가합니다. `HEALTHCHECK`는 응답을 점검하며, PC의 포트 연결은 아래 Compose 파일에서 설정합니다.
-
-**② [compose.yaml](compose.yaml) — 그 이미지로 웹 서버 하나를 실행할 설정을 정합니다.**
+**같은 웹 서버를 같은 설정으로 다시 실행하기 위해 Compose를 사용했습니다.** [Dockerfile](Dockerfile)은 NGINX·HTML을 담을 이미지를 정하고, 아래 [compose.yaml](compose.yaml)은 빌드 위치와 실행할 포트를 정합니다. 두 파일을 함께 사용합니다.
 
 ```yaml
 services:
@@ -702,42 +675,28 @@ services:
       - "127.0.0.1:8083:80"
 ```
 
-| 설정 | 의미 |
-|---|---|
-| `services.web` | web이라는 웹 서버 서비스 한 개 |
-| `build: .` | Compose 파일이 있는 폴더를 빌드 대상으로 삼고, 그 안의 Dockerfile 사용 |
-| `127.0.0.1:8083:80` | 내 PC의 8083번을 컨테이너의 80번에 연결 |
+`web`은 서비스 이름, `build: .`은 같은 폴더의 Dockerfile로 이미지 빌드, `ports`는 **PC 8083 → 컨테이너 80** 연결입니다. 명령에 입력하던 설정을 파일에 남겨 재사용할 수 있습니다.
 
-**③ 아래 `up -d --build --wait` 명령으로 실행합니다.** Compose는 `build: .`에 지정된 폴더의 Dockerfile로 이미지를 빌드한 뒤, `web` 컨테이너를 생성·실행하고 PC의 8083번을 연결하며 상태 점검을 통과할 때까지 기다립니다.
+Docker Desktop을 켜고 과제 폴더의 PowerShell에서 실행합니다.
 
-**사용자가 직접 실행해 확인한 결과입니다.**
-
-| 수행한 일 | 실제 확인 결과 |
-|---|---|
-| Compose 설정으로 빌드·실행 | 이미지 Built, 컨테이너 Healthy |
-| PC의 8083으로 상태 확인 요청 | HTTP 200 OK와 ok |
-| Compose 프로젝트 종료 | 컨테이너와 네트워크 Removed |
-
-[사용자가 제공한 Compose 명령과 출력](docs/evidence/26-user-compose.md)
-
-Docker Desktop을 켠 뒤 저장소 루트의 PowerShell에서 빌드·실행합니다.
+**① 이미지 빌드와 컨테이너 실행.** 상태 점검을 통과할 때까지 기다립니다.
 
 ```powershell
 docker compose -p e1-1-replay up -d --build --wait
 ```
 
-PC의 8083으로 상태 확인 요청을 보냅니다.
+**② PC의 8083으로 서버 응답을 확인합니다.**
 
 ```powershell
 curl.exe -i http://127.0.0.1:8083/healthz
 ```
 
-같은 프로젝트의 컨테이너와 네트워크를 정리합니다.
+**③ 해당 프로젝트의 컨테이너와 네트워크를 정리합니다.**
 
 ```powershell
 docker compose -p e1-1-replay down
 ```
 
-이 캡처는 사용자가 CMD에서 기존 PowerShell 로그를 열어 본 화면입니다. 상태 확인 요청의 200 응답과 컨테이너 제거 결과를 확인할 수 있습니다.
+**실제 결과:** 빌드·실행은 `Built`·`Healthy`, 접속은 HTTP `200 OK`와 `ok`, 정리는 `Removed`로 확인했습니다. [명령과 실제 출력](docs/evidence/26-user-compose.md)
 
-**실행 → 접속 → 정리**를 확인했습니다. `up` 후 상태 점검을 통과하고 `8083`에서 정상 응답을 받았으며, `down` 후 컨테이너와 네트워크가 제거됐습니다. [사용자 실행 로그](docs/evidence/26-user-compose.md)
+위 이미지는 기존 PowerShell 로그를 CMD에서 열어 촬영한 화면입니다.
