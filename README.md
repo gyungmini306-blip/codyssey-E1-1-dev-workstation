@@ -488,6 +488,10 @@ docker stats --no-stream e1-1-web
 
 PC에서 수정한 파일이 어느 서버에 반영되는지 비교했습니다. `8080` 서버를 그대로 둔 상태에서, 저장소 루트의 PowerShell로 **같은 이미지**를 쓰는 두 번째 서버를 실행했습니다. `8081`에만 PC의 `app/` 폴더를 NGINX의 웹 폴더에 읽기 전용으로 연결했습니다.
 
+![PC app 폴더의 바인드 마운트 설정과 8081 웹 서버 생성 명령을 실행한 사용자 화면](docs/evidence/42-user-bind-mount.png)
+
+위 캡처에서 PC 폴더 경로와 연결 설정을 지정한 뒤 컨테이너 생성 ID가 출력됐습니다. [명령과 실제 출력](docs/evidence/42-user-bind-mount.md)
+
 연결할 PC 폴더의 전체 경로를 구합니다.
 
 ```powershell
