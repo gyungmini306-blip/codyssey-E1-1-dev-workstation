@@ -594,9 +594,9 @@ docker exec e1-1-volume-after cat /data/memo.txt
 
 PC에서 변경 이력을 관리하는 Git으로 HTML 수정을 커밋하고, 원격 공유 플랫폼인 GitHub에 푸시했습니다. 작성자 설정·기본 브랜치·현재 브랜치와 푸시 결과는 [사용자 원본 로그](docs/evidence/14-user-git.md)에서 확인할 수 있습니다.
 
-![사용자가 촬영한 커밋과 GitHub 원격 주소 확인 화면](docs/evidence/17-cmd-git.png)
+![main 브랜치와 GitHub 원격 저장소 주소를 확인한 사용자 화면](docs/evidence/44-user-git-connection.png)
 
-화면에서 HTML 수정 커밋 `d580e49`, 현재 브랜치 `main`과 과제 저장소의 원격 주소를 확인할 수 있습니다.
+화면에서 현재 브랜치 `main`과 과제 저장소의 fetch·push 주소를 확인할 수 있습니다. 명령과 해당 출력만 보이도록 원본 캡처를 잘랐습니다.
 
 푸시 출력에서 HTML 수정 커밋이 원격 `main`에 올라간 것을 확인했습니다. VS Code 계정 메뉴에서는 GitHub 로그인 상태를 확인했습니다.
 
