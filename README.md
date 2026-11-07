@@ -690,17 +690,11 @@ docker compose -p e1-1-replay up -d --build --wait
 
 ![사용자가 Compose 컨테이너의 healthy 상태와 8083 접속의 HTTP 200 및 ok를 확인한 화면](docs/evidence/48-user-compose-response.png)
 
-실행 목록에서 `healthy`와 `8083->80`을 확인합니다.
-
-```powershell
-docker compose -p e1-1-replay ps
-```
-
 ```powershell
 curl.exe -i http://127.0.0.1:8083/healthz
 ```
 
-웹 화면은 브라우저에서 `http://localhost:8083/`을 열어 `Hello Compose!`를 확인합니다. [확인용 HTML](app/compose.html)을 Compose 이미지의 첫 화면으로 지정했습니다. 일반 빌드는 Dockerfile의 기본값 `INDEX_PAGE=index.html`을 사용합니다.
+브라우저에서 `http://localhost:8083/`을 열면 [확인용 HTML](app/compose.html)의 `Hello Compose!` 화면을 볼 수 있습니다.
 
 **③ 해당 프로젝트의 컨테이너와 네트워크를 정리합니다.**
 
@@ -708,12 +702,6 @@ curl.exe -i http://127.0.0.1:8083/healthz
 
 ```powershell
 docker compose -p e1-1-replay down
-```
-
-정리 후 목록에 컨테이너가 없는지 확인합니다.
-
-```powershell
-docker compose -p e1-1-replay ps -a
 ```
 
 **실제 결과:** 실행 상태는 `healthy`, 접속은 HTTP `200 OK`와 `ok`, 정리는 `Removed`와 빈 목록으로 확인했습니다. [이번 캡처의 명령과 출력](docs/evidence/48-user-compose.md) · [이미지 빌드·실행 기록](docs/evidence/26-user-compose.md)
