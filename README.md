@@ -28,7 +28,7 @@ Docker 명령은 Docker Desktop을 실행한 뒤 PowerShell에서 입력합니�
 - [x] 파일·디렉터리 권한 변경 · [권한 전후 비교](#4-터미널과-권한-실습)
 - [x] Docker 엔진 점검과 운영 · [목록·로그·리소스 기록](docs/evidence/13-user-operations.md)
 - [x] hello-world와 Ubuntu 실습 · [실행과 셸 종료 결과](#5-docker-점검과-운영)
-- [x] 커스텀 이미지 빌드·실행 · [실제 빌드 및 실행 기록](docs/evidence/07-web-server.md)
+- [x] 커스텀 이미지 빌드·실행 · [빌드·실행 명령과 사용자 캡처](#6-커스텀-웹-서버-이미지와-포트-매핑)
 - [x] 포트 매핑 접속 · [명령과 HTTP 응답](#6-커스텀-웹-서버-이미지와-포트-매핑)
 - [x] 바인드 마운트와 볼륨 영속성 · [수정·삭제 전후 비교](#7-바인드-마운트와-볼륨-영속성)
 - [x] Git 설정과 GitHub 푸시 · [마스킹한 설정과 푸시 결과](#8-git-설정과-github-연동)
@@ -305,7 +305,7 @@ NGINX와 HTML을 담은 이미지를 만듭니다.
 docker build -t e1-1-web:v1 .
 ```
 
-이미지에서 웹 서버를 실행하고 PC의 8080을 컨테이너의 80에 연결합니다.
+이미지에서 웹 서버를 실행하고 PC의 8080을 컨테이너의 80에 연결합니다. NGINX는 컨테이너 안의 80번에서 요청을 기다리므로, PC의 브라우저가 접근할 입구를 `-p`로 연결합니다. `127.0.0.1`로 지정해 이 PC에서 접속하도록 했습니다.
 
 ```powershell
 docker run -d --name e1-1-web -p 127.0.0.1:8080:80 e1-1-web:v1
@@ -544,7 +544,7 @@ git push
 | Docker 명령은 실행됐지만 엔진에 연결할 수 없음 | Docker Desktop 엔진이 시작되지 않았을 수 있음 | 사용자 화면에서 `docker --version`은 출력됐지만 `docker info`와 `docker ps`는 `dockerDesktopLinuxEngine` 파이프에 연결하지 못했습니다. | Docker Desktop을 시작한 뒤 사용자가 같은 명령을 다시 실행하자 서버 버전과 컨테이너 목록이 출력됐습니다. [사용자 전후 캡처와 출력](docs/evidence/27-docker-engine.md) |
 | 새 컨테이너가 호스트 포트 8083을 사용하지 못함 | 기존 서비스가 같은 포트를 점유했을 수 있음 | `docker ps`와 `netstat -ano`에서 점유를 확인했고, 같은 포트에 실행하자 `port is already allocated` 출력 | 빈 포트 18085로 실행해 HTTP 200과 `ok`를 확인함. [기록](docs/evidence/18-port-conflict.md) |
 
-**엔진 연결 실패 화면.** Docker 버전은 조회됐지만 엔진을 사용하는 두 명령은 실패했습니다. 해결 후 화면은 5절 첫 캡처에서 확인할 수 있습니다.
+**엔진 연결 실패 화면.** Docker 버전은 조회됐지만 엔진을 사용하는 두 명령은 실패했습니다. 해결 후 화면은 5절의 ‘Docker 버전과 엔진 연결 확인’ 캡처에서 확인할 수 있습니다.
 
 ![Docker Desktop 시작 전 엔진 연결에 실패한 사용자 화면](docs/evidence/27-docker-engine-before.png)
 
