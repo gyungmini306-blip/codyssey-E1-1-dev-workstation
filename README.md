@@ -323,17 +323,11 @@ curl.exe -i http://127.0.0.1:8080/healthz
 
 ### 실행한 웹 서버의 이미지·로그·자원 확인
 
-![사용자가 조회한 e1-1-web의 CPU와 메모리 사용량](docs/evidence/30-web-resource.png)
+![사용자가 실행한 웹 서버 시작, 이미지 목록, 상태, 요청 로그와 자원 조회 결과](docs/evidence/32-user-web-operations.png)
 
-위 캡처는 `e1-1-web` 하나의 자원 조회 결과입니다. 조회 당시 CPU는 `0.00%`, 메모리는 `11.78 MiB`였습니다.
+위 캡처에서 `e1-1-web`은 `e1-1-web:v1` 이미지로 실행 중이며, `healthy` 상태와 `8080 → 80` 연결을 확인했습니다. 목록의 `build-check`는 별도로 빌드한 이미지 태그입니다. 로그의 `Wget` 요청은 자동 상태 점검이며, `/healthz` 응답은 세 줄 모두 `200`이었습니다. 조회 당시 CPU는 `0.00%`, 메모리는 `11.33 MiB`였습니다.
 
-아래 명령은 이 절에서 `e1-1-web`을 만든 뒤 실행합니다. 요청 로그에서 응답 상태를 확인하고, 자원 조회로 실행 중인 서버의 CPU와 메모리 사용량을 확인합니다. [사용자가 제공한 운영 출력](docs/evidence/13-user-operations.md)
-
-웹 서버 이미지를 조회합니다.
-
-```powershell
-docker image ls e1-1-web
-```
+아래 명령은 이 절에서 `e1-1-web`을 만든 뒤 PowerShell에서 실행합니다. 서버의 실행 상태와 정상 응답, 자원 사용량을 확인하기 위해 조회했습니다. [캡처의 명령과 실제 출력](docs/evidence/32-user-web-operations.md)
 
 종료된 웹 서버 컨테이너를 다시 시작할 때 사용합니다.
 
@@ -341,16 +335,22 @@ docker image ls e1-1-web
 docker start e1-1-web
 ```
 
+웹 서버 이미지를 조회합니다.
+
+```powershell
+docker image ls e1-1-web
+```
+
 웹 서버 하나의 실행 상태와 포트 연결을 조회합니다.
 
 ```powershell
-docker ps --filter "name=^/e1-1-web$" --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
+docker ps --filter "name=^/e1-1-web$"
 ```
 
 서버가 받은 최근 요청을 조회합니다.
 
 ```powershell
-docker logs --tail 15 e1-1-web
+docker logs --tail 3 e1-1-web
 ```
 
 웹 서버의 자원 사용량을 한 번 조회합니다.
