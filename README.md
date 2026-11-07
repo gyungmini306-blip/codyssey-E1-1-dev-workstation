@@ -523,9 +523,11 @@ docker run -d --name e1-1-web-bind -p 127.0.0.1:8081:80 --mount $mountSpec e1-1-
 
 **삭제 전.** 볼륨을 생성·연결한 뒤 메모를 저장했고, `cat`에서 `E1-1-volume-proof`가 출력됐습니다. [명령과 실제 출력](docs/evidence/34-user-volume.md)
 
+아래의 `-v 볼륨:/data`는 캡처의 `--mount`와 같은 연결을 짧게 적은 표기입니다.
+
 컨테이너를 삭제한 뒤에도 메모가 남는지 확인했습니다. PowerShell에서 볼륨을 생성하고 첫 컨테이너에 연결해 메모를 저장했습니다. 그 컨테이너를 삭제한 뒤 새 컨테이너에 같은 볼륨을 연결했습니다.
 
-아래는 같은 결과를 확인하는 실행 순서입니다. 처음 컨테이너의 `cat`과 새 컨테이너의 `cat` 출력을 비교합니다. 이름이 이미 사용 중이면 새 실습용 이름으로 바꿉니다.
+아래 순서대로 실행하고, 삭제 전후 두 `cat` 명령의 출력이 같은지 비교합니다.
 
 이름 있는 볼륨을 만듭니다.
 
@@ -536,7 +538,7 @@ docker volume create e1-1-replay-data
 첫 컨테이너에 볼륨을 연결합니다.
 
 ```powershell
-docker run -d --name e1-1-volume-before --mount "type=volume,source=e1-1-replay-data,target=/data" ubuntu:24.04 sleep infinity
+docker run -d --name e1-1-volume-before -v e1-1-replay-data:/data ubuntu:24.04 sleep infinity
 ```
 
 볼륨에 메모를 저장합니다.
@@ -572,7 +574,7 @@ docker volume ls
 새 컨테이너에 같은 볼륨을 연결합니다.
 
 ```powershell
-docker run -d --name e1-1-volume-after --mount "type=volume,source=e1-1-replay-data,target=/data" ubuntu:24.04 sleep infinity
+docker run -d --name e1-1-volume-after -v e1-1-replay-data:/data ubuntu:24.04 sleep infinity
 ```
 
 새 컨테이너에서 같은 메모를 읽습니다.
