@@ -628,10 +628,20 @@ git --no-pager branch --show-current
 git --no-pager remote -v
 ```
 
-7절에서 수정한 HTML의 변경 내용을 확인합니다.
+![사용자가 최근 커밋 번호와 바인드 마운트 실습 메시지를 조회한 화면](docs/evidence/45-user-git-commit.png)
+
+**커밋 확인 결과.** `main`의 최근 커밋은 `457f88c`이며 메시지는 `Record bind mount practice`입니다. 이 화면은 로컬 커밋을 확인한 결과이고, GitHub 푸시 성공은 앞서 연결한 원본 로그로 구분합니다. [캡처의 명령과 출력](docs/evidence/45-user-git-commit.md)
+
+가장 최근 커밋을 한 줄로 확인합니다.
 
 ```powershell
-git --no-pager diff -- app/index.html
+git log -1 --oneline
+```
+
+7절에서 수정한 HTML의 변경 줄 수를 요약해서 확인합니다.
+
+```powershell
+git diff --stat -- app/index.html
 ```
 
 확인한 HTML 변경을 커밋 대상으로 고릅니다.
