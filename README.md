@@ -340,7 +340,13 @@ docker info
 
 ### Ubuntu의 셸과 컨테이너 수명
 
-추가 Bash를 종료한 뒤에는 컨테이너가 계속 실행됐고, 주 Bash를 종료하자 컨테이너도 종료됐습니다. 연결만 분리했을 때는 주 Bash가 계속 실행됐습니다. [사용자가 실행한 exec·attach 명령과 상태 출력](docs/evidence/13-user-operations.md)
+![exec로 연 Bash에서 exit한 뒤에도 e1-1-shell-guide가 Up 상태인 사용자 화면](docs/evidence/36-user-exec-running.png)
+
+과제에서 요구한 셸 종료와 컨테이너 유지의 차이를 확인했습니다. `docker exec`로 추가 Bash를 열었다가 `exit`로 나왔지만, `docker ps -a`에서 `e1-1-shell-guide`가 `Up`으로 표시돼 컨테이너는 계속 실행 중임을 확인했습니다.
+
+**이유:** `exec`로 연 추가 Bash만 종료됐고, 컨테이너를 유지하는 원래 Bash는 계속 실행 중이기 때문입니다. [위 캡처의 명령과 실제 출력](docs/evidence/36-user-exec.md)
+
+주 Bash를 종료하면 컨테이너도 종료되고, 종료하지 않고 연결만 분리하면 계속 실행됩니다. 이 비교의 기존 실습 결과는 [사용자가 실행한 exec·attach 명령과 상태 출력](docs/evidence/13-user-operations.md)에 있습니다.
 
 ## 6. 커스텀 웹 서버 이미지와 포트 매핑
 
