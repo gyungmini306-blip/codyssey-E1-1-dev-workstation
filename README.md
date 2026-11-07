@@ -640,6 +640,10 @@ git commit -m "Update bind mount practice text"
 git log -1 --oneline
 ```
 
+<img src="docs/evidence/47-user-git-push.png" alt="사용자가 git push로 GitHub main 브랜치 업로드에 성공한 화면" width="650">
+
+**업로드 결과.** `ddab736..757b35a main -> main`으로 GitHub의 `main`이 갱신됐습니다. 실습 커밋과 최신 문서 이력을 합친 뒤 업로드했습니다. [캡처의 명령과 실제 출력](docs/evidence/47-user-git-push.md)
+
 커밋을 GitHub에 올립니다.
 
 ```powershell
