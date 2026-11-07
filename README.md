@@ -563,10 +563,10 @@ docker stop e1-1-volume-before
 docker rm e1-1-volume-before
 ```
 
-컨테이너를 삭제한 뒤에도 볼륨이 남았는지 확인합니다.
+볼륨 목록에서 `e1-1-replay-data`가 남았는지 확인합니다.
 
 ```powershell
-docker volume ls --filter "name=e1-1-replay-data"
+docker volume ls
 ```
 
 새 컨테이너에 같은 볼륨을 연결합니다.
