@@ -691,6 +691,8 @@ docker compose -p e1-1-replay up -d --build --wait
 curl.exe -i http://127.0.0.1:8083/healthz
 ```
 
+웹 화면은 브라우저에서 `http://localhost:8083/compose.html`을 열어 `Hello Compose!`를 확인합니다. [확인용 HTML](app/compose.html)은 Dockerfile의 `COPY app/`로 이미지에 포함됩니다.
+
 **③ 해당 프로젝트의 컨테이너와 네트워크를 정리합니다.**
 
 ```powershell
