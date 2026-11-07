@@ -667,16 +667,16 @@ git push
 
 ```yaml
 services:
-  web:
+  web: # 실행할 서비스 이름
     build:
-      context: .
+      context: . # 같은 폴더의 Dockerfile로 이미지 빌드
       args:
-        INDEX_PAGE: compose.html
+        INDEX_PAGE: compose.html # 첫 화면으로 쓸 HTML 선택
     ports:
-      - "127.0.0.1:8083:80"
+      - "127.0.0.1:8083:80" # 내 PC의 8083 → 컨테이너의 80 연결
 ```
 
-`web`은 서비스 이름, `context: .`은 같은 폴더의 Dockerfile로 이미지 빌드, `ports`는 **PC 8083 → 컨테이너 80** 연결입니다. `INDEX_PAGE`는 Compose 서버의 첫 화면으로 `compose.html`을 선택하며, Dockerfile이 이를 이미지의 `index.html`로 복사합니다. 명령에 입력하던 설정을 파일에 남겨 재사용할 수 있습니다.
+명령에 입력하던 설정을 파일에 남겨 재사용할 수 있습니다.
 
 Docker Desktop을 켜고 과제 폴더의 PowerShell에서 실행합니다.
 

@@ -1,8 +1,8 @@
 services:
-  web:
+  web: # 실행할 서비스 이름
     build:
-      context: .
+      context: . # 같은 폴더의 Dockerfile로 이미지 빌드
       args:
-        INDEX_PAGE: compose.html
+        INDEX_PAGE: compose.html # 첫 화면으로 쓸 HTML 선택
     ports:
-      - "127.0.0.1:8083:80"
+      - "127.0.0.1:8083:80" # 내 PC의 8083 → 컨테이너의 80 연결
