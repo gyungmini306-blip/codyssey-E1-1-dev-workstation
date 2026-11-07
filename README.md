@@ -616,22 +616,22 @@ GitHub Pull Requests 뷰에서 현재 브랜치의 목록을 확인했으며, �
 git config --local --list
 ```
 
-<img src="docs/evidence/45-user-git-commit.png" alt="사용자가 최근 커밋 번호와 바인드 마운트 실습 메시지를 조회한 화면" width="650">
+<img src="docs/evidence/46-user-git-add-commit.png" alt="사용자가 HTML을 선택하고 커밋한 뒤 결과를 확인한 화면" width="650">
 
-**커밋 확인 결과.** `main`의 최근 커밋은 `457f88c`이며 메시지는 `Record bind mount practice`입니다. 이 화면은 로컬 커밋을 확인한 결과이고, GitHub 푸시 성공은 앞서 연결한 원본 로그로 구분합니다. [캡처의 명령과 출력](docs/evidence/45-user-git-commit.md)
+**커밋 결과.** HTML 수정 내용을 선택해 `3e9c201` 커밋으로 기록했습니다. `1 file changed, 1 insertion(+), 1 deletion(-)`으로 파일 한 개의 한 줄 변경을 확인했습니다. 이 화면은 로컬 기록이며, GitHub 업로드 성공은 푸시 결과로 따로 확인합니다. [캡처의 명령과 출력](docs/evidence/46-user-git-add-commit.md)
 
 HTML 수정 내용을 기록할 때 사용한 핵심 명령입니다. 이미 기록한 내용을 다시 커밋할 필요는 없습니다.
 
 수정한 HTML을 커밋 대상으로 고릅니다.
 
 ```powershell
-git add -- app/index.html
+git add app/index.html
 ```
 
 변경 이력을 PC에 기록합니다.
 
 ```powershell
-git commit -m "Record bind mount practice"
+git commit -m "Update bind mount practice text"
 ```
 
 기록된 최근 커밋을 한 줄로 확인합니다.
